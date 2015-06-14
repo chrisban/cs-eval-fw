@@ -1,0 +1,81 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>
+			Server-side code compilation/execution
+		</title>
+
+		<script type="text/javascript" src="js/jquery-2.1.4.min.js"></script>
+		<script type="text/javascript" src="js/jquery-ui-1.11.4/jquery-ui.min.js"></script>
+		<link type="text/css" href="js/jquery-ui-1.11.4/jquery-ui.min.css" rel="stylesheet" media="screen"/>
+		<link type="text/css" href="css/screen.css" rel="stylesheet" media="screen"/>
+	</head>
+
+	<script>
+		$(function() {
+			//Allow tabulation within textarea, unfinished
+			$('#code').on('keydown', function(e) { 
+				var keyCode = e.keyCode || e.which; 
+
+				if (keyCode == 9) { 
+					e.preventDefault();
+					//TODO: insert tab at caret
+				} 
+			});
+
+			$('#code').html('#include &lt;iostream&gt;<br /> int main() <br />{<br /> std::cout << "Hello, world!\\n";<br />}');
+			//console.log($('#code').val());
+
+			$('#compile').on('click', function(){
+				if(!$('#results').is(':visible'))
+					$('#results').show("blind", 500);
+
+
+				var val = $("#code").html();
+				//console.log("posted code:\n", val);
+				val = val.replace(/\\n/g, "\\n");
+				val = val.replace(/<br>/g, "\n");
+				val = val.replace(/&lt;/g, "<");
+				val = val.replace(/&gt;/g, ">");
+				val = val.replace(/&nbsp;/g, "");
+				console.log("\nPosted code:\n", val);
+
+				//TODO: POST code, populate results with return value
+				
+				
+				//COLIRU: #include <iostream>\n int main() \n{\n std::cout << "Hello, world!\\n";\n}
+				var http = new XMLHttpRequest();
+				http.open("POST", "http://coliru.stacked-crooked.com/compile", false);
+				http.send(JSON.stringify({ "cmd": "g++ main.cpp && ./a.out", "src": val }));
+				$("#codeResults").val(http.response);
+				
+				
+				/*
+				//REXTESTER:
+				var http = new XMLHttpRequest();
+				http.open("POST", "http://rextester.com/rundotnet/api", false);
+				http.send(JSON.stringify({ "LanguageChoiceWrapper": "6", "Program": val }));
+				$("#codeResults").val(http.response);
+				*/
+
+			});
+		});
+	</script>
+
+	<body>
+		<div id="container">
+			<div id="banner">
+				<h1>Code compilation and execution</h1>
+			</div>
+
+			Enter or modify the code below and press 'Compile' to view results. <br /><br /> 
+
+			<div id='code' contenteditable></div><br />
+			<input type="button" id="compile" value="Compile">
+
+			<div id="results">
+				<b>Results:</b> <br />
+				<textarea id="codeResults" rows="5" cols="100"></textarea>	
+			</div>
+		</div>
+	</body>
+</html>
