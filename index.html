@@ -6,31 +6,49 @@
 
 		<script type="text/javascript" src="js/jquery-2.1.4.min.js"></script>
 		<script type="text/javascript" src="js/jquery-ui-1.11.4/jquery-ui.min.js"></script>
+		<script src="js/codemirror-5.3/lib/codemirror.js"></script>
+
+		<link rel="stylesheet" href="js/codemirror-5.3/lib/codemirror.css">
 		<link type="text/css" href="js/jquery-ui-1.11.4/jquery-ui.min.css" rel="stylesheet" media="screen"/>
 		<link type="text/css" href="css/screen.css" rel="stylesheet" media="screen"/>
 	</head>
 
 	<script>
 		$(function() {
-			//Allow tabulation within textarea, unfinished
-			$('#code').on('keydown', function(e) { 
-				var keyCode = e.keyCode || e.which; 
 
-				if (keyCode == 9) { 
-					e.preventDefault();
-					//TODO: insert tab at caret
-				} 
-			});
+			//predefined code
+			$('textarea#code').val('#include <iostream>\n \
+int main()\n \
+{\n \
+	int input = 0;\n \
+	for(int i = 0; i <= 2; i++)\n \
+	{\n \
+		if(i == 0)\n \
+			std::cout << "init input: " << input << std::endl;\n \
+		else\n \
+		{\n \
+			std::cin >> input;\n \
+			std::cout << "new input: " << input << "\\n";\n \
+		}\n \
+	}\n \
+}');
 
-			$('#code').html('#include &lt;iostream&gt;<br>int main()<br>{<div>&nbsp;int input = 0;</div><div>&nbsp;for(int i = 0; i &lt;= 2; i++)<div>&nbsp;{</div><div>&nbsp; if(i == 0)</div><div>&nbsp; &nbsp;std::cout &lt;&lt; "init input: " &lt;&lt; input &lt;&lt; std::endl;</div><div>&nbsp; else</div><div>&nbsp; {</div><div>&nbsp; &nbsp; std::cin &gt;&gt; input;</div><div>&nbsp; &nbsp; std::cout &lt;&lt; "new input: " &lt;&lt; input &lt;&lt; "\\n";</div><div>&nbsp; &nbsp;}</div><div>&nbsp;}</div><div><br>}</div></div>');
-			//console.log($('#code').val());
+			/*$('textarea#code').val('#include <iostream>\n\n \
+int main()\n \
+{\n \
+	std::cout << "Hello World!" << std::endl;\n \
+}');*/
 
+			//enable codeMirror editor
+			var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
+		        lineNumbers: true,
+		        matchBrackets: true,
+		        mode: "javascript"
+		     });
+
+			//on compile
 			$('#compile').on('click', function(){
-				if(!$('#results').is(':visible'))
-					$('#results').show("blind", 500);
-
-
-				var val = $("#code").html();
+				var val = $("textarea#code").val();
 				console.log("pre-posted code:\n", val);
 				val = val.replace(/\\n/g, "\\n");
 				val = val.replace(/<br>/g, "\n");
@@ -40,24 +58,48 @@
 				val = val.replace(/<div>/g, "\r\n");
 				val = val.replace(/<\/div>/g, "\r\n");
 				console.log("\nPosted code:\n", val);
+				
 
 				//TODO: POST code, populate results with return value
 				
-				
+				/*
 				//COLIRU: #include <iostream>\n int main() \n{\n std::cout << "Hello, world!\\n";\n}
 				var http = new XMLHttpRequest();
 				http.open("POST", "http://coliru.stacked-crooked.com/compile", false);
 				http.send(JSON.stringify({ "cmd": "g++ main.cpp && ./a.out << EOF\r\n1\r\n2\r\nEOF\r\n", "src": val }));
 				$("#codeResults").val(http.response);
-				
-				
-				/*
-				//REXTESTER:
-				var http = new XMLHttpRequest();
-				http.open("POST", "http://rextester.com/rundotnet/api", false);
-				http.send(JSON.stringify({ "LanguageChoiceWrapper": "6", "Program": val }));
-				$("#codeResults").val(http.response);
 				*/
+				
+				
+				//REXTESTER:
+				var data = {
+					"LanguageChoiceWrapper": "7", 
+					"Program": val, 
+					"input": "1 2", 
+					"compilerArgs": "source_file.cpp -o a.out"
+				};
+
+				$.ajax({
+				  type: "POST",
+				  url: "http://rextester.com/rundotnet/api",
+				  dataType: "JSON",
+				  data: data,
+				  success: function(response){
+					if(!$('#results').is(':visible'))
+						$('#results').show("blind", 500);
+				  	console.log("resp:", response);
+
+				  	var result = "";
+				  	if(response.Errors)
+				  		result += "Errors: " + response.Errors;
+				  	if(response.Warnings)
+				  		result += "Warnings: " + response.Warnings;
+				  	if(response.Result)
+				  		result += "Result: " + response.Result;
+				  	$("#codeResults").val(result);
+				  }
+				});
+				
 
 			});
 		});
@@ -71,7 +113,7 @@
 
 			Enter or modify the code below and press 'Compile' to view results. <br /><br /> 
 
-			<div id='code' contenteditable></div><br />
+			<div id="codeContainer"><textarea id='code' ></textarea></div><br />
 			<input type="button" id="compile" value="Compile">
 
 			<div id="results">
