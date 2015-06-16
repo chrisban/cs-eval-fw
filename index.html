@@ -22,7 +22,7 @@
 				} 
 			});
 
-			$('#code').html('#include &lt;iostream&gt;<br /> int main() <br />{<br /> std::cout << "Hello, world!\\n";<br />}');
+			$('#code').html('#include &lt;iostream&gt;<br>int main()<br>{<div>&nbsp;int input = 0;</div><div>&nbsp;for(int i = 0; i &lt;= 2; i++)<div>&nbsp;{</div><div>&nbsp; if(i == 0)</div><div>&nbsp; &nbsp;std::cout &lt;&lt; "init input: " &lt;&lt; input &lt;&lt; std::endl;</div><div>&nbsp; else</div><div>&nbsp; {</div><div>&nbsp; &nbsp; std::cin &gt;&gt; input;</div><div>&nbsp; &nbsp; std::cout &lt;&lt; "new input: " &lt;&lt; input &lt;&lt; "\\n";</div><div>&nbsp; &nbsp;}</div><div>&nbsp;}</div><div><br>}</div></div>');
 			//console.log($('#code').val());
 
 			$('#compile').on('click', function(){
@@ -31,12 +31,14 @@
 
 
 				var val = $("#code").html();
-				//console.log("posted code:\n", val);
+				console.log("pre-posted code:\n", val);
 				val = val.replace(/\\n/g, "\\n");
 				val = val.replace(/<br>/g, "\n");
 				val = val.replace(/&lt;/g, "<");
 				val = val.replace(/&gt;/g, ">");
 				val = val.replace(/&nbsp;/g, "");
+				val = val.replace(/<div>/g, "\r\n");
+				val = val.replace(/<\/div>/g, "\r\n");
 				console.log("\nPosted code:\n", val);
 
 				//TODO: POST code, populate results with return value
@@ -45,7 +47,7 @@
 				//COLIRU: #include <iostream>\n int main() \n{\n std::cout << "Hello, world!\\n";\n}
 				var http = new XMLHttpRequest();
 				http.open("POST", "http://coliru.stacked-crooked.com/compile", false);
-				http.send(JSON.stringify({ "cmd": "g++ main.cpp && ./a.out", "src": val }));
+				http.send(JSON.stringify({ "cmd": "g++ main.cpp && ./a.out << EOF\r\n1\r\n2\r\nEOF\r\n", "src": val }));
 				$("#codeResults").val(http.response);
 				
 				
