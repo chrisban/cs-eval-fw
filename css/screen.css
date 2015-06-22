@@ -3,6 +3,10 @@ body {
 	font-family:Verdana, Geneva, sans-serif;
 }
 
+.label{
+	font-size: 12px;
+}
+
 #container{
 	background-color:#FFF;
 	width:900px; 
@@ -12,12 +16,32 @@ body {
 }
 
 #codeContainer{
-	width: 650px;
+	width: 74%;
     border-width: 1px;
 	border-style: dotted;
+	float: left;
+}
+
+#codeInput{
+float: right;
+width: 25%;
+}
+
+#inputContainer{
+	padding-top: 20px;
+}
+
+#outputContainer{
+	clear: both;
+	padding-top: 20px;
 }
 
 #results{
 	display: none;
 	padding-top: 50px;
+}
+
+/* dual list box */
+.filter, .filter form-control {
+	display: none !important;
 }
