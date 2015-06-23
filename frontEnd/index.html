@@ -1,0 +1,151 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>
+			Server-side code compilation/execution
+		</title>
+
+		<script type="text/javascript" src="/js/jquery-2.1.4.min.js"></script>
+		<script type="text/javascript" src="js/jquery-ui-1.11.4/jquery-ui.min.js"></script>
+		<script src="js/codemirror-5.3/lib/codemirror.js"></script>
+		<script src="js/codemirror-5.3/mode/clike/clike.js"></script>
+		<script src="js/codemirror-5.3/addon/edit/matchbrackets.js"></script>
+		<script src="js/codemirror-5.3/addon/hint/show-hint.js"></script>
+
+		<link rel="stylesheet" href="js/codemirror-5.3/addon/hint/show-hint.css">
+		<link rel="stylesheet" href="js/codemirror-5.3/lib/codemirror.css">
+		<link type="text/css" href="js/jquery-ui-1.11.4/jquery-ui.min.css" rel="stylesheet" media="screen"/>
+		<link type="text/css" href="css/screen.css" rel="stylesheet" media="screen"/>
+	</head>
+
+	<script>
+		$(function() {
+			dataObject = JSON.stringify({test_id: '0'});
+
+			$.ajax({
+			    url: "/post",
+			    type: "POST",
+			    dataType: "json",
+			    data: dataObject,
+			    contentType: "application/json",
+			    cache: false,
+        		async: false, //ensures completion before continuting on
+			    success: function(res){
+			    	console.log("Success response: ", res);
+			    	dataObject = res[0];
+			    	$('textarea#code').val(dataObject['skeleton']);
+			    	$('#problemStatement').html("<span class='label'>" + dataObject['problem'] + "</span>");
+			    },
+			    error: function(res){
+			    	console.log("Error response: ", res);
+			    }
+			});
+
+
+	    	
+
+			//enable codeMirror editor
+			var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
+				theme: 'default',
+		        lineNumbers: true,
+		        matchBrackets: true,
+		        enableCodeFormatting: true,
+		        autoFormatOnStart: true,
+		        autoFormatOnUncomment: true,
+		        mode: "clike",
+		        styleActiveLine: true
+		     });
+
+			//select box for dynamic inputs
+			var lbox = $("#inputSel");
+			$("#addInput").on("click", function(){
+		    	lbox.append('<option>'+$("#cin").val()+'</option>');
+		    	$("#cin").val("");
+		    });
+
+			//on delete button to remove specefied input item
+		    $("#delInput").on("click", function(){
+		    	$("#inputSel option:selected").remove();
+		    });
+
+			//on compile click
+			$('#compile').on('click', function(){
+				//get user defined inputs
+				var inputs = $.map($('#inputSel option'), function(option) {
+				    return option.value;
+				});
+
+				//get user defined code
+				var val = editor.getValue();
+
+				console.log("\nPosted code:\n", val);
+				
+				//REXTESTER SOAP service:
+				//create dataobject
+				var data = {
+					"LanguageChoiceWrapper": "7", 
+					"Program": val, 
+					"input": inputs.join(' '),
+					"compilerArgs": "source_file.cpp -o a.out"
+				};
+
+				//ajax call to SOAP service
+				$.ajax({
+				  type: "POST",
+				  url: "http://rextester.com/rundotnet/api",
+				  dataType: "JSON",
+				  data: data,
+				  success: function(response){
+					if(!$('#results').is(':visible'))
+						$('#results').show("blind", 500);
+				  	console.log("resp:", response);
+
+				  	var result = "";
+				  	if(response.Errors)
+				  		result += "Errors: " + response.Errors + "\n";
+				  	if(response.Warnings)
+				  		result += "Warnings: " + response.Warnings + "\n";
+				  	if(response.Result)
+				  		result += "Result: " + response.Result;
+				  	$("#codeResults").val(result);
+				  }
+				});
+			});
+		});
+
+	</script>
+
+	<body>
+		<div id="container">
+			<div id="banner">
+				<h1>Code compilation and execution</h1>
+			</div>
+
+			Enter or modify the code below and press 'Compile' to view results.<br /><br />
+
+			<div id="problemStatement">
+			</div> 
+
+			<div id="inputContainer">
+				<div id="codeContainer">
+					<textarea id='code' ></textarea>
+				</div>
+				<div id="codeInput">
+					<span class="label"> Inputs will be read in order for every line read performed.</span><br /><br /><br />
+					<span class="label">New input: </span><input type="text" id="cin" size="10"/> <button id="addInput" type="button"> <b>+</b> </button> <br /><br />
+					<div>
+						<span class="label">Current inputs:</span> <select id="inputSel">
+						</select> <button id="delInput" type="button"> <b>-</b> </button>
+					</div>
+				</div>
+			</div>
+
+			<div id="outputContainer">
+				<input type="button" id="compile" value="Compile">
+				<div id="results">
+					<b>Results:</b> <br />
+					<textarea id="codeResults" rows="5" cols="100"></textarea>	
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
