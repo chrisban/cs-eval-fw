@@ -9,8 +9,11 @@
 var requiresTemplate = '<link type="text/css" href="/includes/css/include.css" rel="stylesheet" media="screen"/>';
 
 //questionContainer will be closed at the end of ioTemplate
+//PLACEHOLDERS: <<n>> = question number, <<pstatement>> = problem statement from datafile
 var pStatementTemplate = '<div id="questionContainer<<n>>"><div id="problemStatement<<n>>"><<pstatement>></div>';
 
+
+//PLACEHOLDERS: <<n>> = question number, <<code>> = skeleton code from datafile
 var ioTemplate = '<div class="inputContainer">\
 		<div class="codeContainer">\
 			<textarea id="code<<n>>"><<code>></textarea>\
@@ -33,19 +36,65 @@ var ioTemplate = '<div class="inputContainer">\
 	</div>\
 	</div>'; //extra </div> to close questionContainer div
 
+//codemirror initialization script
+//PLACEHOLDERS: <<n>> = question number
 var editorTemplate = 'var editor<<n>> = CodeMirror.fromTextArea($("#code<<n>>")[0], {theme: "default", lineNumbers: true, matchBrackets: true, enableCodeFormatting: true, autoFormatOnStart: true, autoFormatOnUncomment: true, mode: "clike", styleActiveLine: true});';
 
 
-//dynamically add and remove items from nearest selectbox
-var script = 'var lbox = $("#inputSel");\
-			$(".addInput").on("click", function(){\
+//listener 1-2: dynamically add and remove items from nearest selectbox.
+//listener 3: On compile, finds parent's parent's id (17 to string end as the id will always be 'questionContainer#') to get question number which is used to specify which codemirror editor
+//				Then gets nearest editor value, map inputs. 
+//				Finally post data to server via ajax call
+var script = '$(".addInput").on("click", function(){\
 				$(this).parent().find("select").append("<option>"+$(this).prev("input").val()+"</option>");\
 		    	$(this).prev("input").val("");\
 		    });\
+\
 		    $(".delInput").on("click", function(){\
 		    	var lbox = $(this).parent().find("select");\
 		    	$("option:selected", lbox).remove();\
-		    });'
+		    });\
+\
+			$(".compile").on("click", function(){\
+				var parentID = $(this).parent().parent().attr("id");\
+				var index = parentID.substring(17, parentID.length);\
+				var val = $(".CodeMirror")[parseInt(index)].CodeMirror.getValue();\
+				console.log("\\nPosted code:\\n", val);\
+				var lbox = $(this).parent().parent().find("select option");\
+				var inputs = $.map(lbox ,function(option) {\
+				    return option.value;\
+				});\
+				inputs = inputs.join(\' \'),\
+				console.log("\\nPosted input:\\n", inputs);\
+\
+				var data = {\
+					"LanguageChoiceWrapper": "7",\
+					"Program": val,\
+					"input": inputs,\
+					"compilerArgs": "source_file.cpp -o a.out"\
+				};\
+\
+				$.ajax({\
+					  type: "POST",\
+					  url: "/compile",\
+					  dataType: "json",\
+					  data: JSON.stringify(data),\
+			    	  contentType: "application/json",\
+					  success: function(response){\
+						if(!$("#results").is(":visible"))\
+							$("#results").show("blind", 500);\
+					  	console.log("resp:", response);\
+					  	var result = "";\
+					  	if(response.Errors)\
+					  		result += "Errors: " + response.Errors + "\\n";\
+					  	if(response.Warnings)\
+					  		result += "Warnings: " + response.Warnings + "\\n";\
+					  	if(response.Result)\
+					  		result += "Result: " + response.Result;\
+					  	$("#codeResults").val(result);\
+					  }\
+					});\
+				});';
 
 
 //export template data

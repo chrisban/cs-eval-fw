@@ -90,6 +90,24 @@ app.post('/getModule', function (req, res) {
 	});
 });
 
+//handle api compile requests
+app.post('/compile', function (req, res) {
+	console.log("req: ", req.body);
+
+	//As proof of concept, continue ajax call to external api
+	//Must find some other way besides jquery->ajax
+	/*$.ajax({
+	  type: "POST",
+	  url: "http://rextester.com/rundotnet/api",
+	  dataType: "JSON",
+	  data: data,
+	  success: function(response){
+	  	res.type('json');
+	  	res.send(response);
+	  }
+	});*/
+});
+
 app.post('/data_upload', function (req, res) {
 	//TODO: handle file posting/uploading
 });
