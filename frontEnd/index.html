@@ -6,23 +6,22 @@
 
 		<script type="text/javascript" src="/js/jquery-2.1.4.min.js"></script>
 		<script type="text/javascript" src="js/jquery-ui-1.11.4/jquery-ui.min.js"></script>
-		<script src="js/codemirror-5.3/lib/codemirror.js"></script>
-		<script src="js/codemirror-5.3/mode/clike/clike.js"></script>
-		<script src="js/codemirror-5.3/addon/edit/matchbrackets.js"></script>
-		<script src="js/codemirror-5.3/addon/hint/show-hint.js"></script>
 
-		<link rel="stylesheet" href="js/codemirror-5.3/addon/hint/show-hint.css">
-		<link rel="stylesheet" href="js/codemirror-5.3/lib/codemirror.css">
+			<script src="js/codemirror-5.3/lib/codemirror.js"></script>
+			<script src="js/codemirror-5.3/addon/edit/matchbrackets.js"></script>
+			<link rel="stylesheet" href="js/codemirror-5.3/lib/codemirror.css">
+			<script src="js/codemirror-5.3/mode/clike/clike.js"></script>
+
 		<link type="text/css" href="js/jquery-ui-1.11.4/jquery-ui.min.css" rel="stylesheet" media="screen"/>
 		<link type="text/css" href="css/screen.css" rel="stylesheet" media="screen"/>
 	</head>
 
 	<script>
 		$(function() {
-			dataObject = JSON.stringify({test_id: '0'});
+			dataObject = JSON.stringify({test_id: '0', type: "exam"});
 
 			$.ajax({
-			    url: "/post",
+			    url: "/getModule",
 			    type: "POST",
 			    dataType: "json",
 			    data: dataObject,
@@ -31,42 +30,19 @@
         		async: false, //ensures completion before continuting on
 			    success: function(res){
 			    	console.log("Success response: ", res);
-			    	dataObject = res[0];
+			    	/*dataObject = res[0];
 			    	$('textarea#code').val(dataObject['skeleton']);
-			    	$('#problemStatement').html("<span class='label'>" + dataObject['problem'] + "</span>");
+			    	$('#problemStatement').html("<span class='label'>" + dataObject['problem'] + "</span>");*/
+			    	$('body').html(res['response_html']);
+					   script = res['response_script'];
+					   eval(script);
 			    },
 			    error: function(res){
 			    	console.log("Error response: ", res);
 			    }
 			});
-
-
-	    	
-
-			//enable codeMirror editor
-			var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
-				theme: 'default',
-		        lineNumbers: true,
-		        matchBrackets: true,
-		        enableCodeFormatting: true,
-		        autoFormatOnStart: true,
-		        autoFormatOnUncomment: true,
-		        mode: "clike",
-		        styleActiveLine: true
-		     });
-
-			//select box for dynamic inputs
-			var lbox = $("#inputSel");
-			$("#addInput").on("click", function(){
-		    	lbox.append('<option>'+$("#cin").val()+'</option>');
-		    	$("#cin").val("");
-		    });
-
-			//on delete button to remove specefied input item
-		    $("#delInput").on("click", function(){
-		    	$("#inputSel option:selected").remove();
-		    });
-
+			
+/*		    
 			//on compile click
 			$('#compile').on('click', function(){
 				//get user defined inputs
@@ -109,43 +85,11 @@
 				  	$("#codeResults").val(result);
 				  }
 				});
-			});
+			});*/
 		});
 
 	</script>
 
-	<body>
-		<div id="container">
-			<div id="banner">
-				<h1>Code compilation and execution</h1>
-			</div>
-
-			Enter or modify the code below and press 'Compile' to view results.<br /><br />
-
-			<div id="problemStatement">
-			</div> 
-
-			<div id="inputContainer">
-				<div id="codeContainer">
-					<textarea id='code' ></textarea>
-				</div>
-				<div id="codeInput">
-					<span class="label"> Inputs will be read in order for every line read performed.</span><br /><br /><br />
-					<span class="label">New input: </span><input type="text" id="cin" size="10"/> <button id="addInput" type="button"> <b>+</b> </button> <br /><br />
-					<div>
-						<span class="label">Current inputs:</span> <select id="inputSel">
-						</select> <button id="delInput" type="button"> <b>-</b> </button>
-					</div>
-				</div>
-			</div>
-
-			<div id="outputContainer">
-				<input type="button" id="compile" value="Compile">
-				<div id="results">
-					<b>Results:</b> <br />
-					<textarea id="codeResults" rows="5" cols="100"></textarea>	
-				</div>
-			</div>
-		</div>
+	<body> 
 	</body>
 </html>
