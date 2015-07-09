@@ -29,9 +29,6 @@
         		async: false, //ensures completion before continuting on
 			    success: function(res){
 			    	console.log("Success response: ", res);
-			    	/*dataObject = res[0];
-			    	$('textarea#code').val(dataObject['skeleton']);
-			    	$('#problemStatement').html("<span class='label'>" + dataObject['problem'] + "</span>");*/
 			    	$('body').html(res['response_html']);
 					   script = res['response_script'];
 					   eval(script);
@@ -42,40 +39,6 @@
 			    	console.log("Error response: ", res);
 			    }
 			});
-
-/*		   	
-				//REXTESTER SOAP service:
-				//create dataobject
-				var data = {
-					"LanguageChoiceWrapper": "7", 
-					"Program": val, 
-					"input": inputs.join(' '),
-					"compilerArgs": "source_file.cpp -o a.out"
-				};
-
-				//ajax call to SOAP service
-				$.ajax({
-				  type: "POST",
-				  url: "http://rextester.com/rundotnet/api",
-				  dataType: "JSON",
-				  data: data,
-				  success: function(response){
-					if(!$('#results').is(':visible'))
-						$('#results').show("blind", 500);
-				  	console.log("resp:", response);
-
-				  	var result = "";
-				  	if(response.Errors)
-				  		result += "Errors: " + response.Errors + "\n";
-				  	if(response.Warnings)
-				  		result += "Warnings: " + response.Warnings + "\n";
-				  	if(response.Result)
-				  		result += "Result: " + response.Result;
-				  	$("#codeResults").val(result);
-				  }
-				});
-			});
-*/
 		});
 	</script>
 	<body> 

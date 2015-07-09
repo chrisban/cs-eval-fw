@@ -2,44 +2,37 @@ var express = require('express');
 var fs = require('fs');
 var app = express();
 var bodyParser = require('body-parser');
+var requestify = require('requestify');
 var moduleVars = require('./moduleVars');
 
 // for parsing application/json
 app.use(bodyParser.json()); 
 
-//fix static links
+//connect static links
 app.use('/js', express.static(__dirname + '/frontEnd/js'));
 app.use('/css', express.static(__dirname + '/frontEnd/css'));
 app.use(express.static(__dirname + '/includes'));
 
-//response to requests
+
+/*********************/
+/* HTTP GET HANDLING */
+/*********************/
 app.get('/', function (req, res) {
  	res.sendFile( __dirname + "/frontEnd/" );
 });
 
-//response to external lib GETs
-app.get('/includes/js/codemirror-5.3/lib/codemirror.js', function (req, res) {
- 	res.sendFile( __dirname + "/includes/js/codemirror-5.3/lib/codemirror.js" );
-});
-app.get('/includes/js/codemirror-5.3/lib/codemirror.css', function (req, res) {
- 	res.sendFile( __dirname + "/includes/js/codemirror-5.3/lib/codemirror.css" );
-});
-app.get('/includes/js/codemirror-5.3/addon/edit/matchbrackets.js', function (req, res) {
- 	res.sendFile( __dirname + "/includes/js/codemirror-5.3/addon/edit/matchbrackets.js" );
-});
-app.get('/includes/js/codemirror-5.3/mode/clike/clike.js', function (req, res) {
- 	res.sendFile( __dirname + "/includes/js/codemirror-5.3/mode/clike/clike.js" );
-});
 app.get('/includes/css/include.css', function (req, res) {
  	res.sendFile( __dirname + "/includes/css/include.css" );
 });
-
 
 app.get('/upload/', function (req, res) {
  	res.sendFile( __dirname + "/frontEnd/data_upload/upload.html" );
 });
 
 
+/***********************/
+/* HTTP POST HANDLING */
+/*********************/
 //handle post request to retrieve datafiles
 app.post('/getModule', function (req, res) {
 	console.log(req.body);
@@ -92,20 +85,13 @@ app.post('/getModule', function (req, res) {
 
 //handle api compile requests
 app.post('/compile', function (req, res) {
-	console.log("req: ", req.body);
-
-	//As proof of concept, continue ajax call to external api
-	//Must find some other way besides jquery->ajax
-	/*$.ajax({
-	  type: "POST",
-	  url: "http://rextester.com/rundotnet/api",
-	  dataType: "JSON",
-	  data: data,
-	  success: function(response){
-	  	res.type('json');
-	  	res.send(response);
-	  }
-	});*/
+	//temporarily compiling via external call to api. Later on will be doing this ourselves by writing to file and executing on vm.
+	requestify.post('http://rextester.com/rundotnet/api', req.body)
+    .then(function(response) {
+        response.getBody();
+        res.type('json');  
+	  	res.send(response.body);
+    });
 });
 
 app.post('/data_upload', function (req, res) {

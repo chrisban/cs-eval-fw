@@ -10,5 +10,11 @@
         "skeleton": "#include <iostream>\n\nint main()\n{\n    int input = 0;\n    for(int i = 0; i <= 2; i++)\n    {\n        if(i == 0)\n        std::cout << \"init input: \" << input << std::endl;\n        else\n        {\n            std::cin >> input;\n            std::cout << \"new input: \" << input << \"\\n\";\n        }\n    }\n}",
         "test_input": "1 2",
         "test_output": "init input: 0\nnew input: 1\nnew input: 2"
+    },
+    "2": {
+        "problem": "SAMPLE PROBLEM STATEMENT #3: Write a program using C++ that prints two integers.",
+        "skeleton": "#include <iostream>\n\nint main()\n{\n    int input = 0;\n    for(int i = 0; i <= 2; i++)\n    {\n        if(i == 0)\n        std::cout << \"init input: \" << input << std::endl;\n        else\n        {\n            std::cin >> input;\n            std::cout << \"new input: \" << input << \"\\n\";\n        }\n    }\n}",
+        "test_input": "1 2",
+        "test_output": "init input: 0\nnew input: 1\nnew input: 2"
     }
 }

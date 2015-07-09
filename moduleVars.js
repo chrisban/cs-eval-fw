@@ -56,22 +56,16 @@ var script = '$(".addInput").on("click", function(){\
 		    });\
 \
 			$(".compile").on("click", function(){\
+				var btnContext = $(this);\
 				var parentID = $(this).parent().parent().attr("id");\
 				var index = parentID.substring(17, parentID.length);\
-				var val = $(".CodeMirror")[parseInt(index)].CodeMirror.getValue();\
-				console.log("\\nPosted code:\\n", val);\
 				var lbox = $(this).parent().parent().find("select option");\
-				var inputs = $.map(lbox ,function(option) {\
-				    return option.value;\
-				});\
-				inputs = inputs.join(\' \'),\
-				console.log("\\nPosted input:\\n", inputs);\
 \
 				var data = {\
 					"LanguageChoiceWrapper": "7",\
-					"Program": val,\
-					"input": inputs,\
-					"compilerArgs": "source_file.cpp -o a.out"\
+					"Program": $(".CodeMirror")[parseInt(index)].CodeMirror.getValue(),\
+					"input": $.map(lbox ,function(option) {return option.value;}).join(\' \'),\
+					"compilerArgs": "-std=c++14 -o a.out source_file.cpp"\
 				};\
 \
 				$.ajax({\
@@ -81,8 +75,9 @@ var script = '$(".addInput").on("click", function(){\
 					  data: JSON.stringify(data),\
 			    	  contentType: "application/json",\
 					  success: function(response){\
-						if(!$("#results").is(":visible"))\
-							$("#results").show("blind", 500);\
+					  	var closestResults = btnContext.parent().parent().find(".results");\
+						if(!closestResults.is(":visible"))\
+							closestResults.show("blind", 500);\
 					  	console.log("resp:", response);\
 					  	var result = "";\
 					  	if(response.Errors)\
@@ -91,7 +86,7 @@ var script = '$(".addInput").on("click", function(){\
 					  		result += "Warnings: " + response.Warnings + "\\n";\
 					  	if(response.Result)\
 					  		result += "Result: " + response.Result;\
-					  	$("#codeResults").val(result);\
+					  	btnContext.parent().parent().find(".codeResults").val(result);\
 					  }\
 					});\
 				});';
