@@ -52,25 +52,26 @@ app.post('/getModule', function (req, res) {
 
 		//get exported template data from moduleVars.js
 		var header = moduleVars.header; //Overall page header information/instructions
-		var requiresTemplate = moduleVars.requiresTemplate; //all css/js/etc. includes
+		var requires = moduleVars.requires; //all css/js/etc. includes
 		var pStatementTemplate = moduleVars.pStatementTemplate; //problemstatement template structure. Has placeholders to be changed in forloop below.
 		var ioTemplate = moduleVars.ioTemplate; //code and input template structure. Has placeholders to be changed in forloop below.
+		var navTemplate = moduleVars.navTemplate; //template that holds the nav elements used to switch between exam questions
 		var script = moduleVars.script; //all listeners and js code to be evald once client has received
 		var editorTemplate = moduleVars.editorTemplate; //template codemirror editor to be init. Has placeholder to be chnaged in forloop below.
-		
+
   		//Decide which module to serve
 		if(req.body.type == 'exam')
 		{
-			html = '<!--BEGIN module code-->' + requiresTemplate + header;
+			html = '<!--BEGIN module code-->' + requires + header;
 
 			//iterate through each question in exam datafile, replacing placeholders with index and datafile specefied information
 			for(var i = 0; i < Object.keys(data).length; i++)
 			{
-				html += pStatementTemplate.replace(/<<n>>/g, i).replace(/<<pstatement>>/, data[i]["problem"]) + ioTemplate.replace(/<<n>>/g, i).replace(/<<code>>/, data[i]["skeleton"]) + "<hr>";
+				html += pStatementTemplate.replace(/<<n>>/g, i).replace(/<<pstatement>>/, data[i]["problem"]) + ioTemplate.replace(/<<n>>/g, i).replace(/<<code>>/, data[i]["skeleton"]);
 				script += editorTemplate.replace(/<<n>>/g, i);
 			}
 
-			html += '</div><!--END module code-->';
+			html += navTemplate + '<!--END module code-->';
 		}
 		else if(req.body.type == 'book')
 		{

@@ -1,0 +1,23 @@
+TODO: 
+- unique student tracking
+- commit button submits answer to server
+	- becomes uneditable?
+	- server compiles and runs test cases on solution and student code. records grade in flatfile.
+
+
+- Support for different question types
+	- Part one of exam should be completed before part two begins
+	- Before leaving part one, alert user that part one can no longer be edited after beginning part two
+
+- flat file for grading
+- admin datafile -> json parser
+- Multi lang support (atm c++/py)
+	- datafile defines language
+
+
+*************
+Completed:
+- Navigation
+	- Display one question at a time
+	- Nav buttons to switch through problems
+	- Display bookmarking/thumbnails for quick nav
