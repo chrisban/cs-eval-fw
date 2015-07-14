@@ -56,6 +56,7 @@ app.post('/getModule', function (req, res) {
 		var pStatementTemplate = moduleVars.pStatementTemplate; //problemstatement template structure. Has placeholders to be changed in forloop below.
 		var ioTemplate = moduleVars.ioTemplate; //code and input template structure. Has placeholders to be changed in forloop below.
 		var navTemplate = moduleVars.navTemplate; //template that holds the nav elements used to switch between exam questions
+		var mcTemplate = moduleVars.mcTemplate;
 		var script = moduleVars.script; //all listeners and js code to be evald once client has received
 		var editorTemplate = moduleVars.editorTemplate; //template codemirror editor to be init. Has placeholder to be chnaged in forloop below.
 
@@ -67,8 +68,20 @@ app.post('/getModule', function (req, res) {
 			//iterate through each question in exam datafile, replacing placeholders with index and datafile specefied information
 			for(var i = 0; i < Object.keys(data).length; i++)
 			{
-				html += pStatementTemplate.replace(/<<n>>/g, i).replace(/<<pstatement>>/, data[i]["problem"]) + ioTemplate.replace(/<<n>>/g, i).replace(/<<code>>/, data[i]["skeleton"]);
-				script += editorTemplate.replace(/<<n>>/g, i);
+				if(data[i]["questionType"] == "code")
+				{
+					html += pStatementTemplate.replace(/<<n>>/g, i).replace(/<<pstatement>>/, data[i]["problem"]) + ioTemplate.replace(/<<n>>/g, i).replace(/<<code>>/, data[i]["skeleton"]);
+					script += editorTemplate.replace(/<<n>>/g, i);
+				}else if(data[i]["questionType"] == "mchoice")
+				{
+					html += pStatementTemplate.replace(/<<n>>/g, i).replace(/<<pstatement>>/, data[i]["problem"]);
+
+					for(var j = 0; j < data[i]["test_input"].length; j++)
+					{
+						html+= mcTemplate.replace(/<<mc>>/g, data[i]["test_input"][j]).replace(/<<n>>/g, j);
+					}
+					html+= "</div>"; //extra </div> to close questionContainer div opened in pStatementTemplate 
+				}	
 			}
 
 			html += navTemplate + '<!--END module code-->';
@@ -93,6 +106,42 @@ app.post('/compile', function (req, res) {
         res.type('json');  
 	  	res.send(response.body);
     });
+});
+
+//handle answer commits
+app.post('/commit', function (req, res) {
+	console.log(req.body);
+	if(req.body.problemType == "code")
+	{
+		//User's data
+		var userData = {
+					"LanguageChoiceWrapper": "7",
+					"Program": req.body.program, //user defined code
+					"input": "", //datafile defined testcase
+					"compilerArgs": "-std=c++14 -o a.out source_file.cpp"
+				};
+
+		//Solution data
+		var testingData = {
+					"LanguageChoiceWrapper": "7",
+					"Program": "",
+					"input": "",
+					"compilerArgs": "-std=c++14 -o a.out source_file.cpp"
+				};
+
+	//On exam finish (part one): 
+	//receive committed codes via post
+	//read in datafile via fs
+	//loop per question -> per test case to determine score
+	//write to file
+
+	}else if(req.body.problemType == "mchoice")
+	{
+		
+	}
+
+	res.type('json');  
+	res.send({status : "ok"});
 });
 
 app.post('/data_upload', function (req, res) {

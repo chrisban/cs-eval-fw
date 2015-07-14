@@ -9,7 +9,8 @@
 
 * NOTE: for 3-4, server should iterate through each object in exam datafile, appending a new version of these templates and replacing their placeholder vars with datafile data
 3. pStatementTemplate (opens exam question encapsulating 'questionContainer' div)
-4. ioTemplate (closes exam question encapsulating 'questionContainer' div)
+4a. (if code) ioTemplate (closes exam question encapsulating 'questionContainer' div)
+4b. (if multchoice) mcTemplate (Needs to close exam question encapsulating 'questionContainer' div after iteration on server)
 *
 
 5. navTemplate (closes over-arching 'container' div) exists once, inserted once at the end of the html object sent to client as it closes the container div.
@@ -27,7 +28,8 @@ var requires = '<link type="text/css" href="/includes/css/include.css" rel="styl
 
 //Container div closes at the end of 
  var header = '<div id="container"><div id="banner"><h1>Practice Exam</h1></div>\
-Enter or modify the code below and press \'Compile\' to execute and view results.<br /><br />';
+Enter or modify the code below and press \'Compile\' to execute and view results.<br /><br />\
+<div id="dialog" title="Student ID">ID#: <input type="text" id="idNum"></div>';
 
 //questionContainer will be closed at the end of ioTemplate
 //PLACEHOLDERS: <<n>> = question number, <<pstatement>> = problem statement from datafile
@@ -56,7 +58,7 @@ var ioTemplate = '<div class="inputContainer">\
 		</div>\
 		<input type="button" class="commitB" value="Commit">\
 	</div>\
-	</div>'; //extra </div> to close questionContainer div opened in pStatementTemplate
+	</div>'; //extra </div> to close questionContainer div opened in pStatementTemplate 
 
 //PLACEHOLDERS: <<navshortcuts>> = a span for each index that can be used to quick jump to a specific question.
 var navTemplate = '<div id="nav"><hr />\
@@ -69,6 +71,9 @@ var navTemplate = '<div id="nav"><hr />\
 //codemirror initialization script
 //PLACEHOLDERS: <<n>> = question number
 var editorTemplate = 'var editor<<n>> = CodeMirror.fromTextArea($("#code<<n>>")[0], {theme: "default", lineNumbers: true, matchBrackets: true, enableCodeFormatting: true, autoFormatOnStart: true, autoFormatOnUncomment: true, mode: "clike", styleActiveLine: true});';
+
+
+var mcTemplate = '<input type="radio" class="mc" value="<<n>>">) <<mc>></input><br />';
 
 
 //NOTE: Comments will be included here as the script var will be minified to one line and sent to the client to be eval'd
@@ -178,10 +183,54 @@ var script = 'for(var i = 0; i < $("[id*=questionContainer]").length; i++)\
 			});\
 \
 			$(".commitB").on("click", function(){\
+				var btnContext = $(this);\
 				var currentIndex = parseInt($(this).parent().parent().attr("id").substring(17, $(this).parent().parent().attr("id").length));\
-				$("#navShortcutElement" + currentIndex).addClass("committed");\
-				$(this).prop("disabled",true);\
+				var qCount = $(".CodeMirror").length;\
+				var type = [];\
+				var num = [];\
+				var program = [];\
+				var input = [];\
+				for(var i = 0; i < qCount; i++)\
+				{\
+					type.push("code");\
+					num.push(i);\
+					program.push($(".CodeMirror")[i].CodeMirror.getValue());\
+					var lbox = $("#questionContainer" + i).find("select option");\
+					input.push($.map(lbox ,function(option) {return option.value;}));\
+				}\
+				var data = {\
+					"idNum": $("#idNum").val(),\
+					"problemType": type,\
+					"problemNum": num,\
+					"program": program,\
+					"input": input\
+				};\
+\
+				$.ajax({\
+					  type: "POST",\
+					  url: "/commit",\
+					  dataType: "json",\
+					  data: JSON.stringify(data),\
+			    	  contentType: "application/json",\
+					  success: function(response){\
+					  	$("#navShortcutElement" + currentIndex).addClass("committed");\
+					  	btnContext.prop("disabled",true);\
+					}\
+				});\
 			});\
+\
+			dialog = $( "#dialog" ).dialog({\
+			      autoOpen: true,\
+			      autoResize: true,\
+			      height: "auto",\
+			      width: "auto",\
+			      modal: true,\
+			      buttons: {\
+			        "Save": function() {\
+			          dialog.dialog( "close" );\
+			        }\
+			      }\
+		    });\
 \
 			var startElement = $("#questionContainer0");\
 			startElement.css("display", "block");';
@@ -194,4 +243,5 @@ exports.pStatementTemplate = pStatementTemplate;
 exports.ioTemplate = ioTemplate;
 exports.editorTemplate = editorTemplate;
 exports.navTemplate = navTemplate;
+exports.mcTemplate = mcTemplate;
 exports.script = script;
