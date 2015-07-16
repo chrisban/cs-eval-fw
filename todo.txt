@@ -18,14 +18,17 @@ IN PROGRESS:
 	questions:
 		- How to do mult-choice layouts? Certain number per page?
 		- Part one of exam should be completed before part two begins. How to separate in datafile/exam presentation?
-
-
+		sort, markup notifying separation
+ 
 TODO: 
 - flat file for grading
 - admin datafile -> json parser
 - Multi lang support (atm c++/py)
 	- datafile defines language
-
+- Web Security: Jason Gates, Ryan
+	- disable clipboard
+	- screenshots?
+	- ways to circumvent/gain advantages
 
 *************
 Completed:
@@ -34,6 +37,30 @@ Completed:
 	- Nav buttons to switch through problems
 	- Display bookmarking/thumbnails for quick nav
 
-
 - unique student tracking:
 	- ID via initial modal?
+	- What if entered incorrectly?
+
+
+
+
+**********
+questions:
+
+pegi:
+	commiting per question?
+	show grade as you go or end?
+		- how much detail? 
+
+
+
+lockdown browser
+id session open
+reset skeleton code
+caching issues??
+
+programming 2nd section
+
+
+
+emph. practice exams for familiarity -> make security issues crucial as students have time to try and break it or cheat

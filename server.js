@@ -54,11 +54,19 @@ app.post('/getModule', function (req, res) {
 		var header = moduleVars.header; //Overall page header information/instructions
 		var requires = moduleVars.requires; //all css/js/etc. includes
 		var pStatementTemplate = moduleVars.pStatementTemplate; //problemstatement template structure. Has placeholders to be changed in forloop below.
+		
+		//programming specific template vars
 		var ioTemplate = moduleVars.ioTemplate; //code and input template structure. Has placeholders to be changed in forloop below.
 		var navTemplate = moduleVars.navTemplate; //template that holds the nav elements used to switch between exam questions
-		var mcTemplate = moduleVars.mcTemplate;
+		
+		//multChoice specific template vars
+		var mcCodeTemplate = moduleVars.mcCodeTemplate; //template that holds code editor for mchoice questions
+		var mcOptionTemplate = moduleVars.mcOptionTemplate; //template that holds the skeleton for each mchoice option
+		var mcClose = moduleVars.mcClose; // closes div tags that could not be closed until multiple iterations had been inserted.
+		
+		//script to be evald on client side
+		var editorInit = moduleVars.editorInit; //function call to be appended per editor instance to init
 		var script = moduleVars.script; //all listeners and js code to be evald once client has received
-		var editorTemplate = moduleVars.editorTemplate; //template codemirror editor to be init. Has placeholder to be chnaged in forloop below.
 
   		//Decide which module to serve
 		if(req.body.type == 'exam')
@@ -68,19 +76,25 @@ app.post('/getModule', function (req, res) {
 			//iterate through each question in exam datafile, replacing placeholders with index and datafile specefied information
 			for(var i = 0; i < Object.keys(data).length; i++)
 			{
+				//if question type is a programming question (type: "code")
 				if(data[i]["questionType"] == "code")
 				{
 					html += pStatementTemplate.replace(/<<n>>/g, i).replace(/<<pstatement>>/, data[i]["problem"]) + ioTemplate.replace(/<<n>>/g, i).replace(/<<code>>/, data[i]["skeleton"]);
-					script += editorTemplate.replace(/<<n>>/g, i);
-				}else if(data[i]["questionType"] == "mchoice")
+					script += editorInit.replace(/<<n>>/g, i);
+				}
+				//if question type is a programming question (type: "mchoice")
+				else if(data[i]["questionType"] == "mchoice")
 				{
-					html += pStatementTemplate.replace(/<<n>>/g, i).replace(/<<pstatement>>/, data[i]["problem"]);
+					html += pStatementTemplate.replace(/<<n>>/g, i).replace(/<<pstatement>>/, data[i]["problem"]) + mcCodeTemplate.replace(/<<n>>/g, i).replace(/<<code>>/, data[i]["skeleton"]);;
+					script += editorInit.replace(/<<n>>/g, i);
 
+					//iterate through each multiple choice supplied in the datafile per question
 					for(var j = 0; j < data[i]["test_input"].length; j++)
-					{
-						html+= mcTemplate.replace(/<<mc>>/g, data[i]["test_input"][j]).replace(/<<n>>/g, j);
+					{	
+						html+= mcOptionTemplate.replace(/<<mc>>/g, data[i]["test_input"][j]).replace(/<<n>>/g, j);
 					}
-					html+= "</div>"; //extra </div> to close questionContainer div opened in pStatementTemplate 
+
+					html+= mcClose;
 				}	
 			}
 
@@ -107,7 +121,7 @@ app.post('/compile', function (req, res) {
 	  	res.send(response.body);
     });
 });
-
+ 
 //handle answer commits
 app.post('/commit', function (req, res) {
 	console.log(req.body);

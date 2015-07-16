@@ -1,10 +1,11 @@
+/* General styles */
 .label{
 	font-size: 12px;
 }
 
 #container{
 	background-color:#FFF;
-	width:900px; 
+	width:1100px; 
 	margin:0px auto;
 	padding:5px 20px 20px 20px;
 	box-shadow:0px 0px 20px 0px #333333;
@@ -14,22 +15,32 @@
 	text-align: center;
 }
 
+/* Inputs: coding; */
 .codeContainer{
-	width: 74%;
+	width: 54%;
     border-width: 1px;
 	border-style: dotted;
 	float: left;
-}
-
-.codeInput{
-float: right;
-width: 25%;
 }
 
 .inputContainer{
 	padding-top: 20px;
 }
 
+.codeInput{
+	float: right;
+	width: 25%;
+}
+
+/* Inputs: multiple choice */
+.mcOptions{
+	padding-top: 20px;
+	float: right;
+	width: 43%;
+}
+
+
+/* Outputs: coding; */
 .outputContainer{
 	clear: both;
 	padding-top: 20px;
@@ -40,16 +51,19 @@ width: 25%;
 	padding-top: 25px;
 }
 
+
+/* Navigation */
 #nav{
 	padding: 10px 0px 10px 0px;
 	display: block;
+	clear: both;
 }
 
 #navBLeft{
 	float: left;
 	font-weight: bold;
 }
-
+ 
 #navBRight{
 	float: right;
 	font-weight: bold;
@@ -67,8 +81,15 @@ width: 25%;
 	padding: 3px 7px 3px 7px;
 	margin-left: 10px;
 	font-size: 12px;
+	cursor: pointer;
 }
 
+.selected{
+    border-width: 2px;
+	border-style: dotted;
+}
+
+/* Commiting */
 .committed{
 	background-color: #9c8;
 }
@@ -81,4 +102,23 @@ width: 25%;
 *[id^='questionContainer']{
     padding-top:20px;
     display: none;
+    overflow: hidden;
+}
+
+/* Wildcard selector for all questionContainer# ids */
+*[id^='problemStatement']{
+    padding-bottom:15px;
+}
+
+/* Modal/Dialog */
+/*hide 'x' button to force id number enter*/
+.ui-dialog-titlebar-close {
+    display: none;
+}
+
+#idStatus{
+	display: none;
+	padding-top: 20px;
+	font-size: 10px;
+	color: #e88;
 }

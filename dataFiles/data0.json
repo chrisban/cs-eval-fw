@@ -1,26 +1,35 @@
 {
+    
     "0": {
+    	"questionType": "mchoice",
+    	"language": "",
+        "problem": "SAMPLE MULTIPLE CHOICE PROBLEM STATEMENT #1:C++ is a _____ language",
+        "skeleton": "#include <iostream>\n\nint main()\n{\n    std::cout << \"Hello World!\";\n}",
+        "test_input": ["compiled", "interpreted"],
+        "test_output": "0"
+    },
+    "1": {
+    	"questionType": "mchoice",
+    	"language": "",
+        "problem": "SAMPLE MULTIPLE CHOICE PROBLEM STATEMENT #2:Python is a _____ language",
+        "skeleton": "#include <iostream>\n\nint main()\n{\n    std::cout << \"Hello World!\";\n}",
+        "test_input": ["compiled", "interpreted"],
+        "test_output": "1"
+    },
+    "2": {
     	"questionType": "code",
     	"language": "c++",
         "problem": "SAMPLE CODING PROBLEM STATEMENT #1: Write a program using C++ that prints the string 'Hello World'.",
-        "skeleton": "#include <iostream>\n\nint main()\n{\n    std::cout << \"Hello World!\";\n}",
+        "skeleton": "#include <iostream>\n\nint main()\n{\n    \n}",
         "test_input": [ ],
-        "test_output": "hello world"
+        "test_output": "Hello World!"
     },
-    "1": {
+    "3": {
     	"questionType": "code",
     	"language": "c++",
         "problem": "SAMPLE CODING PROBLEM STATEMENT #2: Write a program using C++ that prints two integers.",
         "skeleton": "#include <iostream>\n\nint main()\n{\n    int input = 0;\n    for(int i = 0; i <= 2; i++)\n    {\n        if(i == 0)\n        std::cout << \"init input: \" << input << std::endl;\n        else\n        {\n            std::cin >> input;\n            std::cout << \"new input: \" << input << \"\\n\";\n        }\n    }\n}",
         "test_input": ["1", "2"],
         "test_output": "init input: 0\nnew input: 1\nnew input: 2"
-    },
-    "2": {
-    	"questionType": "mchoice",
-    	"language": "",
-        "problem": "SAMPLE MULTIPLE CHOICE PROBLEM STATEMENT #1:C++ is a _____ language",
-        "skeleton": "",
-        "test_input": ["compiled", "interpreted"],
-        "test_output": "A"
     }
 }
