@@ -1,5 +1,5 @@
 IN PROGRESS:
-- commit button submits answer to server
+- submit button submits answer to server
 	done: 
 		- gathers all code/inputs/problem type/student id/ etc. and submits to server
 	todo: 
@@ -10,15 +10,7 @@ IN PROGRESS:
 		- make dom elements uneditable?
 		- report result/score to student? (per question/post full completion)
 
-- Support for different question types
-	done: 
-		- server and templates support multiple choice or code based problems
-	todo: 
-		- Before leaving part one, alert user that part one can no longer be edited after beginning part two
-	questions:
-		- How to do mult-choice layouts? Certain number per page?
-		- Part one of exam should be completed before part two begins. How to separate in datafile/exam presentation?
-		sort, markup notifying separation
+
  
 TODO: 
 - flat file for grading
@@ -29,6 +21,9 @@ TODO:
 	- disable clipboard
 	- screenshots?
 	- ways to circumvent/gain advantages
+	Ans:
+	- eval namespace
+	- Object.freeze()
 
 *************
 Completed:
@@ -41,7 +36,10 @@ Completed:
 	- ID via initial modal?
 	- What if entered incorrectly?
 
-
+- Support for different question types
+	done: 
+		- server and templates support multiple choice or code based problems
+		- Before leaving part one, alert user that part one can no longer be edited after beginning part two
 
 
 **********

@@ -16,13 +16,11 @@
 
 	<script>
 		$(function() {
-			dataObject = JSON.stringify({test_id: '0', type: "exam"});
-
 			$.ajax({
 			    url: "/getModule",
 			    type: "POST",
 			    dataType: "json",
-			    data: dataObject,
+			    data: JSON.stringify({test_id: '0', type: "exam"}),
 			    contentType: "application/json",
 			    cache: false,
         		async: false, //ensures completion before continuting on

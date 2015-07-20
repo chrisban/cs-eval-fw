@@ -39,9 +39,12 @@
 var requires = '<link type="text/css" href="/includes/css/include.css" rel="stylesheet" media="screen"/>';
 
 //Container div closes at the end of 
- var header = '<div id="container"><div id="banner"><h1>Practice Exam</h1></div>\
-Enter or modify the code below and press \'Compile\' to execute and view results.<br /><br />\
-<div id="dialog" title="Student ID">ID#: <input type="text" id="idNum"><br /><span id="idStatus"></span></div>';
+ var header = '<div id="container">\
+<div id="banner"><h1>Practice Exam</h1></div>\
+<div>Enter or modify the code below and press \'Compile\' to execute and view results.</div>\
+<div id="submit"><span class="submit button">Submit Exam</span></div>\
+<div id="dialogID" title="Student ID">ID#: <input type="text" id="idNum"><br /><span id="idStatus"></span></div>\
+<div id="dialogWarn" title="Begin next section?">Once you begin this section, you will not be able to modify the previous section\'s answers. Do you wish to continue?</div>';
 
 //questionContainer will be closed at the end of ioTemplate
 //PLACEHOLDERS: <<n>> = question number, <<pstatement>> = problem statement from datafile
@@ -63,13 +66,13 @@ var ioTemplate = '<div class="inputContainer">\
 		</div>\
 	</div>\
 	<div class="outputContainer">\
-		<input type="button" class="compile" value="Compile">\
+		<span class="compile button"> Compile</span>\
 		<div class="results">\
 			<b>Results:</b> <br />\
 			<textarea class="codeResults" rows="5" cols="100"></textarea>\
 		</div>\
-		<input type="button" class="commitB" value="Commit">\
 	</div>\
+	<span class="commit button"> Commit </span>\
 	</div>'; //extra </div> to close questionContainer div opened in pStatementTemplate 
 
 
@@ -78,24 +81,31 @@ var ioTemplate = '<div class="inputContainer">\
 var mcCodeTemplate = '<div class="codeContainer"><textarea id="code<<n>>"><<code>></textarea></div><div class="mcOptions">';
 
 //template editor for multiple choice
-//PLACEHOLDERS: <<n>> = question number, <<mc>> = option
-var mcOptionTemplate = '<input type="radio" class="mc" value="<<n>>">) <<mc>></input><br />';
+//PLACEHOLDERS: <<n>> = question number, <<o>>, option number, <<mc>> = option
+var mcOptionTemplate = '<input type="radio" class="mc<<n>>" value="<<o>>">) <<mc>></input><br />';
 
-var mcClose = '</div></div>'; //1st div: mcOptions div (opened in mcCodeTemplate). 2nd div: questionContainer div (opened in pStatementTemplate)
+var mcClose = '</div> <span class="commit button"> Commit </span> </div>'; //1st /div: mcOptions div (opened in mcCodeTemplate). Insert commit button. 2nd div: questionContainer /div (opened in pStatementTemplate). 
 
 //PLACEHOLDERS: <<navshortcuts>> = a span for each index that can be used to quick jump to a specific question.
 var navTemplate = '<div id="nav"><hr />\
-					<button id="navBLeft" type="button" disabled> << Prev </button>\
+					<span id="navBLeft" class="button_disable"> << Prev </span>\
 					<div id="navShortcutContainer"></div>\
-					<button id="navBRight" type="button"> Next >> </button>\
+					<span id="navBRight" class="button"> Next >> </span>\
 				</div>\
 				</div>'; //extra </div> to close container div opened in header
 
 //function call to be appended per editor instance to init
-var editorInit = 'editor($("#code<<n>>")[0], false, "clike");';
+//PLACEHOLDERS: <<n>> = question number, <<lang>> = lang type for editor styling
+var editorInit = 'editor($("#code<<n>>")[0], false, "<<lang>>");';
 
 //Script to be eval'd on client side. A few function calls will be appended serverside prior to sending depending on datafile contents (such as editor calls per codemirror instance)
-var script = '/*A function that will create a codemirror editor instance with passed id, bool readonly, and language mode.*/\
+var script = '\
+/*Variables that track section and specify divide (defined by number of ".mcOptions" class occurences)*/\
+var section = {number: 0, warn: false};\
+var structure = Object.freeze({count: $("[id*=questionContainer]").length, divide: $(".mcOptions").length});\
+\
+\
+/*A function that will create a codemirror editor instance with passed id, bool readonly, and language mode.*/\
 function editor(id, rOnly, mode)\
 {\
     CodeMirror.fromTextArea(id, \
@@ -117,23 +127,40 @@ function editor(id, rOnly, mode)\
 function goNav(targetIndex){\
 	var curr = $("[id*=questionContainer]:visible");\
 	var currentIndex = parseInt(curr.attr("id").substring(17, curr.attr("id").length));\
-	var qCount = $("[id*=questionContainer]").length;\
-	if(targetIndex >= 0 && targetIndex < qCount && targetIndex != currentIndex)\
+	/*if target is 0 - max# defined in structure, and target is not current view*/\
+	if(targetIndex >= 0 && targetIndex < structure.count && targetIndex != currentIndex)\
 	{\
 		/*disable/enable next/prev buttons as needed*/\
 		if(targetIndex == 0)\
-			$("#navBLeft").prop("disabled",true);\
+		{\
+			$("#navBLeft").removeClass("button");\
+			$("#navBLeft").addClass("button_disable");\
+		}\
 		else\
-			$("#navBLeft").prop("disabled",false);\
-		if(targetIndex ==  qCount - 1)\
-			$("#navBRight").prop("disabled",true);\
+		{\
+			$("#navBLeft").removeClass("button_disable");\
+			$("#navBLeft").addClass("button");\
+		}\
+		if(targetIndex ==  structure.count - 1)\
+		{\
+			$("#navBRight").removeClass("button");\
+			$("#navBRight").addClass("button_disable");\
+		}\
 		else\
-			$("#navBRight").prop("disabled",false);\
+		{\
+			$("#navBRight").removeClass("button_disable");\
+			$("#navBRight").addClass("button");\
+		}\
 		$("#navShortcutElement" + currentIndex).removeClass("selected");\
 		$("#navShortcutElement" + targetIndex).addClass("selected");\
 		/*if forward*/\
 		if(targetIndex > currentIndex)\
 		{\
+			/*If attempting to access second section from first section by checking against frozen structure.divide var. (current before divide, target after)*/\
+			if(currentIndex < $(".mcOptions").length && targetIndex >= $(".mcOptions").length)\
+			{\
+				\
+			}\
 			curr.toggle("slide", {"direction":"left"}, function(){\
 				$("#questionContainer" + targetIndex).toggle("slide", {"direction":"right"});\
 			});\
@@ -149,20 +176,27 @@ function goNav(targetIndex){\
 }\
 \
 \
-/*populate nav list, append "|" character to display separation between code and other question types by counting occurences of "mcOptions" class*/\
+/*populate nav list, append "|" character to display separation between code and other question types using frozen structure.divide var*/\
 for(var i = 0; i < $("[id*=questionContainer]").length; i++)\
 {\
-	if(i == $(".mcOptions").length)\
-		$("#navShortcutContainer").append("<b> |<b/>");\
-	$("#navShortcutContainer").append("<span class=\'navShortcutElement\' id=\'navShortcutElement" + i + "\'>" + i + "</span>");\
+	/*append shortcut*/\
+	$("#navShortcutContainer").append("<span id=\'navShortcutElement" + i + "\'>" + (i+1) + "</span>");\
+	/*apply selected class to first shortcut*/\
 	if(i==0)\
 		$("#navShortcutElement" + i).addClass("selected");\
+	if(i < structure.divide)\
+		$("#navShortcutElement" + i).addClass("navShortcutElement section1");\
+	else\
+		$("#navShortcutElement" + i).addClass("navShortcutElement section2");\
+	/*Print visual separator*/\
+	if(i == structure.divide - 1)\
+		$("#navShortcutContainer").append("<b> |<b/>");\
 }\
 \
 \
-/*navigate between problems using shortcuts via goNav function*/\
+/*navigate between problems using shortcuts via goNav function. -1 to compensate for starting at 1 instead of 0*/\
 $(".navShortcutElement").on("click", function(){\
-	goNav(parseInt($(this).html()));\
+	goNav(parseInt($(this).html())-1);\
 });\
 \
 \
@@ -195,8 +229,23 @@ $(".delInput").on("click", function(){\
 });\
 \
 \
+/*Checks to see if warned. If not, display warning that if accepted will record first section input and not record new information. Else do nothing.*/\
+/*Returns true if user was warned, else false*/\
+function warn()\
+{\
+	if(section.warn == false)\
+	{\
+		$("#dialogWarn").dialog("open");\
+		return true;\
+	}\
+	return false;\
+}\
+\
+\
 /*On compile, finds parents parents id (pos. 17 to string end as the id will always be "questionContainer#") to get q. num which is used to specify which codemirror editor. Then gets the editor value, maps inputs to array->str. Finally posts data to server via ajax call*/\
 $(".compile").on("click", function(){\
+	if(warn())\
+		return false;\
 	var btnContext = $(this);\
 	var parentID = $(this).parent().parent().attr("id");\
 	var index = parentID.substring(17, parentID.length);\
@@ -233,21 +282,31 @@ $(".compile").on("click", function(){\
 });\
 \
 \
-/*On commit, send to server, perform grading, mark as committed and uneditable*/\
-$(".commitB").on("click", function(){\
-	var btnContext = $(this);\
-	var currentIndex = parseInt($(this).parent().parent().attr("id").substring(17, $(this).parent().parent().attr("id").length));\
-	var qCount = $(".CodeMirror").length;\
-	console.log($(".CodeMirror").length);\
+/*Button which applies a class to thumbnails in order to aid students in tracking which questions are complete*/\
+$(".commit").on("click", function(){\
+  	$("#navShortcutElement" + parseInt($(this).parent().attr("id").substring(17, $(this).parent().attr("id").length))).addClass("committed");\
+});\
+\
+\
+/*On submit, send to server. Uses structure.divide because it dictates the length of mchoice types since they will always come first*/\
+$(".submit").on("click", function(){\
+	console.log("processing " + structure.count + " answers.");\
 	var type = [];\
 	var num = [];\
-	var program = [];\
+	var solution = [];\
 	var input = [];\
-	for(var i = 0; i < qCount; i++)\
+	for(var i = 0; i < structure.divide; i++)\
+	{\
+		type.push("mchoice");\
+		num.push(i);\
+		solution.push($(".mc" + i).filter( ":checked").val());\
+		input.push([]);\
+	}\
+	for(var i = structure.divide; i < structure.count; i++)\
 	{\
 		type.push("code");\
 		num.push(i);\
-		program.push($(".CodeMirror")[i].CodeMirror.getValue());\
+		solution.push($(".CodeMirror")[i].CodeMirror.getValue());\
 		var lbox = $("#questionContainer" + i).find("select option");\
 		input.push($.map(lbox ,function(option) {return option.value;}));\
 	}\
@@ -255,7 +314,7 @@ $(".commitB").on("click", function(){\
 		"idNum": $("#idNum").val(),\
 		"problemType": type,\
 		"problemNum": num,\
-		"program": program,\
+		"solution": solution,\
 		"input": input\
 	};\
 \
@@ -266,8 +325,6 @@ $(".commitB").on("click", function(){\
 		  data: JSON.stringify(data),\
     	  contentType: "application/json",\
 		  success: function(response){\
-		  	$("#navShortcutElement" + currentIndex).addClass("committed");\
-		  	btnContext.prop("disabled",true);\
 		}\
 	});\
 });\
@@ -275,30 +332,31 @@ $(".commitB").on("click", function(){\
 \
 /*jQueryUI Modal used to retrieve student ID*/\
 var errorString = "Error: ID number must be at least 6 digits";\
-dialog = $( "#dialog" ).dialog({\
-	  closeOnEscape: false,\
-      autoOpen: true,\
-      autoResize: true,\
-      height: "auto",\
-      width: "auto",\
-      modal: true,\
-      buttons: {\
-        "Save": function() {\
-          if($("#idNum").val().length >= 6)\
-          	dialog.dialog( "close" );\
-          else\
-          {\
-          	$("#idStatus").html(errorString);\
-          	if($("#idNum").not(":visible"))\
-          		$("#idStatus").slideToggle();\
-          }\
-        }\
-      }\
+$( "#dialogID" ).dialog({\
+	closeOnEscape: false,\
+	dialogClass: "no-close",\
+	autoOpen: true,\
+	autoResize: true,\
+	height: "auto",\
+	width: "auto",\
+	modal: true,\
+	buttons: {\
+	    "Save": function() {\
+	      if($("#idNum").val().length >= 6)\
+	      	$(this).dialog("close");\
+	      else\
+	      {\
+	      	$("#idStatus").html(errorString);\
+	      	if($("#idNum").not(":visible"))\
+	      		$("#idStatus").slideToggle();\
+	      }\
+	    }\
+	}\
 }).keyup(function(e) {\
-    if (e.keyCode == $.ui.keyCode.ENTER)\
-   {\
-       	if($("#idNum").val().length >= 6)\
-          	dialog.dialog( "close" );\
+	if (e.keyCode == $.ui.keyCode.ENTER)\
+	{\
+   		if($("#idNum").val().length >= 6)\
+          	$(this).dialog( "close" );\
         else\
         {\
           	$("#idStatus").html(errorString);\
@@ -306,6 +364,29 @@ dialog = $( "#dialog" ).dialog({\
           		$("#idStatus").slideToggle();\
         }\
    }\
+});\
+\
+\
+/*jQueryUI Modal used to warn student about starting new section*/\
+$( "#dialogWarn" ).dialog({\
+	dialogClass: "no-close",\
+	autoOpen: false,\
+	buttons: [{\
+		text: "Continue",\
+		click: function() {\
+			section.warn = true;\
+			section.number = 1;\
+			Object.freeze(section);\
+			$(this).dialog("close");\
+			$("#" + $("[id*=questionContainer]:visible").attr("id") + " .compile").click();\
+      }\
+    },\
+    {\
+    	text: "Cancel",\
+    	click: function(){\
+			$(this).dialog("close");\
+    	}\
+    }]\
 });\
 \
 \
