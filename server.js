@@ -101,8 +101,10 @@ var server = app.listen(8888, function () {
 });
 
 
-
-
+/**************/
+/* Functions */
+/************/
+//Get specified datafile
 function getDataFile(req, res, callback)
 {
 	var file = __dirname + '/dataFiles/data' + req.body.test_id + '.json';
@@ -141,7 +143,7 @@ function serveModule(req, res, data)
 	var editorInit = moduleVars.editorInit; //function call to be appended per editor instance to init
 	var script = moduleVars.script; //all listeners and js code to be evald once client has received
 
-		//Decide which module to serve
+	//Decide which module to serve
 	if(req.body.type == 'exam')
 	{
 		html = '<!--BEGIN module code-->' + requires + header;
@@ -163,11 +165,17 @@ function serveModule(req, res, data)
 
 				//iterate through each multiple choice supplied in the datafile per question
 				for(var j = 0; j < data[i]["test_input"].length; j++)
-				{	
-					html+= mcOptionTemplate.replace(/<<mc>>/g, data[i]["test_input"][j]).replace(/<<o>>/g, j).replace(/<<n>>/g, i);
+				{
+					//TODO: MOVE THIS TO MODULE VARS!!
+					html += "<div class='mcSubQ'><b>" + data[i]["test_input"][j][0] + "</b><br/>";
+					for(var k = 0; k < data[i]["test_input"][0][1].length; k++)
+					{
+						html += mcOptionTemplate.replace(/<<mc>>/g, data[i]["test_input"][j][1][k]).replace(/<<o>>/g, k).replace(/<<n>>/g, i + "_" + j);
+					}
+					html += "</div>";
 				}
 
-				html+= mcClose;
+				html += mcClose;
 			}	
 		}
 

@@ -82,7 +82,7 @@ var mcCodeTemplate = '<div class="codeContainer"><textarea id="code<<n>>"><<code
 
 //template editor for multiple choice
 //PLACEHOLDERS: <<n>> = question number, <<o>>, option number, <<mc>> = option
-var mcOptionTemplate = '<input type="radio" class="mc<<n>>" value="<<o>>">) <<mc>></input><br />';
+var mcOptionTemplate = '<input type="radio" class="mc<<n>>" value="<<o>>"><<mc>></input><br />';
 
 var mcClose = '</div> <span class="commit button"> Commit </span> </div>'; //1st /div: mcOptions div (opened in mcCodeTemplate). Insert commit button. 2nd div: questionContainer /div (opened in pStatementTemplate). 
 
@@ -103,6 +103,7 @@ var script = '\
 /*Variables that track section and specify divide (defined by number of ".mcOptions" class occurences)*/\
 var section = {number: 0, warn: false};\
 var structure = Object.freeze({count: $("[id*=questionContainer]").length, divide: $(".mcOptions").length});\
+var section1 = {};\
 \
 \
 /*A function that will create a codemirror editor instance with passed id, bool readonly, and language mode.*/\
@@ -229,23 +230,49 @@ $(".delInput").on("click", function(){\
 });\
 \
 \
-/*Checks to see if warned. If not, display warning that if accepted will record first section input and not record new information. Else do nothing.*/\
-/*Returns true if user was warned, else false*/\
-function warn()\
+/* Dynamic listener to allow for only one radio to be selected per question */\
+$(".mcOptions").on("change", "[type=radio]", function (e) {\
+	var thisCtx = $(this);\
+	$.each($("." + $(this).attr("class")), function(){\
+		if(!$(this).is(thisCtx))\
+			$(this).prop("checked", false);\
+	});\
+});\
+\
+\
+/*Records input from section 1 and freezes object in order to keep answers from being modified.*/\
+function recordSection()\
 {\
-	if(section.warn == false)\
+	section.warn = true;\
+	Object.freeze(section);\
+	var ans = [];\
+	for(var i = 0; i < structure.divide; i++)\
 	{\
-		$("#dialogWarn").dialog("open");\
-		return true;\
+		var anstmp = [];\
+		for(var j = 0; j < $("#questionContainer" + i + " .mcSubQ").length; j++)\
+		{\
+			var val = $(".mc" + i + "_" + j).filter(":checked").val();\
+			if(jQuery.type( val ) === "string")\
+				anstmp.push(val);\
+			else\
+				anstmp.push("");\
+		}\
+		ans.push(anstmp);\
 	}\
-	return false;\
+	Object.freeze(section1.ans = ans);\
+	$(".mcOptions input:radio").attr("disabled",true);\
+	console.log("ans: ", ans);\
 }\
 \
 \
 /*On compile, finds parents parents id (pos. 17 to string end as the id will always be "questionContainer#") to get q. num which is used to specify which codemirror editor. Then gets the editor value, maps inputs to array->str. Finally posts data to server via ajax call*/\
 $(".compile").on("click", function(){\
-	if(warn())\
+	/*Ensures student is aware they are beginning next section*/\
+	if(section.warn == false)\
+	{\
+		$("#dialogWarn").dialog("open");\
 		return false;\
+	}\
 	var btnContext = $(this);\
 	var parentID = $(this).parent().parent().attr("id");\
 	var index = parentID.substring(17, parentID.length);\
@@ -290,6 +317,7 @@ $(".commit").on("click", function(){\
 \
 /*On submit, send to server. Uses structure.divide because it dictates the length of mchoice types since they will always come first*/\
 $(".submit").on("click", function(){\
+	recordSection();\
 	console.log("processing " + structure.count + " answers.");\
 	var type = [];\
 	var num = [];\
@@ -299,7 +327,7 @@ $(".submit").on("click", function(){\
 	{\
 		type.push("mchoice");\
 		num.push(i);\
-		solution.push($(".mc" + i).filter( ":checked").val());\
+		solution.push(section1.ans[i]);\
 		input.push([]);\
 	}\
 	for(var i = structure.divide; i < structure.count; i++)\
@@ -333,6 +361,7 @@ $(".submit").on("click", function(){\
 /*jQueryUI Modal used to retrieve student ID*/\
 var errorString = "Error: ID number must be at least 6 digits";\
 $( "#dialogID" ).dialog({\
+	position: {my: "top+200",at: "top", of: window},\
 	closeOnEscape: false,\
 	dialogClass: "no-close",\
 	autoOpen: true,\
@@ -374,10 +403,8 @@ $( "#dialogWarn" ).dialog({\
 	buttons: [{\
 		text: "Continue",\
 		click: function() {\
-			section.warn = true;\
-			section.number = 1;\
-			Object.freeze(section);\
 			$(this).dialog("close");\
+			recordSection();\
 			$("#" + $("[id*=questionContainer]:visible").attr("id") + " .compile").click();\
       }\
     },\

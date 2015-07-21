@@ -2,21 +2,21 @@ IN PROGRESS:
 - submit button submits answer to server
 	done: 
 		- gathers all code/inputs/problem type/student id/ etc. and submits to server
-	todo: 
 		- gather all multiple choice answers and submit to server.
+	todo:
 		- compile and runs test cases on solution and student code.
 		- record grade in flatfile.
-	questions:
-		- make dom elements uneditable?
-		- report result/score to student? (per question/post full completion)
+		- report result/score to student (on full completion)
 
 
  
 TODO: 
-- flat file for grading
 - admin datafile -> json parser
 - Multi lang support (atm c++/py)
 	- datafile defines language
+
+
+Discussion:
 - Web Security: Jason Gates, Ryan
 	- disable clipboard
 	- screenshots?
