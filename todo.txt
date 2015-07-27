@@ -3,17 +3,31 @@ IN PROGRESS:
 	done: 
 		- gathers all code/inputs/problem type/student id/ etc. and submits to server
 		- gather all multiple choice answers and submit to server.
-	todo:
 		- compile and runs test cases on solution and student code.
 		- record grade in flatfile.
+	todo:
+		- client submit button warns of submission (modal)
 		- report result/score to student (on full completion)
-
+		- fix total score calc
 
  
 TODO: 
 - admin datafile -> json parser
 - Multi lang support (atm c++/py)
 	- datafile defines language
+- python interpreter
+- suggested timer/progress bar
+	- suggested time tag used to select easy -> hard progression
+- time elapsed, server get code
+- graphic related questions
+	- feasability? did/didn't do it, why
+- lockdown browser (restricted urls - visit exam/docu, not google/SO/etc.)
+- proposal paper/presentation
+	- differentiation
+	- review whats been done, how diff
+	- how is proj unique
+	- system architecture
+	- security issues
 
 
 Discussion:

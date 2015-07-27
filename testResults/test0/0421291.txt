@@ -1,0 +1,132 @@
+****** Question 0, type: mchoice ******
+
+Correct answer: False
+Received answer: False
+ state: Correct
+
+Correct answer: True
+Received answer: True
+ state: Correct
+
+Correct answer: True
+Received answer: True
+ state: Correct
+
+
+Question sub-score: 15/15
+====================================================
+
+
+
+****** Question 1, type: mchoice ******
+
+Correct answer: i = 3 j = 5 k = 7
+Received answer: i = 3 j = 5 k = 7
+ state: Correct
+
+Correct answer: i = 3 j = 3 k = 7
+Received answer: i = 3 j = 5 k = 7
+ state: Inorrect
+
+
+Question sub-score: 5/10
+====================================================
+
+
+
+****** Question 2, type: code ******
+
+Submitted code:
+------------------------------------------
+
+#include <iostream>
+using namespace std;
+
+int main() {
+     int n;
+  	 cin >> n;
+  
+     for(int i = 0; i < n; i++)
+     {
+       for(int j = 0; j < n; j++)
+       {
+           cout << "*";
+           if( j == (n-1))
+             cout << endl;
+       }
+     }
+}
+
+
+------------------------------------------
+
+Test Input: 2
+Correct output: **
+**
+
+Received output: **
+**
+
+
+status: correct
+
+Question sub-score: 15/15
+====================================================
+
+
+
+****** Question 3, type: code ******
+
+Submitted code:
+------------------------------------------
+
+#include <iostream>
+#include <vector>
+  
+using namespace std;
+
+int count_evens(const vector<int>& v){
+
+     return -1; //Replace with working code
+
+}
+
+int main() {//  Make vector     int size;
+     cout << "Enter vector size: ";
+     cin >> size;
+     vector<int> v(size);
+     //  Populate the vector
+     for (int i = 0; i < size; i++) {
+          cout << "Enter element " << i << ": ";
+          cin >> v[i];
+     }
+
+     //  Test the function
+     cout << count_evens(v);
+}
+
+
+
+------------------------------------------
+
+Test Input: 1
+Correct output: 11
+Received output: null
+
+status: incorrect
+
+------------------------------------------
+
+Test Input: 2
+Correct output: 22
+Received output: null
+
+status: incorrect
+
+Question sub-score: 0/15
+====================================================
+
+
+
+
+FINAL SCORE: 50/75

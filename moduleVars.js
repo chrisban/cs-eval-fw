@@ -302,7 +302,7 @@ $(".compile").on("click", function(){\
 		  	if(response.Warnings)\
 		  		result += "Warnings: " + response.Warnings + "\\n";\
 		  	if(response.Result)\
-		  		result += "Result: " + response.Result;\
+		  		result += response.Result;\
 		  	btnContext.parent().parent().find(".codeResults").val(result);\
 		  }\
 	});\
@@ -339,6 +339,7 @@ $(".submit").on("click", function(){\
 		input.push($.map(lbox ,function(option) {return option.value;}));\
 	}\
 	var data = {\
+		"test_id": 0,\
 		"idNum": $("#idNum").val(),\
 		"problemType": type,\
 		"problemNum": num,\
@@ -348,7 +349,7 @@ $(".submit").on("click", function(){\
 \
 	$.ajax({\
 		  type: "POST",\
-		  url: "/commit",\
+		  url: "/submit",\
 		  dataType: "json",\
 		  data: JSON.stringify(data),\
     	  contentType: "application/json",\
