@@ -175,7 +175,7 @@ function goNav(targetIndex){\
 	if(targetIndex >= 0 && targetIndex < structure.count && targetIndex != currentIndex)\
 	{\
 		/*(For now), restart timer per question. Should become variable depending on time and should not restart*/\
-		initPbar($("#progressB"+targetIndex).children().children()[0], 10000);\
+		initPbar($("#progressB"+targetIndex).children().children()[0], 60000 * ((difficulty[targetIndex]+1)*10));\
 		\
 		/*disable/enable next/prev buttons as needed*/\
 		if(targetIndex == 0)\

@@ -123,10 +123,14 @@ function serveModule(req, res, data)
 	if(req.body.type == 'exam')
 	{
 		html = '<!--BEGIN module code-->' + requires + header;
+		var difficulty = [];
 
 		//iterate through each question in exam datafile, replacing placeholders with index and datafile specefied information
 		for(var i = 0; i < Object.keys(data).length; i++)
 		{
+			//record question difficulty
+			difficulty.push(parseInt(data[i]["difficulty"]));
+
 			//default to python, else adjust accordingly. Add options as needed.
 			var lang = "python"
 			if(data[i]["language"].toUpperCase() == "C" || data[i]["language"].toUpperCase() == "C++" || data[i]["language"].toUpperCase() == "C#")
@@ -154,13 +158,14 @@ function serveModule(req, res, data)
 					{
 						html += mcOptionTemplate.replace(/<<mc>>/g, data[i]["input"][j][1][k]).replace(/<<o>>/g, k).replace(/<<n>>/g, i + "_" + j);
 					}
-					html += genericCloseDiv;
+					html += genericCloseDiv; //generic closing mcsubq
 				}
 
-				html += genericCloseDiv + qToolsTemplate.replace(/<<n>>/, i);
+				html += genericCloseDiv + qToolsTemplate.replace(/<<n>>/, i); //generic closing mcoptions
 			}	
 		}
 
+		script += "var difficulty = [" + difficulty.join() + "];";
 		html += navTemplate + '<!--END module code-->';
 	}
 	else if(req.body.type == 'book')

@@ -4,9 +4,10 @@ IN PROGRESS:
 
 TODO: 
 	done:
-	todo:
 		- suggested timer/progress bar
 			- suggested time tag used to select easy -> hard progression
+			- connect datafile difficulty to per question timing bars
+	todo:
 		- time elapsed, server get code
 	questions:
 		-save time elapsed? 
