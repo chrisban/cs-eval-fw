@@ -26,11 +26,12 @@
 
 /* Progress bar */
 
-#progress{
+#totalProgress{
 	padding-right: 110px;
 }
 
-#pbar_outer{
+.pbar_outer{
+	background-color: white; 
 	width: 300px; 
 	height: 20px; 
 	border: 1px solid grey; 
@@ -40,14 +41,14 @@
 	-moz-border-radius: 5px;
 }
 
-#pbar_inner{
+.pbar_inner{
 	background-color: lightblue; 
-	z-index: 2; 
+	z-index: 2;
 	height: 100%; 
 	width: 0%;
 }
 
-#pbar_inner_txt{
+.pbar_inner_txt{
 	z-index: 3; 
 	position: absolute; 
 	top: 0; 
@@ -59,7 +60,18 @@
 	text-align: center;
 }
 
+
+*[id^='progressB']{
+	position: absolute; 
+	bottom: 0;
+	right: 80;
+	font-size: 12px;
+	}
+
 /* Inputs: coding; */
+.CodeMirror{
+	height: 500px;
+}
 .codeContainer{
 	width: 54%;
     border-width: 1px;
@@ -77,6 +89,10 @@
 }
 
 /* Inputs: multiple choice */
+.mcSubQ{
+	padding-bottom: 25px;
+}
+
 .mcOptions{
 	padding-top: 20px;
 	float: right;
@@ -94,6 +110,7 @@
 .results{
 	display: none;
 	padding-top: 25px;
+	padding-bottom: 50px;
 }
 
 

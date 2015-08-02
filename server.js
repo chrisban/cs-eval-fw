@@ -110,9 +110,10 @@ function serveModule(req, res, data)
 	var mcCodeTemplate = moduleVars.mcCodeTemplate; //template that holds code editor for mchoice questions
 	var mcOptionTemplate = moduleVars.mcOptionTemplate; //template that holds the skeleton for each mchoice option
 	var mcSubQ = moduleVars.mcSubQ; // closes div tags that could not be closed until multiple iterations had been inserted.
-	var mcClose = moduleVars.mcClose; // closes div tags that could not be closed until multiple iterations had been inserted.
-	
+
 	var genericCloseDiv = moduleVars.genericCloseDiv; // generic </div> for annoying case in mcOptions sub Qs
+
+	var qToolsTemplate = moduleVars.qToolsTemplate; //function call to be appended per editor instance to init
 
 	//script to be evald on client side
 	var editorInit = moduleVars.editorInit; //function call to be appended per editor instance to init
@@ -134,7 +135,7 @@ function serveModule(req, res, data)
 			//if question type is a programming question (type: "code")
 			if(data[i]["questionType"] == "code")
 			{
-				html += pStatementTemplate.replace(/<<n>>/g, i).replace(/<<pstatement>>/, data[i]["problem"]) + ioTemplate.replace(/<<n>>/g, i).replace(/<<code>>/, data[i]["skeleton"]);
+				html += pStatementTemplate.replace(/<<n>>/g, i).replace(/<<pstatement>>/, data[i]["problem"]) + ioTemplate.replace(/<<n>>/g, i).replace(/<<code>>/, data[i]["skeleton"]) + qToolsTemplate.replace(/<<n>>/, i);
 				
 				script += editorInit.replace(/<<n>>/g, i).replace(/<<lang>>/g, lang);
 			}
@@ -156,7 +157,7 @@ function serveModule(req, res, data)
 					html += genericCloseDiv;
 				}
 
-				html += mcClose;
+				html += genericCloseDiv + qToolsTemplate.replace(/<<n>>/, i);
 			}	
 		}
 

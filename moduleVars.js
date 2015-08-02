@@ -20,21 +20,21 @@
 / While iterating through each question in data object: 
 / 	*IF*: programming question:
 / 		3a. pStatementTemplate [contains placeholder vars!] (OPENS question encapsulating 'questionContainer' div)
-/ 		3b. ioTemplate [contains placeholder vars!] (CLOSES question encapsulating 'questionContainer' div)
-/ 		3c. editorInit [contains placeholder vars!] (***NOTE***: Append per question to JS script sent to client!)
+/ 		3b. editorInit [contains placeholder vars!] (***NOTE***: Append per question to JS script sent to client!)
+/ 		4. qToolsTemplate (CLOSES question encapsulating 'questionContainer' div) ADDED PER QUESTION
 /
 / 	*ELSE*: multiple choice question:
-/ 		3d. pStatementTemplate [contains placeholder vars!] (OPENS question encapsulating 'questionContainer' div)
-/ 		3e. mcCodeTemplate [contains placeholder vars!] (OPENS options encapsulating 'mcOptions' div)
+/ 		3c. pStatementTemplate [contains placeholder vars!] (OPENS question encapsulating 'questionContainer' div)
+/ 		3d. mcCodeTemplate [contains placeholder vars!] (OPENS options encapsulating 'mcOptions' div)
 		While iterating through each sub-question within each question:
-			3f. mcSubQ [contains placeholder vars!] (OPENS sub-question encapsulating 'mcSubQ' div)
+			3e. mcSubQ [contains placeholder vars!] (OPENS sub-question encapsulating 'mcSubQ' div)
 			While iterating through each option within each sub-question:
-/ 				3g. mcOptionTemplate [contains placeholder vars!]
-/			Post-iter: 3h. genericCloseDiv; (CLOSES sub-question encapsulating 'mcSubQ'. Used in order to keep all html code inside template variables instead of hardcoded in server.js)
-/ 		Post-iter: 3i. mcClose (CLOSES options encapsulating 'mcOptions' div, *AND* CLOSES question encapsulating 'questionContainer' div)
-/ 		3j. editorInit [contains placeholder vars!] (***NOTE***: Append per question to JS script sent to client!)
-/
-/ 4. navTemplate (CLOSES over-arching 'container' div)
+/ 				3f. mcOptionTemplate [contains placeholder vars!]
+/			Post-iter: 3g. genericCloseDiv; (CLOSES sub-question encapsulating 'mcSubQ'. Used in order to keep all html code inside template variables instead of hardcoded in server.js)
+/ 		Post-iter: 3h. genericCloseDiv (CLOSES options encapsulating 'mcOptions' div.
+/ 		3i. editorInit [contains placeholder vars!] (***NOTE***: Append per question to JS script sent to client!)
+/		4. qToolsTemplate (CLOSES question encapsulating 'questionContainer' div) ADDED PER QUESTION
+/ 5. navTemplate (CLOSES over-arching 'container' div)
 */
 
 
@@ -47,7 +47,7 @@ var requires = '<link type="text/css" href="/includes/css/include.css" rel="styl
 <div>Enter or modify the code below and press \'Compile\' to execute and view results.</div>\
 <div id="bannerRight">\
 	<span class="submit button">Submit Exam</span>\
-	<div id="progress"><div id="pbar_outer" style=""><div id="pbar_inner" style=""></div><div id="pbar_inner_txt" style="">0:00</div></div></div>\
+	<div id="totalProgress"><div class="pbar_outer" style=""><div class="pbar_inner" style=""></div><div class="pbar_inner_txt" style="">0:00</div></div></div>\
 </div><br />\
 <div id="dialogID" title="Student ID">ID#: <input type="text" id="idNum"><br /><span id="idStatus"></span></div>\
 <div id="dialogWarn" title="Begin next section?">Once you begin this section, you will not be able to modify the previous section\'s answers. Do you wish to continue?</div>\
@@ -78,9 +78,7 @@ var ioTemplate = '<div class="inputContainer">\
 			<b>Results:</b> <br />\
 			<textarea class="codeResults" rows="5" cols="100"></textarea>\
 		</div>\
-	</div>\
-	<span class="commit button"> Commit </span>\
-	</div>'; //extra </div> to close questionContainer div opened in pStatementTemplate 
+	</div>';
 
 
 //template editor for multiple choice
@@ -95,8 +93,9 @@ var mcSubQ = "<div class='mcSubQ'><b><<mcsq>></b><br/>";
 //PLACEHOLDERS: <<n>> = question number, <<o>>, option number, <<mc>> = option
 var mcOptionTemplate = '<input type="radio" class="mc<<n>>" value="<<o>>"><<mc>></input><br />';
 
-//closes mc related divs, adds commit 
-var mcClose = '</div> <span class="commit button"> Commit </span> </div>'; //1st /div: mc. 2st /div: mcOptions div (opened in mcCodeTemplate). Insert commit button. 3nd div: questionContainer /div (opened in pStatementTemplate). 
+//Insert commit button. 1nd div: questionContainer /div (opened in pStatementTemplate).
+//PLACEHOLDERS: <<n>> = question number, <<o>>, option number, <<mc>> = option
+var qToolsTemplate = '<div id="progressB<<n>>">Suggested time: <div class="pbar_outer"><div class="pbar_inner"></div><div class="pbar_inner_txt" style="">0:00</div></div></div> <span class="commit button"> Commit </span> </div>'; 
 
 //PLACEHOLDERS: <<navshortcuts>> = a span for each index that can be used to quick jump to a specific question.
 var navTemplate = '<div id="nav"><hr />\
@@ -138,24 +137,25 @@ function editor(id, rOnly, mode)\
 }\
 \
 \
-/*Function that starts pbar*/\
+/*Function that starts pbar, accepts a js div object, and max time*/\
 function initPbar(bar, maxTime){\
+	bar = $(bar);\
 	var start = new Date();\
     var timeoutVal = 1000;\
     animateUpdate(bar, start, maxTime, timeoutVal);\
 }\
 \
 \
-/**/\
+/*updates bar and formats time remaining into minutes:seconds*/\
 function updateProgress(bar, percentage, remainingTime) {\
     bar.css("width", percentage + "%");\
     var formattedSec =(remainingTime/1000) % 60;\
     var formmattedMin = (remainingTime/(1000*60)) % 60;\
-    $("#pbar_inner_txt").text(Math.round(formmattedMin) + ":" + Math.round(formattedSec));\
+    bar.next().text(Math.round(formmattedMin) + ":" + Math.round(formattedSec));\
 }\
 \
 \
-/**/\
+/*calls updateProgress until it reaches 100%*/\
 function animateUpdate(bar, start, maxTime, timeoutVal) {\
     var now = new Date();\
     var timeDiff = now.getTime() - start.getTime();\
@@ -174,7 +174,8 @@ function goNav(targetIndex){\
 	/*if target is 0 - max# defined in structure, and target is not current view*/\
 	if(targetIndex >= 0 && targetIndex < structure.count && targetIndex != currentIndex)\
 	{\
-		/*(TODO: For now), restart timer per question. Should become variable depending on time and should not restart*/\
+		/*(For now), restart timer per question. Should become variable depending on time and should not restart*/\
+		initPbar($("#progressB"+targetIndex).children().children()[0], 10000);\
 		\
 		/*disable/enable next/prev buttons as needed*/\
 		if(targetIndex == 0)\
@@ -497,7 +498,7 @@ $( "#dialogSubmit" ).dialog({\
 \
 /*Display the first questionContainer*/\
 var startElement = $("#questionContainer0");\
-initPbar($("#pbar_inner"), 2700000);\
+initPbar($("#totalProgress .pbar_inner"), 2700000);\
 startElement.css("display", "block");';
 
 
@@ -510,7 +511,7 @@ exports.navTemplate = navTemplate;
 exports.mcCodeTemplate = mcCodeTemplate;
 exports.mcSubQ = mcSubQ;
 exports.mcOptionTemplate = mcOptionTemplate;
-exports.mcClose = mcClose;
-exports.editorInit = editorInit;
+exports.qToolsTemplate = qToolsTemplate;
 exports.genericCloseDiv = genericCloseDiv;
+exports.editorInit = editorInit;
 exports.script = script;
