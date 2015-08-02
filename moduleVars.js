@@ -174,8 +174,12 @@ function goNav(targetIndex){\
 	/*if target is 0 - max# defined in structure, and target is not current view*/\
 	if(targetIndex >= 0 && targetIndex < structure.count && targetIndex != currentIndex)\
 	{\
-		/*(For now), restart timer per question. Should become variable depending on time and should not restart*/\
-		initPbar($("#progressB"+targetIndex).children().children()[0], 60000 * ((difficulty[targetIndex]+1)*10));\
+		/*Init pbar only if question is not active to avoid resetting, while starting automatically.*/\
+		if($("#progressB"+targetIndex).hasClass("activeBar") == false)\
+		{\
+			$("#progressB"+targetIndex).addClass("activeBar");\
+			initPbar($("#progressB"+targetIndex).children().children()[0], 60000 * ((difficulty[targetIndex]+1)*10));\
+		}\
 		\
 		/*disable/enable next/prev buttons as needed*/\
 		if(targetIndex == 0)\
