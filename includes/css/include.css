@@ -15,8 +15,48 @@
 	text-align: center;
 }
 
-#submit{
+#bannerRight{
 	float: right;
+	clear: both;
+}
+
+#bannerRight .submit{
+	float: right;
+}
+
+/* Progress bar */
+
+#progress{
+	padding-right: 110px;
+}
+
+#pbar_outer{
+	width: 300px; 
+	height: 20px; 
+	border: 1px solid grey; 
+	z-index: 1; 
+	position: relative; 
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+}
+
+#pbar_inner{
+	background-color: lightblue; 
+	z-index: 2; 
+	height: 100%; 
+	width: 0%;
+}
+
+#pbar_inner_txt{
+	z-index: 3; 
+	position: absolute; 
+	top: 0; 
+	left: 0; 
+	width: 100%;
+	height: 100%; 
+	color: black; 
+	font-weight: bold; 
+	text-align: center;
 }
 
 /* Inputs: coding; */
@@ -100,7 +140,9 @@
 }
 
 .commit{
-	float:right;
+	position: absolute; 
+	bottom: 0;
+	right: 0;
 }
 
 /* Wildcard selector for all questionContainer# ids */
@@ -109,6 +151,7 @@
     padding-top:20px;
     display: none;
     overflow: hidden;
+    position: relative
 }
 
 /* Wildcard selector for all questionContainer# ids */

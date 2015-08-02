@@ -111,7 +111,7 @@ int main() {//  Make vector     int size;
 
 Test Input: 1
 Correct output: 11
-Received output: null
+Received output: 
 
 status: incorrect
 
@@ -119,7 +119,7 @@ status: incorrect
 
 Test Input: 2
 Correct output: 22
-Received output: null
+Received output: 
 
 status: incorrect
 
@@ -129,4 +129,4 @@ Question sub-score: 0/15
 
 
 
-FINAL SCORE: 50/75
+FINAL SCORE: 35/55

@@ -8,7 +8,7 @@
 /				{response_html : html, response_script: script}
 /				response_html should be appended to the target page element
 /				response_script should be passed to eval();
-/					NOTE: Security issues arises only if eval'd content can come from a user through elements like a text field. Here, we eval on client and only interact with our own server with no chance of malicious repercussions to the server.
+/					NOTE: Security issues arises only if eval'd content can come from a user through elements like a text field. Here, we ONLY eval the response our own server sends, with no chance of malicious repercussions to the server. Grading is performed server-side as well with no chance of manipulation.
 */
 
 /* TEMPLATE ORDERING:
@@ -20,31 +20,38 @@
 / While iterating through each question in data object: 
 / 	*IF*: programming question:
 / 		3a. pStatementTemplate [contains placeholder vars!] (OPENS question encapsulating 'questionContainer' div)
-/ 		4a. ioTemplate [contains placeholder vars!] (CLOSES question encapsulating 'questionContainer' div)
-/ 		4b. editorInit [contains placeholder vars!] (***NOTE***: Append per question to JS script sent to client!)
+/ 		3b. ioTemplate [contains placeholder vars!] (CLOSES question encapsulating 'questionContainer' div)
+/ 		3c. editorInit [contains placeholder vars!] (***NOTE***: Append per question to JS script sent to client!)
 /
 / 	*ELSE*: multiple choice question:
-/ 		3b. pStatementTemplate [contains placeholder vars!] (OPENS question encapsulating 'questionContainer' div)
-/ 		4b. mcCodeTemplate [contains placeholder vars!] (OPENS options encapsulating 'mcOptions' div)
-		While iterating through each option within each question:
-/ 			4c. mcOptionTemplate [contains placeholder vars!]
-/ 			4d. mcClose (CLOSES options encapsulating 'mcOptions' div, *AND* CLOSES question encapsulating 'questionContainer' div)
-/ 		4b. editorInit [contains placeholder vars!] (***NOTE***: Append per question to JS script sent to client!)
+/ 		3d. pStatementTemplate [contains placeholder vars!] (OPENS question encapsulating 'questionContainer' div)
+/ 		3e. mcCodeTemplate [contains placeholder vars!] (OPENS options encapsulating 'mcOptions' div)
+		While iterating through each sub-question within each question:
+			3f. mcSubQ [contains placeholder vars!] (OPENS sub-question encapsulating 'mcSubQ' div)
+			While iterating through each option within each sub-question:
+/ 				3g. mcOptionTemplate [contains placeholder vars!]
+/			Post-iter: 3h. genericCloseDiv; (CLOSES sub-question encapsulating 'mcSubQ'. Used in order to keep all html code inside template variables instead of hardcoded in server.js)
+/ 		Post-iter: 3i. mcClose (CLOSES options encapsulating 'mcOptions' div, *AND* CLOSES question encapsulating 'questionContainer' div)
+/ 		3j. editorInit [contains placeholder vars!] (***NOTE***: Append per question to JS script sent to client!)
 /
-/ 5. navTemplate (CLOSES over-arching 'container' div)
+/ 4. navTemplate (CLOSES over-arching 'container' div)
 */
 
 
 //TODO: move all codemirror libs here
 var requires = '<link type="text/css" href="/includes/css/include.css" rel="stylesheet" media="screen"/>';
 
-//Container div closes at the end of 
+//Container div closes at the end of navTemplate 
  var header = '<div id="container">\
 <div id="banner"><h1>Practice Exam</h1></div>\
 <div>Enter or modify the code below and press \'Compile\' to execute and view results.</div>\
-<div id="submit"><span class="submit button">Submit Exam</span></div>\
+<div id="bannerRight">\
+	<span class="submit button">Submit Exam</span>\
+	<div id="progress"><div id="pbar_outer" style=""><div id="pbar_inner" style=""></div><div id="pbar_inner_txt" style="">0:00</div></div></div>\
+</div><br />\
 <div id="dialogID" title="Student ID">ID#: <input type="text" id="idNum"><br /><span id="idStatus"></span></div>\
-<div id="dialogWarn" title="Begin next section?">Once you begin this section, you will not be able to modify the previous section\'s answers. Do you wish to continue?</div>';
+<div id="dialogWarn" title="Begin next section?">Once you begin this section, you will not be able to modify the previous section\'s answers. Do you wish to continue?</div>\
+<div id="dialogSubmit" title="Submit Exam?">Are you sure you want to submit? Once completed, you will not be able to make changes or make another attempt!</div><br/><hr>';
 
 //questionContainer will be closed at the end of ioTemplate
 //PLACEHOLDERS: <<n>> = question number, <<pstatement>> = problem statement from datafile
@@ -80,11 +87,16 @@ var ioTemplate = '<div class="inputContainer">\
 //PLACEHOLDERS: <<n>> = question number, <<code>> = skeleton code from datafile
 var mcCodeTemplate = '<div class="codeContainer"><textarea id="code<<n>>"><<code>></textarea></div><div class="mcOptions">';
 
+//template editor for multiple choice. Opens div, closes with a genericCloseDiv on server for each opened subQ due to how subQs are formed.
+//PLACEHOLDERS: <<mcsq>> = mc sub question
+var mcSubQ = "<div class='mcSubQ'><b><<mcsq>></b><br/>";
+
 //template editor for multiple choice
 //PLACEHOLDERS: <<n>> = question number, <<o>>, option number, <<mc>> = option
 var mcOptionTemplate = '<input type="radio" class="mc<<n>>" value="<<o>>"><<mc>></input><br />';
 
-var mcClose = '</div> <span class="commit button"> Commit </span> </div>'; //1st /div: mcOptions div (opened in mcCodeTemplate). Insert commit button. 2nd div: questionContainer /div (opened in pStatementTemplate). 
+//closes mc related divs, adds commit 
+var mcClose = '</div> <span class="commit button"> Commit </span> </div>'; //1st /div: mc. 2st /div: mcOptions div (opened in mcCodeTemplate). Insert commit button. 3nd div: questionContainer /div (opened in pStatementTemplate). 
 
 //PLACEHOLDERS: <<navshortcuts>> = a span for each index that can be used to quick jump to a specific question.
 var navTemplate = '<div id="nav"><hr />\
@@ -92,7 +104,9 @@ var navTemplate = '<div id="nav"><hr />\
 					<div id="navShortcutContainer"></div>\
 					<span id="navBRight" class="button"> Next >> </span>\
 				</div>\
-				</div>'; //extra </div> to close container div opened in header
+			</div>'; //extra </div> to close container div opened in header
+
+var genericCloseDiv = '</div>';
 
 //function call to be appended per editor instance to init
 //PLACEHOLDERS: <<n>> = question number, <<lang>> = lang type for editor styling
@@ -100,7 +114,7 @@ var editorInit = 'editor($("#code<<n>>")[0], false, "<<lang>>");';
 
 //Script to be eval'd on client side. A few function calls will be appended serverside prior to sending depending on datafile contents (such as editor calls per codemirror instance)
 var script = '\
-/*Variables that track section and specify divide (defined by number of ".mcOptions" class occurences)*/\
+/*Variables that track test section (0 or 1 = part 1 or 2) and specify divide (defined by number of ".mcOptions" class occurences)*/\
 var section = {number: 0, warn: false};\
 var structure = Object.freeze({count: $("[id*=questionContainer]").length, divide: $(".mcOptions").length});\
 var section1 = {};\
@@ -124,6 +138,35 @@ function editor(id, rOnly, mode)\
 }\
 \
 \
+/*Function that starts pbar*/\
+function initPbar(bar, maxTime){\
+	var start = new Date();\
+    var timeoutVal = 1000;\
+    animateUpdate(bar, start, maxTime, timeoutVal);\
+}\
+\
+\
+/**/\
+function updateProgress(bar, percentage, remainingTime) {\
+    bar.css("width", percentage + "%");\
+    var formattedSec =(remainingTime/1000) % 60;\
+    var formmattedMin = (remainingTime/(1000*60)) % 60;\
+    $("#pbar_inner_txt").text(Math.round(formmattedMin) + ":" + Math.round(formattedSec));\
+}\
+\
+\
+/**/\
+function animateUpdate(bar, start, maxTime, timeoutVal) {\
+    var now = new Date();\
+    var timeDiff = now.getTime() - start.getTime();\
+    var perc = Math.round((timeDiff/maxTime)*100);\
+	if (perc <= 100) {\
+		updateProgress(bar, perc, (maxTime - timeDiff));\
+		setTimeout(animateUpdate, timeoutVal, bar, start, maxTime);\
+	}\
+}\
+\
+\
 /*accepts an integer as target index and switches from current problem to specified problem via index*/\
 function goNav(targetIndex){\
 	var curr = $("[id*=questionContainer]:visible");\
@@ -131,6 +174,8 @@ function goNav(targetIndex){\
 	/*if target is 0 - max# defined in structure, and target is not current view*/\
 	if(targetIndex >= 0 && targetIndex < structure.count && targetIndex != currentIndex)\
 	{\
+		/*(TODO: For now), restart timer per question. Should become variable depending on time and should not restart*/\
+		\
 		/*disable/enable next/prev buttons as needed*/\
 		if(targetIndex == 0)\
 		{\
@@ -315,9 +360,16 @@ $(".commit").on("click", function(){\
 });\
 \
 \
-/*On submit, send to server. Uses structure.divide because it dictates the length of mchoice types since they will always come first*/\
+/*on submit click, prompt user with modal*/\
 $(".submit").on("click", function(){\
+	$("#dialogSubmit").dialog("open");\
+});\
+\
+\
+/*On submit, send to server. Uses structure.divide because it dictates the length of mchoice types since they will always come first*/\
+function submitExam(){\
 	recordSection();\
+	$("#dialogSubmit").html("processing " + structure.count + " answers. . .");\
 	console.log("processing " + structure.count + " answers.");\
 	var type = [];\
 	var num = [];\
@@ -354,9 +406,15 @@ $(".submit").on("click", function(){\
 		  data: JSON.stringify(data),\
     	  contentType: "application/json",\
 		  success: function(response){\
+		  	if(response.status == "ok")\
+	  		{\
+				/*Display score to student, disable submit button*/\
+	  			$("#dialogSubmitBtn").button("option", "disabled", true);\
+				$("#dialogSubmit").html("Final score: " + response.score);\
+		  	}\
 		}\
 	});\
-});\
+}\
 \
 \
 /*jQueryUI Modal used to retrieve student ID*/\
@@ -418,8 +476,28 @@ $( "#dialogWarn" ).dialog({\
 });\
 \
 \
+/*jQueryUI Modal used to warn student about submitting exam and finishing attempt*/\
+$( "#dialogSubmit" ).dialog({\
+	autoOpen: false,\
+	buttons: [{\
+		id: "dialogSubmitBtn",\
+		text: "Submit",\
+		click: function() {\
+			submitExam();\
+      }\
+    },\
+    {\
+    	text: "Cancel",\
+    	click: function(){\
+			$(this).dialog("close");\
+    	}\
+    }]\
+});\
+\
+\
 /*Display the first questionContainer*/\
 var startElement = $("#questionContainer0");\
+initPbar($("#pbar_inner"), 2700000);\
 startElement.css("display", "block");';
 
 
@@ -430,7 +508,9 @@ exports.pStatementTemplate = pStatementTemplate;
 exports.ioTemplate = ioTemplate;
 exports.navTemplate = navTemplate;
 exports.mcCodeTemplate = mcCodeTemplate;
+exports.mcSubQ = mcSubQ;
 exports.mcOptionTemplate = mcOptionTemplate;
 exports.mcClose = mcClose;
 exports.editorInit = editorInit;
+exports.genericCloseDiv = genericCloseDiv;
 exports.script = script;

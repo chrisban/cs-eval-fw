@@ -27,6 +27,10 @@ app.get('/includes/css/include.css', function (req, res) {
  	res.sendFile( __dirname + "/includes/css/include.css" );
 });
 
+app.get('/includes/js/ExamScript.js', function (req, res) {
+ 	res.sendFile( __dirname + "/includes/js/ExamScript.js" );
+});
+
 app.get('/upload/', function (req, res) {
  	res.sendFile( __dirname + "/frontEnd/data_upload/upload.html" );
 });
@@ -86,7 +90,12 @@ function getDataFile(req, res, callback)
 
 function serveModule(req, res, data)
 {
+	//TODO: serve codemirror lang specific js files as needed instead of all regardless
+
 	var html = "";
+
+	//define difficulty levels - 0: easy, 1: medium, 2: hard
+	var difficulty = [10, 20, 30];
 
 	//get exported template data from moduleVars.js
 	var header = moduleVars.header; //Overall page header information/instructions
@@ -100,8 +109,11 @@ function serveModule(req, res, data)
 	//multChoice specific template vars
 	var mcCodeTemplate = moduleVars.mcCodeTemplate; //template that holds code editor for mchoice questions
 	var mcOptionTemplate = moduleVars.mcOptionTemplate; //template that holds the skeleton for each mchoice option
+	var mcSubQ = moduleVars.mcSubQ; // closes div tags that could not be closed until multiple iterations had been inserted.
 	var mcClose = moduleVars.mcClose; // closes div tags that could not be closed until multiple iterations had been inserted.
 	
+	var genericCloseDiv = moduleVars.genericCloseDiv; // generic </div> for annoying case in mcOptions sub Qs
+
 	//script to be evald on client side
 	var editorInit = moduleVars.editorInit; //function call to be appended per editor instance to init
 	var script = moduleVars.script; //all listeners and js code to be evald once client has received
@@ -136,12 +148,12 @@ function serveModule(req, res, data)
 				for(var j = 0; j < data[i]["input"].length; j++)
 				{
 					//TODO: MOVE THIS TO MODULE VARS!!
-					html += "<div class='mcSubQ'><b>" + data[i]["input"][j][0] + "</b><br/>";
+					html += mcSubQ.replace(/<<mcsq>>/g, data[i]["input"][j][0]);
 					for(var k = 0; k < data[i]["input"][0][1].length; k++)
 					{
 						html += mcOptionTemplate.replace(/<<mc>>/g, data[i]["input"][j][1][k]).replace(/<<o>>/g, k).replace(/<<n>>/g, i + "_" + j);
 					}
-					html += "</div>";
+					html += genericCloseDiv;
 				}
 
 				html += mcClose;
@@ -163,8 +175,8 @@ function serveModule(req, res, data)
 function processExam(req, res, data)
 {
 	console.log("processing...");
-	//Track points, score, and results
-	var totalPoints =0;
+	//Track points(subtotal = per question total, total = full total) and student score (subStudent = per question score, student score = total score)
+	var totalPoints = 0;
 	var subTotalPoints = 0;
 	var studentScore = 0;
 	var subStudentScore = 0;
@@ -180,9 +192,9 @@ function processExam(req, res, data)
 
 		if(req.body.problemType[i] == "code")
 		{
-			//Track points and student score
+			//Track points
 			subTotalPoints += parseInt(data[i]["points"][0]);
-			totalPoints += subTotalPoints;
+			totalPoints += parseInt(data[i]["points"][0]);
 
 			//By default assume python(v3), change only if different. Add options as needed.
 			var args = "";
@@ -211,6 +223,7 @@ function processExam(req, res, data)
 				compileResult = [];
 				compile(userData);
 
+				//see js promises?
 				//TEMPORARY! - wait 1sec. until compile completes. Temp solution as we are temp. using an external soap api service at the point.
 				while(done == false) {
 				    require('deasync').sleep(500);
@@ -221,7 +234,7 @@ function processExam(req, res, data)
 				if(data[i]['output'][j] == compileResult.Result)
 				{
 					subStudentScore += parseInt(data[i]["points"][j]);
-					studentScore += subStudentScore;
+					studentScore += parseInt(data[i]["points"][j]);
 					resultFile += "status: correct\n";
 				} else
 					resultFile += "status: incorrect\n";
@@ -248,13 +261,13 @@ function processExam(req, res, data)
 				var submittedIndex = parseInt(req.body.solution[i][j]);
 				resultFile += "Correct answer: " + data[i]['input'][j][1][correctIndex] + "\nReceived answer: " + data[i]['input'][j][1][submittedIndex] + "\n state: ";
 
-				//Track points and student score
+				//Track points
 				subTotalPoints += parseInt(data[i]["points"][j]);
-				totalPoints += subTotalPoints;
+				totalPoints += parseInt(data[i]["points"][0]);
 				if(req.body.solution[i][j] == data[i]['output'][j])
 				{
 					subStudentScore += parseInt(data[i]["points"][j]);
-					studentScore += subStudentScore;
+					studentScore += parseInt(data[i]["points"][j]);
 					resultFile += "Correct\n\n";
 				} else
 					resultFile += "Inorrect\n\n";
@@ -262,7 +275,7 @@ function processExam(req, res, data)
 		}
 		resultFile += "\nQuestion sub-score: " + subStudentScore + "/" + subTotalPoints + "\n====================================================\n\n\n\n";
 	}
-	resultFile += "\nFINAL SCORE: " + parseInt(studentScore) + "/" + parseInt(totalPoints) + "\n";
+	resultFile += "\nFINAL SCORE: " + studentScore + "/" + totalPoints + "\n";
 
 	//formulate path, create directory if necessary
 	var path = __dirname + '/testResults/test' + req.body.test_id + '/';
@@ -282,7 +295,7 @@ function processExam(req, res, data)
 	});
 
 	res.type('json');  
-	res.send({status : "ok"});
+	res.send({status : "ok", score: studentScore + "/" + totalPoints});
 }
 
 function compile(data, res, type){
