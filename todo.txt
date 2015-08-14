@@ -3,12 +3,27 @@ IN PROGRESS:
 	- See getscript!
 
 TODO: 
-	done:
-		- suggested timer/progress bar
-			- suggested time tag used to select easy -> hard progression
-			- connect datafile difficulty to per question timing bars
+possible: initial ajax after quiz id??
+
+different url per module, not defined in request? check restful standards
+	
+randomly rearrange items within a multiple choice question, and/or randomly populate a test with a subset of questions from a pool of available questions.
+
+
+.js/.css file serving
+	-> if GET: reroute with node/express? Move to resources folder on server
+
+datafiles
+	-> server should only parse if initial key parseInt != NaN
+	-> add a 'prop' key for information such as test time, total points, etc.
+
+timing:
 	todo:
 		- time elapsed, server get code
+			-> date obj of start, start+time. freeze both and submit when difference = 0. Alert user @ 10 min, 5 min. etc.
+
+		- floor numbers so they dont go into negatives
+
 	questions:
 		-save time elapsed? 
 		- on question switch, prompt user for commit? (pause/save recc time for stats?)
@@ -16,7 +31,10 @@ TODO:
 
 - py example/interp
 
-- admin datafile -> json parser
+- admin datafile 
+	-> json parser
+		-> accepts well-formed and mal-formed JSON objects.
+			-> <<>> denotes plaintext with line breaks and such that need formatting. ex: "<<plain text>>"
 
 - lockdown browser (restricted urls - visit exam/docu, not google/SO/etc.)
 
@@ -24,12 +42,18 @@ TODO:
 - graphic related questions
 	- feasability? did/didn't do it, why
 
-- proposal paper/presentation
-	- differentiation
-	- review whats been done, how diff
-	- how is proj unique
-	- system architecture
-	- security issues
+
+mc finished: 
+	done, can't look back or edit
+	done, can look back, not edit
+
+	not done, can't go forward or back
+
+	datafile specifies
+
+
+talk to drA/beckett about lockdown alternative
+	- pointers?
 
 --------------
 
@@ -68,6 +92,12 @@ Completed:
 		- report result/score to student (on full completion)
 		- fix total score calc
 
+timing:
+	done:
+		- suggested timer/progress bar
+			- suggested time tag used to select easy -> hard progression
+			- connect datafile difficulty to per question timing bars
+
 
 **********
 questions:
@@ -89,3 +119,5 @@ programming 2nd section
 
 
 emph. practice exams for familiarity -> make security issues crucial as students have time to try and break it or cheat
+
+tuesday @830 at computer lab 3rd floor brock

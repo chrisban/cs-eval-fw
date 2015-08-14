@@ -34,10 +34,20 @@
     	"questionType": "code",
     	"language": "c++",
         "problem": "Complete the following function that counts the even numbers in an integer vector. For example, if vector vec contains the elements 3, 5, 2, -1, and 2, the call <br /> <br /> count_evens(vec)<br /> <br />would evaluate to 2, since vec contains two even integers. The function returns zero if the vector is empty. The function does not affect the contents of the vector.  A simple test main function is provided for your convenience.",
-        "skeleton": "#include <iostream>\n#include <vector>\nusing namespace std;\n\nint count_evens(const vector<int>& v){\n\n     return -1; //Replace with working code\n\n}\n\nint main() {//  Make vector     int size;\n     cout << \"Enter vector size: \";\n     cin >> size;\n     vector<int> v(size);\n     //  Populate the vector\n     for (int i = 0; i < size; i++) {\n          cout << \"Enter element \" << i << \": \";\n          cin >> v[i];\n     }\n\n     //  Test the function\n     cout << count_evens(v);\n}\n",
+        "skeleton": "#include <iostream>\n#include <vector>\nusing namespace std;\n\nint count_evens(const vector<int>& v){\n\n     return -1; //Replace with working code\n\n}\n\nint main() {//  Make vector     \nint size;\n     cout << \"Enter vector size: \";\n     cin >> size;\n     vector<int> v(size);\n     //  Populate the vector\n     for (int i = 0; i < size; i++) {\n          cout << \"Enter element \" << i << \": \";\n          cin >> v[i];\n     }\n\n     //  Test the function\n     cout << count_evens(v);\n}\n",
         "input": ["1", "2"],
         "output": ["11", "22"],
         "points": ["15"],
         "difficulty": "1"
+    },
+    "4": {
+    	"questionType": "code",
+    	"language": "python",
+        "problem": "In python, define and call a simple function that accepts and prints the word 'Student'.",
+        "skeleton": "def greet(name):\n   print(name)\ngreet('Student')",
+        "input": [""],
+        "output": ["Student\n"],
+        "points": ["10"],
+        "difficulty": "0"
     }
 }

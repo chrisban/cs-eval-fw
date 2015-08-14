@@ -1,19 +1,19 @@
 ****** Question 0, type: mchoice ******
 
 Correct answer: False
-Received answer: False
- state: Correct
+Received answer: undefined
+ state: Inorrect
 
 Correct answer: True
-Received answer: True
- state: Correct
+Received answer: undefined
+ state: Inorrect
 
 Correct answer: True
-Received answer: True
- state: Correct
+Received answer: undefined
+ state: Inorrect
 
 
-Question sub-score: 15/15
+Question sub-score: 0/15
 ====================================================
 
 
@@ -21,15 +21,15 @@ Question sub-score: 15/15
 ****** Question 1, type: mchoice ******
 
 Correct answer: i = 3 j = 5 k = 7
-Received answer: i = 3 j = 5 k = 7
- state: Correct
+Received answer: undefined
+ state: Inorrect
 
 Correct answer: i = 3 j = 3 k = 7
-Received answer: i = 3 j = 5 k = 7
+Received answer: undefined
  state: Inorrect
 
 
-Question sub-score: 5/10
+Question sub-score: 0/10
 ====================================================
 
 
@@ -44,17 +44,7 @@ using namespace std;
 
 int main() {
      int n;
-  	 cin >> n;
-  
-     for(int i = 0; i < n; i++)
-     {
-       for(int j = 0; j < n; j++)
-       {
-           cout << "*";
-           if( j == (n-1))
-             cout << endl;
-       }
-     }
+     cin >> n;
 }
 
 
@@ -64,13 +54,11 @@ Test Input: 2
 Correct output: **
 **
 
-Received output: **
-**
+Received output: 
 
+status: incorrect
 
-status: correct
-
-Question sub-score: 15/15
+Question sub-score: 0/15
 ====================================================
 
 
@@ -82,7 +70,6 @@ Submitted code:
 
 #include <iostream>
 #include <vector>
-  
 using namespace std;
 
 int count_evens(const vector<int>& v){
@@ -91,7 +78,8 @@ int count_evens(const vector<int>& v){
 
 }
 
-int main() {//  Make vector     int size;
+int main() {//  Make vector     
+int size;
      cout << "Enter vector size: ";
      cin >> size;
      vector<int> v(size);
@@ -111,7 +99,7 @@ int main() {//  Make vector     int size;
 
 Test Input: 1
 Correct output: 11
-Received output: 
+Received output: Enter vector size: Enter element 0: -1
 
 status: incorrect
 
@@ -119,7 +107,7 @@ status: incorrect
 
 Test Input: 2
 Correct output: 22
-Received output: 
+Received output: Enter vector size: Enter element 0: Enter element 1: -1
 
 status: incorrect
 
@@ -128,5 +116,30 @@ Question sub-score: 0/15
 
 
 
+****** Question 4, type: code ******
 
-FINAL SCORE: 35/55
+Submitted code:
+------------------------------------------
+
+def greet(name):
+   print(name)
+greet('Student')
+
+
+------------------------------------------
+
+Test Input: 
+Correct output: Student
+
+Received output: Student
+
+
+status: correct
+
+Question sub-score: 10/10
+====================================================
+
+
+
+
+FINAL SCORE: 10/65

@@ -116,6 +116,8 @@ var script = '\
 /*Variables that track test section (0 or 1 = part 1 or 2) and specify divide (defined by number of ".mcOptions" class occurences)*/\
 var section = {number: 0, warn: false};\
 var structure = Object.freeze({count: $("[id*=questionContainer]").length, divide: $(".mcOptions").length});\
+\
+/*section1 will hold section1 answers and freeze them so they may not be modified after completing part 1*/\
 var section1 = {};\
 \
 \
@@ -327,12 +329,22 @@ $(".compile").on("click", function(){\
 	var parentID = $(this).parent().parent().attr("id");\
 	var index = parentID.substring(17, parentID.length);\
 	var lbox = $(this).parent().parent().find("select option");\
+	var mode = $(".CodeMirror")[parseInt(index)].CodeMirror.getOption("mode");\
+	var wrapper = "7";\
+	var args = "-std=c++14 -o a.out source_file.cpp";\
+\
+	/*TODO: Needs more complex logic for clike langs instead of defaulting to C++ if not python*/\
+	if (mode == "python")\
+	{\
+		wrapper = "24";\
+		args = "";\
+	}\
 \
 	var data = {\
-		"LanguageChoiceWrapper": "7",\
+		"LanguageChoiceWrapper": wrapper,\
 		"Program": $(".CodeMirror")[parseInt(index)].CodeMirror.getValue(),\
 		"input": $.map(lbox ,function(option) {return option.value;}).join(\' \'),\
-		"compilerArgs": "-std=c++14 -o a.out source_file.cpp"\
+		"compilerArgs": args\
 	};\
 \
 	$.ajax({\
@@ -396,7 +408,8 @@ function submitExam(){\
 		input.push($.map(lbox ,function(option) {return option.value;}));\
 	}\
 	var data = {\
-		"test_id": 0,\
+		"test_id": testInfo.test_id,\
+		"course_id": testInfo.course_id,\
 		"idNum": $("#idNum").val(),\
 		"problemType": type,\
 		"problemNum": num,\
@@ -414,9 +427,13 @@ function submitExam(){\
 		  	if(response.status == "ok")\
 	  		{\
 				/*Display score to student, disable submit button*/\
-	  			$("#dialogSubmitBtn").button("option", "disabled", true);\
 				$("#dialogSubmit").html("Final score: " + response.score);\
 		  	}\
+		},\
+		error: function(response){\
+  			$("#dialogSubmitBtn").button("option", "disabled", false);\
+			$("#dialogSubmit").html("Error: " + response.statusText);\
+			console.log(response);\
 		}\
 	});\
 }\
@@ -436,7 +453,12 @@ $( "#dialogID" ).dialog({\
 	buttons: {\
 	    "Save": function() {\
 	      if($("#idNum").val().length >= 6)\
+	      {/*TODO: retrieve initpbar val from server!*/\
 	      	$(this).dialog("close");\
+	      	initPbar($("#totalProgress .pbar_inner"), 2700000);\
+	      	$("#progressB0").addClass("activeBar");\
+			initPbar($("#progressB0").children().children()[0], 60000 * ((difficulty[0]+1)*10));\
+	      }\
 	      else\
 	      {\
 	      	$("#idStatus").html(errorString);\
@@ -449,7 +471,12 @@ $( "#dialogID" ).dialog({\
 	if (e.keyCode == $.ui.keyCode.ENTER)\
 	{\
    		if($("#idNum").val().length >= 6)\
+   		{\
           	$(this).dialog( "close" );\
+	      	initPbar($("#totalProgress .pbar_inner"), 2700000);\
+	      	$("#progressB0").addClass("activeBar");\
+			initPbar($("#progressB0").children().children()[0], 60000 * ((difficulty[0]+1)*10));\
+   		}\
         else\
         {\
           	$("#idStatus").html(errorString);\
@@ -488,6 +515,7 @@ $( "#dialogSubmit" ).dialog({\
 		id: "dialogSubmitBtn",\
 		text: "Submit",\
 		click: function() {\
+  			$("#dialogSubmitBtn").button("option", "disabled", true);\
 			submitExam();\
       }\
     },\
@@ -502,7 +530,6 @@ $( "#dialogSubmit" ).dialog({\
 \
 /*Display the first questionContainer*/\
 var startElement = $("#questionContainer0");\
-initPbar($("#totalProgress .pbar_inner"), 2700000);\
 startElement.css("display", "block");';
 
 

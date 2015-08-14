@@ -73,7 +73,7 @@ var server = app.listen(8888, function () {
 //Get specified datafile
 function getDataFile(req, res, callback)
 {
-	var file = __dirname + '/dataFiles/data' + req.body.test_id + '.json';
+	var file = __dirname + '/dataFiles/' + req.body.course_id + '/data' + req.body.test_id + '.json';
 	var data = { result: "Server file load error!"};
 
 	fs.readFile(file, 'utf8', function (err, datafile) {
@@ -165,7 +165,8 @@ function serveModule(req, res, data)
 			}	
 		}
 
-		script += "var difficulty = [" + difficulty.join() + "];";
+		//TODO: Decide whether to template or leave as-is.
+		script += "var difficulty = [" + difficulty.join() + "]; var testInfo = Object.freeze({test_id: '" + req.body.test_id + "', course_id: '" + req.body.course_id + "'});";
 		html += navTemplate + '<!--END module code-->';
 	}
 	else if(req.body.type == 'book')
@@ -214,6 +215,7 @@ function processExam(req, res, data)
 
 			resultFile += "Submitted code:\n------------------------------------------\n\n" + req.body.solution[i] + "\n\n";
 
+			//TODO: SHOULD NOT RELY SOLELY ON INPUT!! What if no input is needed?
 			for(var j = 0; j < data[i]['input'].length; j++)
 			{
 				//User's data
@@ -236,6 +238,9 @@ function processExam(req, res, data)
 				  }
 
 				resultFile += "\n------------------------------------------\n\nTest Input: " + data[i]['input'][j] + "\nCorrect output: " + data[i]['output'][j] + "\nReceived output: " + compileResult.Result + "\n\n";
+
+				//TODO: fix needed, py gives weird newline after output. See javascript trim.
+				//console.log(':',compileResult.Result,':');
 
 				if(data[i]['output'][j] == compileResult.Result)
 				{
@@ -283,17 +288,25 @@ function processExam(req, res, data)
 	}
 	resultFile += "\nFINAL SCORE: " + studentScore + "/" + totalPoints + "\n";
 
-	//formulate path, create directory if necessary
-	var path = __dirname + '/testResults/test' + req.body.test_id + '/';
+	//formulate paths, create directories if necessary. EEXIST e.code means dir already exists. If it doesn't, it will create.
+	var coursePath = __dirname + '/testResults/' + req.body.course_id + '/';
+	var testPath = __dirname + '/testResults/' + req.body.course_id + '/test' + req.body.test_id + '/';
+	
 	try {
-	    fs.mkdirSync(path);
+	    fs.mkdirSync(coursePath);
+	  } catch(e) {
+	    if ( e.code != 'EEXIST' ) 
+	    	throw e;
+	  }
+	  try {
+	    fs.mkdirSync(testPath);
 	  } catch(e) {
 	    if ( e.code != 'EEXIST' ) 
 	    	throw e;
 	  }
 
 	//Write results to file
-	fs.writeFile(path + req.body.idNum + '.txt', resultFile, function(err) {
+	fs.writeFile(testPath + req.body.idNum + '.txt', resultFile, function(err) {
 	    if(err) {
 	        return console.log(err);
 	    }
