@@ -4,15 +4,16 @@ var app = express();
 var bodyParser = require('body-parser');
 var requestify = require('requestify');
 var deasync = require('deasync');
+var uglify = require("uglify-js");
 var moduleVars = require('./moduleVars');
 
 // for parsing application/json
 app.use(bodyParser.json()); 
 
 //connect static links
-app.use('/js', express.static(__dirname + '/frontEnd/js'));
-app.use('/css', express.static(__dirname + '/frontEnd/css'));
-app.use(express.static(__dirname + '/includes'));
+//app.use('/js', express.static(__dirname + '/frontEnd/js'));
+//app.use('/css', express.static(__dirname + '/frontEnd/css'));
+app.use('/includes', express.static(__dirname + '/includes'));
 
 
 /*********************/
@@ -27,12 +28,8 @@ app.get('/includes/css/include.css', function (req, res) {
  	res.sendFile( __dirname + "/includes/css/include.css" );
 });
 
-app.get('/includes/js/ExamScript.js', function (req, res) {
- 	res.sendFile( __dirname + "/includes/js/ExamScript.js" );
-});
-
-app.get('/upload/', function (req, res) {
- 	res.sendFile( __dirname + "/frontEnd/data_upload/upload.html" );
+app.get('/admin/', function (req, res) {
+ 	res.sendFile( __dirname + "/admin/admin.html" );
 });
 
 
@@ -81,10 +78,8 @@ function getDataFile(req, res, callback)
 			console.log('E: ' + err);
 			return;
 		}
-		if(callback == "processExam")
-			wait.launchFiber(processExam);
-		else
-			callback(req, res, JSON.parse(datafile));
+		
+		callback(req, res, JSON.parse(datafile));
 	});
 }
 
@@ -117,7 +112,10 @@ function serveModule(req, res, data)
 
 	//script to be evald on client side
 	var editorInit = moduleVars.editorInit; //function call to be appended per editor instance to init
-	var script = moduleVars.script; //all listeners and js code to be evald once client has received
+
+	//minify js code to send to client to be evaluated
+	var minified = uglify.minify([__dirname + '/includes/js/examLogic.js']);
+	var script = minified.code; //all listeners and js code to be evald once client has received
 
 	//Decide which module to serve
 	if(req.body.type == 'exam')
@@ -128,45 +126,48 @@ function serveModule(req, res, data)
 		//iterate through each question in exam datafile, replacing placeholders with index and datafile specefied information
 		for(var i = 0; i < Object.keys(data).length; i++)
 		{
-			//record question difficulty
-			difficulty.push(parseInt(data[i]["difficulty"]));
-
-			//default to python, else adjust accordingly. Add options as needed.
-			var lang = "python"
-			if(data[i]["language"].toUpperCase() == "C" || data[i]["language"].toUpperCase() == "C++" || data[i]["language"].toUpperCase() == "C#")
-				lang = "clike";
-
-			//if question type is a programming question (type: "code")
-			if(data[i]["questionType"] == "code")
+			if(!isNaN(Object.keys(data)[i]))
 			{
-				html += pStatementTemplate.replace(/<<n>>/g, i).replace(/<<pstatement>>/, data[i]["problem"]) + ioTemplate.replace(/<<n>>/g, i).replace(/<<code>>/, data[i]["skeleton"]) + qToolsTemplate.replace(/<<n>>/, i);
-				
-				script += editorInit.replace(/<<n>>/g, i).replace(/<<lang>>/g, lang);
-			}
-			//if question type is a programming question (type: "mchoice")
-			else if(data[i]["questionType"] == "mchoice")
-			{
-				html += pStatementTemplate.replace(/<<n>>/g, i).replace(/<<pstatement>>/, data[i]["problem"]) + mcCodeTemplate.replace(/<<n>>/g, i).replace(/<<code>>/, data[i]["skeleton"]);;
-				script += editorInit.replace(/<<n>>/g, i).replace(/<<lang>>/g, lang);
+				//record question difficulty
+				difficulty.push(parseInt(data[i]["difficulty"]));
 
-				//iterate through each multiple choice supplied in the datafile per question
-				for(var j = 0; j < data[i]["input"].length; j++)
+				//default to python, else adjust accordingly. Add options as needed.
+				var lang = "python"
+				if(data[i]["language"].toUpperCase() == "C" || data[i]["language"].toUpperCase() == "C++" || data[i]["language"].toUpperCase() == "C#")
+					lang = "clike";
+
+				//if question type is a programming question (type: "code")
+				if(data[i]["questionType"] == "code")
 				{
-					//TODO: MOVE THIS TO MODULE VARS!!
-					html += mcSubQ.replace(/<<mcsq>>/g, data[i]["input"][j][0]);
-					for(var k = 0; k < data[i]["input"][0][1].length; k++)
-					{
-						html += mcOptionTemplate.replace(/<<mc>>/g, data[i]["input"][j][1][k]).replace(/<<o>>/g, k).replace(/<<n>>/g, i + "_" + j);
-					}
-					html += genericCloseDiv; //generic closing mcsubq
+					html += pStatementTemplate.replace(/<<n>>/g, i).replace(/<<pstatement>>/, data[i]["problem"]) + ioTemplate.replace(/<<n>>/g, i).replace(/<<code>>/, data[i]["skeleton"]) + qToolsTemplate.replace(/<<n>>/, i);
+					
+					script += editorInit.replace(/<<n>>/g, i).replace(/<<lang>>/g, lang);
 				}
+				//if question type is a programming question (type: "mchoice")
+				else if(data[i]["questionType"] == "mchoice")
+				{
+					html += pStatementTemplate.replace(/<<n>>/g, i).replace(/<<pstatement>>/, data[i]["problem"]) + mcCodeTemplate.replace(/<<n>>/g, i).replace(/<<code>>/, data[i]["skeleton"]);;
+					script += editorInit.replace(/<<n>>/g, i).replace(/<<lang>>/g, lang);
 
-				html += genericCloseDiv + qToolsTemplate.replace(/<<n>>/, i); //generic closing mcoptions
-			}	
+					//iterate through each multiple choice supplied in the datafile per question
+					for(var j = 0; j < data[i]["input"].length; j++)
+					{
+						//TODO: MOVE THIS TO MODULE VARS!!
+						html += mcSubQ.replace(/<<mcsq>>/g, data[i]["input"][j][0]);
+						for(var k = 0; k < data[i]["input"][0][1].length; k++)
+						{
+							html += mcOptionTemplate.replace(/<<mc>>/g, data[i]["input"][j][1][k]).replace(/<<o>>/g, k).replace(/<<n>>/g, i + "_" + j);
+						}
+						html += genericCloseDiv; //generic closing mcsubq
+					}
+
+					html += genericCloseDiv + qToolsTemplate.replace(/<<n>>/, i); //generic closing mcoptions
+				}		
+			}
 		}
 
 		//TODO: Decide whether to template or leave as-is.
-		script += "var difficulty = [" + difficulty.join() + "]; var testInfo = Object.freeze({test_id: '" + req.body.test_id + "', course_id: '" + req.body.course_id + "'});";
+		script += "var difficulty = [" + difficulty.join() + "]; var testInfo = Object.freeze({test_id: '" + req.body.test_id + "', course_id: '" + req.body.course_id + "', test_length: '" + data["prop"]["time"]*60000 + "'});";
 		html += navTemplate + '<!--END module code-->';
 	}
 	else if(req.body.type == 'book')

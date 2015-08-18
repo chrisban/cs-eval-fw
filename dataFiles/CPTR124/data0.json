@@ -49,5 +49,8 @@
         "output": ["Student\n"],
         "points": ["10"],
         "difficulty": "0"
+    },
+    "prop": {
+        "time": "45"
     }
 }

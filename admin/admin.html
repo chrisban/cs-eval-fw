@@ -1,0 +1,43 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>
+			Server-side code compilation/execution
+		</title>
+		<script type="text/javascript" src="/includes/js/jquery-2.1.4.min.js"></script>
+		<script type="text/javascript" src="/includes/js/jquery-ui-1.11.4/jquery-ui.min.js"></script>
+		<link type="text/css" href="/includes/js/jquery-ui-1.11.4/jquery-ui.min.css" rel="stylesheet" media="screen"/>
+		<link type="text/css" href="/includes/css/screen.css" rel="stylesheet" media="screen"/>
+
+	</head>
+
+	<script>
+		$(function() {
+			$( "#manageFiles" ).dialog({
+				autoOpen: false,
+				buttons: [{
+					id: "dialogSubmitBtn",
+					text: "Submit",
+					click: function() {
+			  			$("#dialogSubmitBtn").button("option", "disabled", true);
+						submitExam();
+			      }
+			    },
+			    {
+			    	text: "Cancel",
+			    	click: function(){
+						$(this).dialog("close");
+			    	}
+			    }]
+			});
+
+			$("#manageFilesBtn").on("click", function(){
+				$( "#manageFiles" ).dialog( "open" );
+			});
+		});
+	</script>
+	<body> 
+		Upload datafile: <input type="file" id="fileinput" />
+		<input type="button" id="manageFilesBtn">
+		<div id="manageFiles"></div>
+	</body>
+</html>
