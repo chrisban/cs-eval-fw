@@ -91,7 +91,7 @@ var mcSubQ = "<div class='mcSubQ'><b><<mcsq>></b><br/>";
 
 //template editor for multiple choice
 //PLACEHOLDERS: <<n>> = question number, <<o>>, option number, <<mc>> = option
-var mcOptionTemplate = '<input type="radio" class="mc<<n>>" value="<<o>>"><<mc>></input><br />';
+var mcOptionTemplate = '<input type="radio" class="mc<<n>>" index="<<o>>" value="<<mc>>"><<mc>></input><br />';
 
 //Insert commit button. 1nd div: questionContainer /div (opened in pStatementTemplate).
 //PLACEHOLDERS: <<n>> = question number, <<o>>, option number, <<mc>> = option

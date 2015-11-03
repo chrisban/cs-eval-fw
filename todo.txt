@@ -5,6 +5,27 @@ IN PROGRESS:
 TODO: 
 possible: initial ajax after quiz id??
 
+question time countdown -> how much time spent? sub max from left
+
+read only mc choice snippets?
+
+------------
+Proposal
+------------
+node.npm
+	-> chroot: sandbox
+
+Modularize
+	-> authenticate module
+	-> try sau? circ auth page @ ldap
+	-> plug and play
+
+List requirements: codemirror etc.
+
+Python 3.5.0 -> 3 Specify elsewhere. 
+------------
+
+
 different url per module, not defined in request? check restful standards
 	
 randomly rearrange items within a multiple choice question, and/or randomly populate a test with a subset of questions from a pool of available questions.
@@ -25,9 +46,12 @@ timing:
 		-> accepts well-formed and mal-formed JSON objects.
 			-> <<>> denotes plaintext with line breaks and such that need formatting. ex: "<<plain text>>"
 
+- datafile prop field 
+	- what if prop field non-existant or length field NaN/null/etc.?
 
 
 
+- Provision (for VMs)
 
 - lockdown browser (restricted urls - visit exam/docu, not google/SO/etc.)
 

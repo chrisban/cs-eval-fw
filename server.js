@@ -269,14 +269,16 @@ function processExam(req, res, data)
 				//console.log("comparing: ", req.body.solution[i][j], data[i]['output'][j])
 
 				//Record input
+				//Options are randomized, so to find correct index -> match on question first via indexOf
 				var correctIndex = parseInt(data[i]['output'][j]);
-				var submittedIndex = parseInt(req.body.solution[i][j]);
+				var submittedIndex = parseInt(data[i]['input'][j][1].indexOf(req.body.solution[i][j]));
+				console.log("correctIndex: ", correctIndex, "\nsubmittedIndex", submittedIndex);
 				resultFile += "Correct answer: " + data[i]['input'][j][1][correctIndex] + "\nReceived answer: " + data[i]['input'][j][1][submittedIndex] + "\n state: ";
 
 				//Track points
 				subTotalPoints += parseInt(data[i]["points"][j]);
 				totalPoints += parseInt(data[i]["points"][0]);
-				if(req.body.solution[i][j] == data[i]['output'][j])
+				if(correctIndex == submittedIndex)
 				{
 					subStudentScore += parseInt(data[i]["points"][j]);
 					studentScore += parseInt(data[i]["points"][j]);

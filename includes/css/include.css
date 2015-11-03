@@ -24,6 +24,7 @@
 	float: right;
 }
 
+
 /* Progress bar */
 
 #totalProgress{
@@ -68,6 +69,7 @@
 	font-size: 12px;
 	}
 
+
 /* Inputs: coding; */
 .CodeMirror{
 	height: 500px;
@@ -87,6 +89,7 @@
 	float: right;
 	width: 42%;
 }
+
 
 /* Inputs: multiple choice */
 .mcSubQ{
@@ -162,6 +165,7 @@
 	right: 0;
 }
 
+
 /* Wildcard selector for all questionContainer# ids */
 *[id^='questionContainer']{
 	clear: both;
@@ -171,10 +175,12 @@
     position: relative
 }
 
+
 /* Wildcard selector for all questionContainer# ids */
 *[id^='problemStatement']{
     padding-bottom:15px;
 }
+
 
 /* Modal/Dialog */
 #idStatus{
@@ -187,6 +193,7 @@
 .no-close .ui-dialog-titlebar-close {
   display: none;
 }
+
 
 /* Buttons */
 .button{
