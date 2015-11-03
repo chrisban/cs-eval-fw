@@ -146,17 +146,35 @@ function serveModule(req, res, data)
 				//if question type is a programming question (type: "mchoice")
 				else if(data[i]["questionType"] == "mchoice")
 				{
-					html += pStatementTemplate.replace(/<<n>>/g, i).replace(/<<pstatement>>/, data[i]["problem"]) + mcCodeTemplate.replace(/<<n>>/g, i).replace(/<<code>>/, data[i]["skeleton"]);;
+					html += pStatementTemplate.replace(/<<n>>/g, i).replace(/<<pstatement>>/, data[i]["problem"]) + mcCodeTemplate.replace(/<<n>>/g, i).replace(/<<code>>/, data[i]["skeleton"]);
 					script += editorInit.replace(/<<n>>/g, i).replace(/<<lang>>/g, lang);
 
 					//iterate through each multiple choice supplied in the datafile per question
 					for(var j = 0; j < data[i]["input"].length; j++)
 					{
+						//Shuffle subquestions via fisher-yates shuffle
+						var tempSubQ = data[i]["input"][j][1];
+    					var counter = tempSubQ.length, temp, index;
+
+					    // While there are elements in the array
+					    while (counter > 0) {
+					        // Pick a random index
+					        index = Math.floor(Math.random() * counter);
+
+					        // Decrease counter by 1
+					        counter--;
+
+					        // And swap the last element with it
+					        temp = tempSubQ[counter];
+					        tempSubQ[counter] = tempSubQ[index];
+					        tempSubQ[index] = temp;
+					    }
+
 						//TODO: MOVE THIS TO MODULE VARS!!
 						html += mcSubQ.replace(/<<mcsq>>/g, data[i]["input"][j][0]);
-						for(var k = 0; k < data[i]["input"][0][1].length; k++)
+						for(var k = 0; k < data[i]["input"][j][1].length; k++)
 						{
-							html += mcOptionTemplate.replace(/<<mc>>/g, data[i]["input"][j][1][k]).replace(/<<o>>/g, k).replace(/<<n>>/g, i + "_" + j);
+							html += mcOptionTemplate.replace(/<<mc>>/g, tempSubQ[k]).replace(/<<o>>/g, k).replace(/<<n>>/g, i + "_" + j);
 						}
 						html += genericCloseDiv; //generic closing mcsubq
 					}

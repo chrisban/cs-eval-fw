@@ -280,7 +280,7 @@ $(".compile").on("click", function(){
 
 
 /*Button which applies a class to thumbnails in order to aid students in tracking which questions are complete*/
-$(".commit").on("click", function(){
+$(".commit").on("click", function(){recordSection();
   	$("#navShortcutElement" + parseInt($(this).parent().attr("id").substring(17, $(this).parent().attr("id").length))).addClass("committed");
 });
 
