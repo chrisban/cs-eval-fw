@@ -238,21 +238,19 @@ $(".compile").on("click", function(){
 	var index = parentID.substring(17, parentID.length);
 	var lbox = $(this).parent().parent().find("select option");
 	var mode = $(".CodeMirror")[parseInt(index)].CodeMirror.getOption("mode");
-	var wrapper = "7";
-	var args = "-std=c++14 -o a.out source_file.cpp";
+	var lang = "";
 
 	/*TODO: Needs more complex logic for clike langs instead of defaulting to C++ if not python*/
-	if (mode == "python")
-	{
-		wrapper = "24";
-		args = "";
-	}
+	//default to python for now
+	if(mode == "clike")
+		lang = "c++";
+	else
+		lang = "python";
 
 	var data = {
-		"LanguageChoiceWrapper": wrapper,
+		"language": lang,
 		"Program": $(".CodeMirror")[parseInt(index)].CodeMirror.getValue(),
-		"input": $.map(lbox ,function(option) {return option.value;}).join(' '),
-		"compilerArgs": args
+		"input": $.map(lbox ,function(option) {return option.value;}).join(' ')
 	};
 
 	$.ajax({
@@ -274,6 +272,9 @@ $(".compile").on("click", function(){
 		  	if(response.Result)
 		  		result += response.Result;
 		  	btnContext.parent().parent().find(".codeResults").val(result);
+		  },
+		  error: function(xhr, status, err){
+		  	console.log("error: ", xhr, status, err);
 		  }
 	});
 });

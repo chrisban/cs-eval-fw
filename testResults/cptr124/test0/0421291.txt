@@ -1,19 +1,19 @@
 ****** Question 0, type: mchoice ******
 
 Correct answer: False
-Received answer: False
- state: Correct
+Received answer: undefined
+ state: Inorrect
 
 Correct answer: True
-Received answer: True
- state: Correct
+Received answer: undefined
+ state: Inorrect
 
 Correct answer: True
-Received answer: True
- state: Correct
+Received answer: undefined
+ state: Inorrect
 
 
-Question sub-score: 15/15
+Question sub-score: 0/15
 ====================================================
 
 
@@ -21,15 +21,15 @@ Question sub-score: 15/15
 ****** Question 1, type: mchoice ******
 
 Correct answer: i = 3 j = 5 k = 7
-Received answer: i = 3 j = 5 k = 7
- state: Correct
+Received answer: undefined
+ state: Inorrect
 
 Correct answer: i = 3 j = 3 k = 7
-Received answer: i = 3 j = 3 k = 7
- state: Correct
+Received answer: undefined
+ state: Inorrect
 
 
-Question sub-score: 10/10
+Question sub-score: 0/10
 ====================================================
 
 
@@ -150,4 +150,4 @@ Question sub-score: 0/0
 
 
 
-FINAL SCORE: 35/65
+FINAL SCORE: 10/65
