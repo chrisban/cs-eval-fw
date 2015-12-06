@@ -1,16 +1,5 @@
-IN PROGRESS:
- 
-	- See getscript!
-
-TODO: 
-possible: initial ajax after quiz id??
-
-question time countdown -> how much time spent? sub max from left
-
-read only mc choice snippets?
-
 ------------
-Proposal
+Proposal feedback
 ------------
 node.npm
 	-> chroot: sandbox
@@ -26,54 +15,70 @@ Python 3.5.0 -> 3 Specify elsewhere.
 ------------
 
 
-different url per module, not defined in request? check restful standards
-	
-randomly rearrange items within a multiple choice question, and/or randomly populate a test with a subset of questions from a pool of available questions.
 
+*************
+TO RESEARCH:
 
-timing:
-	todo:
-		- time elapsed, server get code
-			-> date obj of start, start+time. freeze both and submit when difference <= 0. Alert user @ 10 min, 5 min. etc.
-
-	questions:
-		-save time elapsed? 
-		- on question switch, prompt user for commit? (pause/save recc time for stats?)
-
-
-- admin datafile 
-	-> json parser
-		-> accepts well-formed and mal-formed JSON objects.
-			-> <<>> denotes plaintext with line breaks and such that need formatting. ex: "<<plain text>>"
-
-- datafile prop field 
-	- what if prop field non-existant or length field NaN/null/etc.?
+	- different url per module, not defined in request? check restful standards
 
 
 
-- Provision (for VMs)
-
-- lockdown browser (restricted urls - visit exam/docu, not google/SO/etc.)
-
-
-- graphic related questions
-	- feasability? did/didn't do it, why
+*************
+IN PROGRESS:
+ 
+	- See getscript!
 
 
-mc finished: 
-	done, can't look back or edit
-	done, can look back, not edit
 
-	not done, can't go forward or back
+*************
+TODO: 
+	- possible: initial ajax after quiz id??
 
-	datafile specifies
+	- read only mc choice snippets?
+
+	- Don't randomize true/false options
 
 
-talk to drA/beckett about lockdown alternative
-	- pointers?
+	- question timing:
+		todo:
+			- time elapsed, server get code
+				-> date obj of start, start+time. freeze both and submit when difference <= 0. Alert user @ 10 min, 5 min. etc.
 
---------------
+			- question time countdown change
+				-> how much time spent? sub max from left
+				-> pause time when question switches
+				-> report time spent
 
+	- admin datafile 
+		-> json parser
+			-> accepts well-formed and mal-formed JSON objects.
+				-> <<>> denotes plaintext with line breaks and such that need formatting. ex: "<<plain text>>"
+
+	- datafile prop field 
+		- what if prop field non-existant or length field NaN/null/etc.?
+
+
+	- Provision (for VMs)
+
+	- lockdown browser (restricted urls - visit exam/docu, not google/SO/etc.)
+
+
+	- graphic related questions
+		- feasability? did/didn't do it, why
+
+
+	- mc finished: 
+		done, can't look back or edit
+		done, can look back, not edit
+
+		not done, can't go forward or back
+
+		datafile specifies
+
+
+-----------------------------------------------------------------------------------------------------------------------------------
+
+*************
 Discussion:
 - Web Security: Jason Gates, Ryan
 	- disable clipboard
@@ -82,6 +87,18 @@ Discussion:
 	Ans:
 	- eval namespace
 	- Object.freeze()
+
+**********
+questions:
+
+reset skeleton code
+caching issues??
+
+emph. practice exams for familiarity -> make security issues crucial as students have time to try and break it or cheat
+
+
+
+
 
 *************
 Completed:
@@ -98,6 +115,7 @@ Completed:
 	done: 
 		- server and templates support multiple choice or code based problems
 		- Before leaving part one, alert user that part one can no longer be edited after beginning part two
+		- randomize mc questions
 
 - submit button submits answer to server
 	done: 
@@ -114,27 +132,3 @@ timing:
 		- suggested timer/progress bar
 			- suggested time tag used to select easy -> hard progression
 			- connect datafile difficulty to per question timing bars
-
-
-**********
-questions:
-
-pegi:
-	commiting per question?
-	show grade as you go or end?
-		- how much detail? 
-
-
-
-lockdown browser
-id session open
-reset skeleton code
-caching issues??
-
-programming 2nd section
-
-
-
-emph. practice exams for familiarity -> make security issues crucial as students have time to try and break it or cheat
-
-tuesday @830 at computer lab 3rd floor brock
