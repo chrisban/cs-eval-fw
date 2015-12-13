@@ -109,7 +109,7 @@ var genericCloseDiv = '</div>';
 
 //function call to be appended per editor instance to init
 //PLACEHOLDERS: <<n>> = question number, <<lang>> = lang type for editor styling
-var editorInit = 'editor($("#code<<n>>")[0], false, "<<lang>>");';
+var editorInit = 'editor($("#code<<n>>")[0], <<rOnly>>, "<<lang>>");';
 
 //export template data
 exports.header = header;

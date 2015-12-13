@@ -32,12 +32,10 @@ IN PROGRESS:
 
 *************
 TODO: 
+
 	- possible: initial ajax after quiz id??
 
-	- read only mc choice snippets?
-
-	- Don't randomize true/false options
-
+	- serve codemirror lang specific js files as needed instead of all regardless (in serveModule)
 
 	- question timing:
 		todo:

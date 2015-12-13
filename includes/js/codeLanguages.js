@@ -1,3 +1,6 @@
+//If adding new language, be sure to find the correct codemirror js file and ensure it loads for styling purposes
+//Corresponding lang specified in datafile see clike for example
+
 exports.getSettings = function getSettings(lang){
 	var options = {
 		args: '',

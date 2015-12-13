@@ -4,7 +4,7 @@ var requestify = require('requestify');
 var deasync = require('deasync');
 var uglify = require("uglify-js");
 
-var moduleVars = require('../../moduleVars');
+var moduleVars = require('./moduleVars');
 var codeLang = require('./codeLanguages');
 
 
@@ -26,6 +26,8 @@ exports.getDataFile = function getDataFile(req, res, callback)
 	});
 }
 
+
+//This function pieces together the module js+html code sent back to the client using the data file + examlogic templates
 exports.serveModule = function serveModule(req, res, data)
 {
 	//TODO: serve codemirror lang specific js files as needed instead of all regardless
@@ -86,34 +88,38 @@ exports.serveModule = function serveModule(req, res, data)
 				{
 					html += pStatementTemplate.replace(/<<n>>/g, i).replace(/<<pstatement>>/, data[i]["problem"]) + ioTemplate.replace(/<<n>>/g, i).replace(/<<code>>/, data[i]["skeleton"]) + qToolsTemplate.replace(/<<n>>/, i);
 					
-					script += editorInit.replace(/<<n>>/g, i).replace(/<<lang>>/g, lang);
+					script += editorInit.replace(/<<n>>/g, i).replace(/<<lang>>/g, lang).replace(/<<rOnly>>/g, false);
 				}
 				//if question type is a programming question (type: "mchoice")
 				else if(data[i]["questionType"] == "mchoice")
 				{
 					html += pStatementTemplate.replace(/<<n>>/g, i).replace(/<<pstatement>>/, data[i]["problem"]) + mcCodeTemplate.replace(/<<n>>/g, i).replace(/<<code>>/, data[i]["skeleton"]);
-					script += editorInit.replace(/<<n>>/g, i).replace(/<<lang>>/g, lang);
+					script += editorInit.replace(/<<n>>/g, i).replace(/<<lang>>/g, lang).replace(/<<rOnly>>/g, true);
 
 					//iterate through each multiple choice supplied in the datafile per question
 					for(var j = 0; j < data[i]["input"].length; j++)
 					{
-						//Shuffle subquestions via fisher-yates shuffle
 						var tempSubQ = data[i]["input"][j][1];
-    					var counter = tempSubQ.length, temp, index;
 
-					    // While there are elements in the array
-					    while (counter > 0) {
-					        // Pick a random index
-					        index = Math.floor(Math.random() * counter);
+						//Shuffle only non true/false MC
+						if(tempSubQ[0].toLowerCase() != "true" && tempSubQ[0].toLowerCase() != "false")
+						{
+							//Shuffle subquestions via fisher-yates shuffle
+    						var counter = tempSubQ.length, temp, index;
+						    // While there are elements in the array
+						    while (counter > 0) {
+						        // Pick a random index
+						        index = Math.floor(Math.random() * counter);
 
-					        // Decrease counter by 1
-					        counter--;
+						        // Decrease counter by 1
+						        counter--;
 
-					        // And swap the last element with it
-					        temp = tempSubQ[counter];
-					        tempSubQ[counter] = tempSubQ[index];
-					        tempSubQ[index] = temp;
-					    }
+						        // And swap the last element with it
+						        temp = tempSubQ[counter];
+						        tempSubQ[counter] = tempSubQ[index];
+						        tempSubQ[index] = temp;
+						    }
+						}
 
 						//TODO: MOVE THIS TO MODULE VARS!!
 						html += mcSubQ.replace(/<<mcsq>>/g, data[i]["input"][j][0]);
@@ -143,6 +149,7 @@ exports.serveModule = function serveModule(req, res, data)
 	res.send( {response_html : html, response_script: script} );
 }
 
+//Grading fn
 exports.processExam = function processExam(req, res, data)
 {
 	console.log("processing...");

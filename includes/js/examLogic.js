@@ -1,6 +1,3 @@
-/*GET js/css files*/
-loadResources();
-
 /*Variables that track test section (0 or 1 = part 1 or 2) and specify divide (defined by number of ".mcOptions" class occurences)*/
 var section = {number: 0, warn: false};
 var structure = Object.freeze({count: $("[id*=questionContainer]").length, divide: $(".mcOptions").length});
@@ -9,15 +6,42 @@ var structure = Object.freeze({count: $("[id*=questionContainer]").length, divid
 var section1 = {};
 
 
-/*Function used to get code editor resources. */
+/*Function used to get code editor resources.*/
+//DOES NOT WORK AS INTENDED, for now serve files via server and link on page
 function loadResources(){
-	var cm = "<link rel='stylesheet' href='/includes/js/codemirror-5.3/lib/codemirror.css'>\
-		<script src='/includes/js/codemirror-5.3/lib/codemirror.js'></script>\
-		<script src='/includes/js/codemirror-5.3/addon/display/autorefresh.js'></script>\
-		<script src='/includes/js/codemirror-5.3/addon/edit/matchbrackets.js'></script>\
-		<script src='/includes/js/codemirror-5.3/mode/clike/clike.js'></script>\
-		<script src='/includes/js/codemirror-5.3/mode/python/python.js'></script>";
-    //$("head").append(cm); TODO: fix!
+	var cmCssResources = [
+    ];
+
+    var cmJsResources = [
+    './includes/js/codemirror-5.3/addon/display/autorefresh.js',
+    './includes/js/codemirror-5.3/addon/edit/matchbrackets.js',
+    './includes/js/codemirror-5.3/mode/clike/clike.js',
+    './includes/js/codemirror-5.3/mode/python/python.js'
+    ];
+
+     for(var i = 0; i < cmCssResources.length; i++)
+    {
+    	var fileref = document.createElement('link');
+        fileref.setAttribute("rel", "stylesheet");
+        fileref.setAttribute("type", "text/css");
+        fileref.setAttribute("href", cmCssResources[i]);
+    	$("head")[0].appendChild(fileref);
+    }
+
+    for(var i = 0; i < cmJsResources.length; i++)
+    {
+    	var fileref = document.createElement('script');
+        fileref.setAttribute("type","text/javascript");
+        fileref.setAttribute("src", cmJsResources[i]);
+    	$("head")[0].appendChild(fileref);
+    }
+
+	//Refresh CM here since we added the cm resource files here instead of on page load which messes with load order.
+	$('.CodeMirror').each(function(idx, el){
+		el.setOption('mode', 'clike');
+		el.CodeMirror.refresh();
+	});
+
 }
 
 
@@ -41,7 +65,7 @@ function editor(id, rOnly, mode)
 }
 
 
-/*Function that starts pbar, accepts a js div object, and max time*/
+//Function that starts pbar, accepts a js div object, and max time
 function initPbar(bar, maxTime){
 	bar = $(bar);
 	var start = new Date();
@@ -50,31 +74,44 @@ function initPbar(bar, maxTime){
 }
 
 
-/*updates bar and formats time remaining into minutes:seconds*/
-function updateProgress(bar, percentage, remainingTime) {
-    bar.css("width", percentage + "%");
-    var formattedSec = Math.round((remainingTime/1000) % 60);
-    var formattedMin = Math.round((remainingTime/(1000*60)) % 60);
-    if(formattedSec < 10) formattedSec = "" + 0 + formattedSec;
-    if(formattedMin < 1) /*necessary due to weird overflow errors giving negative numbers*/
-	{
-		formattedMin = 0;
-    	formattedSec = 00;
-    }
-    bar.next().text(formattedMin + ":" + formattedSec);
-}
-
-
-/*calls updateProgress until it reaches 100%*/
+//calls updateProgress until it reaches 100%
 function animateUpdate(bar, start, maxTime, timeoutVal) {
     var now = new Date();
     var timeDiff = now.getTime() - start.getTime();
     var perc = Math.round((timeDiff/maxTime)*100);
-	if (perc <= 100) {
+	if (perc <= 100 && (maxTime - timeDiff) > 0) {
 		updateProgress(bar, perc, (maxTime - timeDiff));
 		setTimeout(animateUpdate, timeoutVal, bar, start, maxTime);
 	}
 }
+
+
+//Updates bar and formats time remaining into minutes:seconds
+function updateProgress(bar, percentage, remainingTime) {
+    bar.css("width", percentage + "%");
+    var formattedMin = Math.floor((remainingTime % (1000*60*60)) / (1000*60));
+    var formattedSec = Math.floor(((remainingTime % (1000*60*60)) % (1000*60)) / 1000);
+
+    //force seconds to show leading 0 (e.g. 1:07 vs 1:7 )
+    if(formattedSec < 10) 
+    	formattedSec = "0" + formattedSec;
+
+     //necessary due to weird overflow errors giving negative numbers
+    if(formattedMin.valueOf() < 1)
+		formattedMin = 0;
+    if(formattedSec.valueOf() < 1)
+    	formattedSec = "00";
+
+    bar.next().text(formattedMin + ":" + formattedSec);
+
+    //Alert student of time remaining reaches a certain point (10min atm)
+	if (bar.parent().parent().attr('id') == 'totalProgress' && formattedMin.valueOf() == 10 && formattedSec.valueOf() == 0)
+		alert('You have 10 minutes remaining! The test will automatically submit if you have not already done so once time has elapsed.');
+
+}
+
+
+
 
 
 /*accepts an integer as target index and switches from current problem to specified problem via index*/
@@ -281,7 +318,8 @@ $(".compile").on("click", function(){
 
 
 /*Button which applies a class to thumbnails in order to aid students in tracking which questions are complete*/
-$(".commit").on("click", function(){recordSection();
+$(".commit").on("click", function(){
+	recordSection();
   	$("#navShortcutElement" + parseInt($(this).parent().attr("id").substring(17, $(this).parent().attr("id").length))).addClass("committed");
 });
 
