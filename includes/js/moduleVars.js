@@ -38,6 +38,13 @@
 */
 
 
+//
+var moduleSelector = '<div id="requestInfo">\
+Course ID: <input type="text" id="courseID" value="cptr124"><br />\
+Quiz ID: <input type="text" id="quizID" value="0"><br />\
+</div>'
+
+
 //TODO: move all codemirror libs here
 var requires = '<link type="text/css" href="/includes/css/include.css" rel="stylesheet" media="screen"/>';
 
@@ -112,6 +119,7 @@ var genericCloseDiv = '</div>';
 var editorInit = 'editor($("#code<<n>>")[0], <<rOnly>>, "<<lang>>");';
 
 //export template data
+exports.moduleSelector = moduleSelector;
 exports.header = header;
 exports.requires = requires;
 exports.pStatementTemplate = pStatementTemplate;

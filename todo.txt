@@ -33,8 +33,6 @@ IN PROGRESS:
 *************
 TODO: 
 
-	- possible: initial ajax after quiz id??
-
 	- serve codemirror lang specific js files as needed instead of all regardless (in serveModule)
 
 	- question timing:

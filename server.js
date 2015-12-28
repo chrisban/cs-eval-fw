@@ -33,6 +33,12 @@ app.get('/admin/', function (req, res) {
   /*************************/
  /* Routing (Controllers) */
 /*************************/
+//handle initial post request defining course/quiz info
+app.post('/getModuleSelector', function (req, res) {
+	functions.requestQuizInfo(req, res, functions.getModuleSelector);
+});
+
+
 //handle post request to retrieve datafiles
 app.post('/getModule', function (req, res) {
 	functions.getDataFile(req, res, functions.serveModule);

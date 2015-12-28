@@ -11,6 +11,17 @@ var codeLang = require('./codeLanguages');
 //current dir = /includes/js
 
 
+//Get/serve getModule interface to client
+exports.requestQuizInfo = function getModuleSelector (req, res) {
+	var minifiedSelector = uglify.minify([__dirname + '/ModuleSelector.js']);
+	var scriptSelector = minifiedSelector.code; //all listeners and js code to be evald once client has received
+
+	//send object
+	res.type('json');
+	res.send( {response_html : moduleVars.moduleSelector, response_script: scriptSelector} );
+}
+
+
 //Get specified datafile
 exports.getDataFile = function getDataFile(req, res, callback)
 {
@@ -144,6 +155,7 @@ exports.serveModule = function serveModule(req, res, data)
 		//TODO: proof of concept code for book module
 	}
 
+	
 	//send object
 	res.type('json');
 	res.send( {response_html : html, response_script: script} );

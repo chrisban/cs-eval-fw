@@ -1,32 +1,21 @@
-/*Variables that track test section (0 or 1 = part 1 or 2) and specify divide (defined by number of ".mcOptions" class occurences)*/
+loadCmResources();
+
+//Variables that track test section (0 or 1 = part 1 or 2) and specify divide (defined by number of ".mcOptions" class occurences)
 var section = {number: 0, warn: false};
 var structure = Object.freeze({count: $("[id*=questionContainer]").length, divide: $(".mcOptions").length});
 
-/*section1 will hold section1 answers and freeze them so they may not be modified after completing part 1*/
+//section1 will hold section1 answers and freeze them so they may not be modified after completing part 1
 var section1 = {};
 
 
-/*Function used to get code editor resources.*/
-//DOES NOT WORK AS INTENDED, for now serve files via server and link on page
-function loadResources(){
-	var cmCssResources = [
-    ];
-
+//TODO: REPLACE ./ WITH REAL LINKS TO ENDPOINT WHEN MIGRATE TO VM
+function loadCmResources(){
     var cmJsResources = [
-    './includes/js/codemirror-5.3/addon/display/autorefresh.js',
-    './includes/js/codemirror-5.3/addon/edit/matchbrackets.js',
-    './includes/js/codemirror-5.3/mode/clike/clike.js',
-    './includes/js/codemirror-5.3/mode/python/python.js'
+	    './includes/js/codemirror-5.3/addon/display/autorefresh.js',
+	    './includes/js/codemirror-5.3/addon/edit/matchbrackets.js',
+	    './includes/js/codemirror-5.3/mode/clike/clike.js',
+	    './includes/js/codemirror-5.3/mode/python/python.js'
     ];
-
-     for(var i = 0; i < cmCssResources.length; i++)
-    {
-    	var fileref = document.createElement('link');
-        fileref.setAttribute("rel", "stylesheet");
-        fileref.setAttribute("type", "text/css");
-        fileref.setAttribute("href", cmCssResources[i]);
-    	$("head")[0].appendChild(fileref);
-    }
 
     for(var i = 0; i < cmJsResources.length; i++)
     {
@@ -36,17 +25,18 @@ function loadResources(){
     	$("head")[0].appendChild(fileref);
     }
 
-	//Refresh CM here since we added the cm resource files here instead of on page load which messes with load order.
+    /*
+    //Refresh CM here since we added the cm resource files here instead of on page load which messes with load order.
 	$('.CodeMirror').each(function(idx, el){
-		el.setOption('mode', 'clike');
+		//el.setOption('mode', 'clike');
 		el.CodeMirror.refresh();
 	});
-
+	*/
 }
 
 
-/*A function that will create a codemirror editor instance with passed id, bool readonly, and language mode.*/
-/*Currently does not work for codemirror, as it seems to need to be loaded immediately*/
+//A function that will create a codemirror editor instance with passed id, bool readonly, and language mode.
+//Currently does not work for codemirror, as it seems to need to be loaded immediately
 function editor(id, rOnly, mode)
 {
     CodeMirror.fromTextArea(id, 
@@ -114,21 +104,21 @@ function updateProgress(bar, percentage, remainingTime) {
 
 
 
-/*accepts an integer as target index and switches from current problem to specified problem via index*/
+//accepts an integer as target index and switches from current problem to specified problem via index
 function goNav(targetIndex){
 	var curr = $("[id*=questionContainer]:visible");
 	var currentIndex = parseInt(curr.attr("id").substring(17, curr.attr("id").length));
-	/*if target is 0 - max# defined in structure, and target is not current view*/
+	//if target is 0 - max# defined in structure, and target is not current view
 	if(targetIndex >= 0 && targetIndex < structure.count && targetIndex != currentIndex)
 	{
-		/*Init pbar only if question is not active to avoid resetting, while starting automatically.*/
+		//Init pbar only if question is not active to avoid resetting, while starting automatically.
 		if($("#progressB"+targetIndex).hasClass("activeBar") == false)
 		{
 			$("#progressB"+targetIndex).addClass("activeBar");
 			initPbar($("#progressB"+targetIndex).children().children()[0], 60000 * ((difficulty[targetIndex]+1)*10));
 		}
 		
-		/*disable/enable next/prev buttons as needed*/
+		//disable/enable next/prev buttons as needed
 		if(targetIndex == 0)
 		{
 			$("#navBLeft").removeClass("button");
@@ -151,10 +141,10 @@ function goNav(targetIndex){
 		}
 		$("#navShortcutElement" + currentIndex).removeClass("selected");
 		$("#navShortcutElement" + targetIndex).addClass("selected");
-		/*if forward*/
+		//if forward
 		if(targetIndex > currentIndex)
 		{
-			/*If attempting to access second section from first section by checking against frozen structure.divide var. (current before divide, target after)*/
+			//If attempting to access second section from first section by checking against frozen structure.divide var. (current before divide, target after)
 			if(currentIndex < $(".mcOptions").length && targetIndex >= $(".mcOptions").length)
 			{
 				
@@ -163,7 +153,7 @@ function goNav(targetIndex){
 				$("#questionContainer" + targetIndex).toggle("slide", {"direction":"right"});
 			});
 		}
-		/*if backward*/
+		//if backward
 		else
 		{
 			curr.toggle("slide", {"direction":"right"}, function(){
@@ -174,31 +164,31 @@ function goNav(targetIndex){
 }
 
 
-/*populate nav list, append "|" character to display separation between code and other question types using frozen structure.divide var*/
+//populate nav list, append "|" character to display separation between code and other question types using frozen structure.divide var
 for(var i = 0; i < $("[id*=questionContainer]").length; i++)
 {
-	/*append shortcut*/
+	//append shortcut
 	$("#navShortcutContainer").append("<span id=\'navShortcutElement" + i + "\'>" + (i+1) + "</span>");
-	/*apply selected class to first shortcut*/
+	//apply selected class to first shortcut
 	if(i==0)
 		$("#navShortcutElement" + i).addClass("selected");
 	if(i < structure.divide)
 		$("#navShortcutElement" + i).addClass("navShortcutElement section1");
 	else
 		$("#navShortcutElement" + i).addClass("navShortcutElement section2");
-	/*Print visual separator*/
+	//Print visual separator
 	if(i == structure.divide - 1)
 		$("#navShortcutContainer").append("<b> |<b/>");
 }
 
 
-/*navigate between problems using shortcuts via goNav function. -1 to compensate for starting at 1 instead of 0*/
+//navigate between problems using shortcuts via goNav function. -1 to compensate for starting at 1 instead of 0
 $(".navShortcutElement").on("click", function(){
 	goNav(parseInt($(this).html())-1);
 });
 
 
-/*navigate between problems using arrow keys via goNav function*/
+//navigate between problems using arrow keys via goNav function
 $("[id*=navB]").on("click", function(){
 	var direction = $(this).attr("id").substring(4, $(this).attr("id").length);
 	var curr = $("[id*=questionContainer]:visible");
@@ -213,21 +203,21 @@ $("[id*=navB]").on("click", function(){
 });
 
 
-/*dynamically add items from nearest selectbox.*/
+//dynamically add items from nearest selectbox.
 $(".addInput").on("click", function(){
 	$(this).parent().find("select").append("<option>"+$(this).prev("input").val()+"</option>");
 	$(this).prev("input").val("");
 });
 
 
-/*dynamically remove items from nearest selectbox.*/
+//dynamically remove items from nearest selectbox.
 $(".delInput").on("click", function(){
 	var lbox = $(this).parent().find("select");
 	$("option:selected", lbox).remove();
 });
 
 
-/* Dynamic listener to allow for only one radio to be selected per question */
+// Dynamic listener to allow for only one radio to be selected per question 
 $(".mcOptions").on("change", "[type=radio]", function (e) {
 	var thisCtx = $(this);
 	$.each($("." + $(this).attr("class")), function(){
@@ -237,7 +227,7 @@ $(".mcOptions").on("change", "[type=radio]", function (e) {
 });
 
 
-/*Records input from section 1 and freezes object in order to keep answers from being modified.*/
+//Records input from section 1 and freezes object in order to keep answers from being modified.
 function recordSection()
 {
 	section.warn = true;
@@ -262,9 +252,9 @@ function recordSection()
 }
 
 
-/*On compile, finds parents parents id (pos. 17 to string end as the id will always be "questionContainer#") to get q. num which is used to specify which codemirror editor. Then gets the editor value, maps inputs to array->str. Finally posts data to server via ajax call*/
+//On compile, finds parents parents id (pos. 17 to string end as the id will always be "questionContainer#") to get q. num which is used to specify which codemirror editor. Then gets the editor value, maps inputs to array->str. Finally posts data to server via ajax call
 $(".compile").on("click", function(){
-	/*Ensures student is aware they are beginning next section*/
+	//Ensures student is aware they are beginning next section
 	if(section.warn == false)
 	{
 		$("#dialogWarn").dialog("open");
@@ -277,7 +267,7 @@ $(".compile").on("click", function(){
 	var mode = $(".CodeMirror")[parseInt(index)].CodeMirror.getOption("mode");
 	var lang = "";
 
-	/*TODO: Needs more complex logic for clike langs instead of defaulting to C++ if not python*/
+	//TODO: Needs more complex logic for clike langs instead of defaulting to C++ if not python
 	//default to python for now
 	if(mode == "clike")
 		lang = "c++";
@@ -317,20 +307,20 @@ $(".compile").on("click", function(){
 });
 
 
-/*Button which applies a class to thumbnails in order to aid students in tracking which questions are complete*/
+//Button which applies a class to thumbnails in order to aid students in tracking which questions are complete
 $(".commit").on("click", function(){
 	recordSection();
   	$("#navShortcutElement" + parseInt($(this).parent().attr("id").substring(17, $(this).parent().attr("id").length))).addClass("committed");
 });
 
 
-/*on submit click, prompt user with modal*/
+//on submit click, prompt user with modal
 $(".submit").on("click", function(){
 	$("#dialogSubmit").dialog("open");
 });
 
 
-/*On submit, send to server. Uses structure.divide because it dictates the length of mchoice types since they will always come first*/
+//On submit, send to server. Uses structure.divide because it dictates the length of mchoice types since they will always come first
 function submitExam(){
 	recordSection();
 	$("#dialogSubmit").html("processing " + structure.count + " answers. . .");
@@ -373,7 +363,7 @@ function submitExam(){
 		  success: function(response){
 		  	if(response.status == "ok")
 	  		{
-				/*Display score to student, disable submit button*/
+				//Display score to student, disable submit button
 				$("#dialogSubmit").html("Final score: " + response.score);
 		  	}
 		},
@@ -386,7 +376,7 @@ function submitExam(){
 }
 
 
-/*jQueryUI Modal used to retrieve student ID*/
+//jQueryUI Modal used to retrieve student ID
 var errorString = "Error: ID number must be at least 6 digits";
 $( "#dialogID" ).dialog({
 	position: {my: "top+200",at: "top", of: window},
@@ -400,7 +390,7 @@ $( "#dialogID" ).dialog({
 	buttons: {
 	    "Save": function() {
 	      if($("#idNum").val().length >= 6)
-	      {/*TODO: retrieve initpbar val from server!*/
+	      {//TODO: retrieve initpbar val from server!
 	      	$(this).dialog("close");
 	      	initPbar($("#totalProgress .pbar_inner"), testInfo.test_length);
 	      	$("#progressB0").addClass("activeBar");
@@ -434,7 +424,7 @@ $( "#dialogID" ).dialog({
 });
 
 
-/*jQueryUI Modal used to warn student about starting new section*/
+//jQueryUI Modal used to warn student about starting new section
 $( "#dialogWarn" ).dialog({
 	dialogClass: "no-close",
 	autoOpen: false,
@@ -455,7 +445,7 @@ $( "#dialogWarn" ).dialog({
 });
 
 
-/*jQueryUI Modal used to warn student about submitting exam and finishing attempt*/
+//jQueryUI Modal used to warn student about submitting exam and finishing attempt
 $( "#dialogSubmit" ).dialog({
 	autoOpen: false,
 	buttons: [{
@@ -475,6 +465,6 @@ $( "#dialogSubmit" ).dialog({
 });
 
 
-/*Display the first questionContainer*/
+//Display the first questionContainer
 var startElement = $("#questionContainer0");
 startElement.css("display", "block");
