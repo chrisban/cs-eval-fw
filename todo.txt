@@ -37,9 +37,6 @@ TODO:
 
 	- question timing:
 		todo:
-			- time elapsed, server get code
-				-> date obj of start, start+time. freeze both and submit when difference <= 0. Alert user @ 10 min, 5 min. etc.
-
 			- question time countdown change
 				-> how much time spent? sub max from left
 				-> pause time when question switches
@@ -60,7 +57,7 @@ TODO:
 
 
 	- graphic related questions
-		- feasability? did/didn't do it, why
+		- feasability? did/didn't do it, whyn
 
 
 	- mc finished: 
@@ -128,3 +125,5 @@ timing:
 		- suggested timer/progress bar
 			- suggested time tag used to select easy -> hard progression
 			- connect datafile difficulty to per question timing bars
+		- time elapsed, server get code
+			- warn user beforehand

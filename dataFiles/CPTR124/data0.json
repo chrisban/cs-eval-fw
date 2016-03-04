@@ -50,6 +50,7 @@
         "difficulty": "0"
     },
     "prop": {
-        "time": "45"
+        "time": "45",
+        "warn": ["10", "5"]
     }
 }

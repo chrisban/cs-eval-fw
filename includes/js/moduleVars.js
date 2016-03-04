@@ -54,7 +54,7 @@ var requires = '<link type="text/css" href="/includes/css/include.css" rel="styl
 <div>Enter or modify the code below and press \'Compile\' to execute and view results.</div>\
 <div id="bannerRight">\
 	<span class="submit button">Submit Exam</span>\
-	<div id="totalProgress"><div class="pbar_outer" style=""><div class="pbar_inner" style=""></div><div class="pbar_inner_txt" style="">0:00</div></div></div>\
+	<div id="totalProgress"><div id="statusLabel"></div><div class="pbar_outer" style=""><div class="pbar_inner" style=""></div><div class="pbar_inner_txt" style="">0:00</div></div></div>\
 </div><br />\
 <div id="dialogID" title="Student ID">ID#: <input type="text" id="idNum"><br /><span id="idStatus"></span></div>\
 <div id="dialogWarn" title="Begin next section?">Once you begin this section, you will not be able to modify the previous section\'s answers. Do you wish to continue?</div>\

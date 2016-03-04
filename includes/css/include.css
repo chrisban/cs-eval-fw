@@ -26,6 +26,12 @@
 
 
 /* Progress bar */
+#statusLabel{
+	padding-left: 25px;
+	color: #ff0000;
+	font-weight: bold;
+	font-size: 12px;
+}
 
 #totalProgress{
 	padding-right: 110px;

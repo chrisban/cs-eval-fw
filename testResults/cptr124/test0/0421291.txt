@@ -141,13 +141,5 @@ Question sub-score: 10/10
 
 
 
-****** Question 5, type: undefined ******
-
-
-Question sub-score: 0/0
-====================================================
-
-
-
 
 FINAL SCORE: 10/65

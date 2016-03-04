@@ -70,8 +70,8 @@ exports.serveModule = function serveModule(req, res, data)
 	var editorInit = moduleVars.editorInit; //function call to be appended per editor instance to init
 
 	//minify js code to send to client to be evaluated
-	var minified = uglify.minify([__dirname + '/examLogic.js']);
-	var script = minified.code; //all listeners and js code to be evald once client has received
+	var baseScript = fs.readFileSync(__dirname + '/examLogic.js', 'utf8'); //all listeners and js code to be evald once client has received
+	var script = ""; //vars to be inserted into baseScript at runtime
 
 	//Decide which module to serve
 	if(req.body.type == 'exam')
@@ -147,8 +147,16 @@ exports.serveModule = function serveModule(req, res, data)
 		}
 
 		//TODO: Decide whether to template or leave as-is.
-		script += "var difficulty = [" + difficulty.join() + "]; var testInfo = Object.freeze({test_id: '" + req.body.test_id + "', course_id: '" + req.body.course_id + "', test_length: '" + data["prop"]["time"]*60000 + "'});";
+		var testInfoVars = "var difficulty = [" + difficulty.join() + "]; var testInfo = Object.freeze({test_id: '" + req.body.test_id + "', course_id: '" + req.body.course_id + "', test_length: '" + data["prop"]["time"]*60000 + "', warnTimes: '" + data["prop"]["warn"] +"'});";
 		html += navTemplate + '<!--END module code-->';
+
+		var completeScript = testInfoVars + baseScript + script;
+		//console.log('baseScript: \n', baseScript + '\n\n');
+		//console.log('script: \n', script + '\n\n');
+		//console.log('completeScript: \n', completeScript + '\n\n');
+
+		var minified = uglify.minify(completeScript, {fromString: true});
+		script = minified.code; //all listeners and js code to be evald once client has received
 	}
 	else if(req.body.type == 'book')
 	{
@@ -171,6 +179,9 @@ exports.processExam = function processExam(req, res, data)
 	var studentScore = 0;
 	var subStudentScore = 0;
 	var resultFile = "";
+
+	//Remove properties field so it doesn't interfere with processing the answers
+	delete data.prop;
 
 	for(var i = 0; i < Object.keys(data).length; i++)
 	{

@@ -1,3 +1,6 @@
+//console.log('testInfo: ', testInfo);
+
+//load other codemirror resources
 loadCmResources();
 
 //Variables that track test section (0 or 1 = part 1 or 2) and specify divide (defined by number of ".mcOptions" class occurences)
@@ -6,7 +9,6 @@ var structure = Object.freeze({count: $("[id*=questionContainer]").length, divid
 
 //section1 will hold section1 answers and freeze them so they may not be modified after completing part 1
 var section1 = {};
-
 
 //TODO: REPLACE ./ WITH REAL LINKS TO ENDPOINT WHEN MIGRATE TO VM
 function loadCmResources(){
@@ -93,15 +95,14 @@ function updateProgress(bar, percentage, remainingTime) {
     	formattedSec = "00";
 
     bar.next().text(formattedMin + ":" + formattedSec);
-
-    //Alert student of time remaining reaches a certain point (10min atm)
-	if (bar.parent().parent().attr('id') == 'totalProgress' && formattedMin.valueOf() == 10 && formattedSec.valueOf() == 0)
-		alert('You have 10 minutes remaining! The test will automatically submit if you have not already done so once time has elapsed.');
-
 }
 
 
-
+//Update label content
+function updateStatusLabel(message){
+	console.log('Status label update: ' + message);
+	$('#statusLabel').html(message);
+}; 
 
 
 //accepts an integer as target index and switches from current problem to specified problem via index
@@ -375,6 +376,41 @@ function submitExam(){
 	});
 }
 
+//spawn a warning for each of the specified times
+function warnTiming (warnTimes) {
+	warnTimes = warnTimes.split(',');
+	var msg = '';
+	for(var i = 0, warnCount = warnTimes.length; i < warnCount; i++)
+	{
+		//console.log('warnTimes: ', warnTimes);
+
+		msg = 'WARNING: ' + warnTimes[i] + ' minutes remaining!';
+
+		//Warn when n mins left, testInfo.test_length -> ms
+		setTimeout(updateStatusLabel, (testInfo.test_length - (warnTimes[i] * 60000)), msg);
+	}
+}
+
+//Open submit modal, lock submit btn, then submit exam
+function timeoutSubmitExam()
+{
+	$("#dialogSubmit").dialog("open");
+	$("#dialogSubmitBtn").button("option", "disabled", true); 
+	submitExam();
+}
+
+function initExam()
+{
+	//Initialize test timeout limit and time warnings
+	setTimeout(timeoutSubmitExam, (testInfo.test_length));
+	warnTiming(testInfo.warnTimes);
+
+	//Init progress bar
+	initPbar($("#totalProgress .pbar_inner"), testInfo.test_length);
+  	$("#progressB0").addClass("activeBar");
+	initPbar($("#progressB0").children().children()[0], 60000 * ((difficulty[0]+1)*10));
+}
+
 
 //jQueryUI Modal used to retrieve student ID
 var errorString = "Error: ID number must be at least 6 digits";
@@ -392,9 +428,7 @@ $( "#dialogID" ).dialog({
 	      if($("#idNum").val().length >= 6)
 	      {//TODO: retrieve initpbar val from server!
 	      	$(this).dialog("close");
-	      	initPbar($("#totalProgress .pbar_inner"), testInfo.test_length);
-	      	$("#progressB0").addClass("activeBar");
-			initPbar($("#progressB0").children().children()[0], 60000 * ((difficulty[0]+1)*10));
+	      	initExam();
 	      }
 	      else
 	      {
@@ -410,9 +444,7 @@ $( "#dialogID" ).dialog({
    		if($("#idNum").val().length >= 6)
    		{
           	$(this).dialog( "close" );
-	      	initPbar($("#totalProgress .pbar_inner"), testInfo.test_length);
-	      	$("#progressB0").addClass("activeBar");
-			initPbar($("#progressB0").children().children()[0], 60000 * ((difficulty[0]+1)*10));
+          	initExam();
    		}
         else
         {
