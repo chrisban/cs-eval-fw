@@ -38,9 +38,8 @@ TODO:
 	- question timing:
 		todo:
 			- question time countdown change
-				-> how much time spent? sub max from left
-				-> pause time when question switches
-				-> report time spent
+				-> how much time spent? sub max from left 
+					DECIDE WHETHER TO COUNT UP OR DOWN AND UPDATE ACCORDINGLY, SEE TODO comments
 
 	- admin datafile 
 		-> json parser
@@ -57,7 +56,7 @@ TODO:
 
 
 	- graphic related questions
-		- feasability? did/didn't do it, whyn
+		- feasability? did/didn't do it, why
 
 
 	- mc finished: 
@@ -127,3 +126,7 @@ timing:
 			- connect datafile difficulty to per question timing bars
 		- time elapsed, server get code
 			- warn user beforehand
+		- question time countdown change
+				- how much time spent? sub max from left
+				- pause time when question switches
+				- report time spent

@@ -7,6 +7,14 @@ loadCmResources();
 var section = {number: 0, warn: false};
 var structure = Object.freeze({count: $("[id*=questionContainer]").length, divide: $(".mcOptions").length});
 
+//Multi-dem array [[dirty bit, max time(ms), timeDiff, time of pause(date.getTime()), current time(min)]] used to preserve timers
+var timingData = new Array();
+
+
+//Difficulty multiplier used to calculate max time for questions (essentially, question difficulty * n = max minutes it should take)
+//TODO: Define in datafile and report. Default to 10 if n/a. Also update serverFunctions.js:183
+var difficultyMultiplier = 10;
+
 //section1 will hold section1 answers and freeze them so they may not be modified after completing part 1
 var section1 = {};
 
@@ -58,22 +66,32 @@ function editor(id, rOnly, mode)
 
 
 //Function that starts pbar, accepts a js div object, and max time
-function initPbar(bar, maxTime){
+function initPbar(bar, maxTime, key){
+	timingData[key] = [0, maxTime, 1, 0, '0:00'];
 	bar = $(bar);
 	var start = new Date();
     var timeoutVal = 1000;
-    animateUpdate(bar, start, maxTime, timeoutVal);
+
+    //begin update loop, passing bar div, start time obj, relevant timingData key, and update timout value
+    animateUpdate(bar, start, key, timeoutVal);
 }
 
 
-//calls updateProgress until it reaches 100%
-function animateUpdate(bar, start, maxTime, timeoutVal) {
+//calls updateProgress until it reaches 100%. 
+//args: bar: the bar div, start: the starting time object, timeoutVal: update at this frequency (ms), key: relevant timingData key
+function animateUpdate(bar, start, key, timeoutVal) {
+    //Setting current date object, maxtime (the time limit (ms)), and timeDiff
     var now = new Date();
+    var maxTime = timingData[key][1];
     var timeDiff = now.getTime() - start.getTime();
+
+    //TODO: perc gives count down, using timeDiff instead would give stopwatch-esque. Do we want to count down or up? Keep in mind you must update adjustTiming() design if this is switched. Also relevant process exam display text (serverFunctions.js:192)
     var perc = Math.round((timeDiff/maxTime)*100);
+    timingData[key][2] = timeDiff;
+
 	if (perc <= 100 && (maxTime - timeDiff) > 0) {
 		updateProgress(bar, perc, (maxTime - timeDiff));
-		setTimeout(animateUpdate, timeoutVal, bar, start, maxTime);
+		setTimeout(animateUpdate, timeoutVal, bar, start, key);
 	}
 }
 
@@ -99,24 +117,44 @@ function updateProgress(bar, percentage, remainingTime) {
 
 
 //Update label content
-function updateStatusLabel(message){
+function updateStatusLabel(message) {
 	console.log('Status label update: ' + message);
 	$('#statusLabel').html(message);
-}; 
+}
+
+function adjustTiming(currentIndex, targetIndex) {
+	//if current timing isn't finished (timeDiff > 0)
+	if (timingData[currentIndex][2] > 0) {
+		//Mark target index as dirty and backup time of switch and the current time string
+		timingData[currentIndex][0] = 1;
+		var now = new Date();
+		timingData[currentIndex][3] = now.getTime();
+		timingData[currentIndex][4] = $("#progressB" + currentIndex).children().children()[1]['innerHTML'];
+
+	}
+
+	//if target is dirty, adjust maxTime to reflect
+	if (timingData[targetIndex][2] > 0 && timingData[targetIndex][0] == 1) {
+		//now - time of pause + current maxtime = adjusted maxtime
+		timingData[targetIndex][1] = (now.getTime() - timingData[targetIndex][3]) + timingData[targetIndex][1];
+		//adjusted, so set dirty to 0
+		timingData[targetIndex][0] = 0;
+	}
+}
 
 
 //accepts an integer as target index and switches from current problem to specified problem via index
-function goNav(targetIndex){
+function goNav(targetIndex) {
 	var curr = $("[id*=questionContainer]:visible");
 	var currentIndex = parseInt(curr.attr("id").substring(17, curr.attr("id").length));
 	//if target is 0 - max# defined in structure, and target is not current view
 	if(targetIndex >= 0 && targetIndex < structure.count && targetIndex != currentIndex)
 	{
 		//Init pbar only if question is not active to avoid resetting, while starting automatically.
-		if($("#progressB"+targetIndex).hasClass("activeBar") == false)
+		if($("#progressB" + targetIndex).hasClass("activeBar") == false)
 		{
-			$("#progressB"+targetIndex).addClass("activeBar");
-			initPbar($("#progressB"+targetIndex).children().children()[0], 60000 * ((difficulty[targetIndex]+1)*10));
+			$("#progressB" + targetIndex).addClass("activeBar");
+			initPbar($("#progressB" + targetIndex).children().children()[0], 60000 * ((difficulty[targetIndex] + 1) * difficultyMultiplier), targetIndex);
 		}
 		
 		//disable/enable next/prev buttons as needed
@@ -124,43 +162,45 @@ function goNav(targetIndex){
 		{
 			$("#navBLeft").removeClass("button");
 			$("#navBLeft").addClass("button_disable");
-		}
-		else
+		} else
 		{
 			$("#navBLeft").removeClass("button_disable");
 			$("#navBLeft").addClass("button");
 		}
+
 		if(targetIndex ==  structure.count - 1)
 		{
 			$("#navBRight").removeClass("button");
 			$("#navBRight").addClass("button_disable");
-		}
-		else
+		} else
 		{
 			$("#navBRight").removeClass("button_disable");
 			$("#navBRight").addClass("button");
 		}
+
 		$("#navShortcutElement" + currentIndex).removeClass("selected");
 		$("#navShortcutElement" + targetIndex).addClass("selected");
+
 		//if forward
 		if(targetIndex > currentIndex)
 		{
 			//If attempting to access second section from first section by checking against frozen structure.divide var. (current before divide, target after)
-			if(currentIndex < $(".mcOptions").length && targetIndex >= $(".mcOptions").length)
-			{
+			// if(currentIndex < $(".mcOptions").length && targetIndex >= $(".mcOptions").length)
+			// {
 				
-			}
+			// }
+
 			curr.toggle("slide", {"direction":"left"}, function(){
 				$("#questionContainer" + targetIndex).toggle("slide", {"direction":"right"});
 			});
-		}
-		//if backward
-		else
-		{
+		} else { //if backward
 			curr.toggle("slide", {"direction":"right"}, function(){
 				$("#questionContainer" + targetIndex).toggle("slide", {"direction":"left"});
 			});
 		}
+
+		//Adjust time, if necessary
+		adjustTiming(currentIndex, targetIndex);
 	}
 }
 
@@ -253,7 +293,9 @@ function recordSection()
 }
 
 
-//On compile, finds parents parents id (pos. 17 to string end as the id will always be "questionContainer#") to get q. num which is used to specify which codemirror editor. Then gets the editor value, maps inputs to array->str. Finally posts data to server via ajax call
+/** On compile, finds parents parents id (pos. 17 to string end as the id will always be "questionContainer#") to get q. num which is used to specify which codemirror editor. 
+ * Then gets the editor value, maps inputs to array->str. Finally posts data to server via ajax call
+**/
 $(".compile").on("click", function(){
 	//Ensures student is aware they are beginning next section
 	if(section.warn == false)
@@ -330,13 +372,21 @@ function submitExam(){
 	var num = [];
 	var solution = [];
 	var input = [];
+	var timings = [];
+
+	//record mult-choice question data
 	for(var i = 0; i < structure.divide; i++)
 	{
 		type.push("mchoice");
 		num.push(i);
 		solution.push(section1.ans[i]);
 		input.push([]);
+
+		//if undefined, it means the question was never opened or never had it's timing adjusted. If unadjusted, current index below takes care of that. Otherwise question was skipped.
+		timings.push((timingData[i]) ? timingData[i][4] : 'No data');
 	}
+
+	//record code question data
 	for(var i = structure.divide; i < structure.count; i++)
 	{
 		type.push("code");
@@ -344,7 +394,18 @@ function submitExam(){
 		solution.push($(".CodeMirror")[i].CodeMirror.getValue());
 		var lbox = $("#questionContainer" + i).find("select option");
 		input.push($.map(lbox ,function(option) {return option.value;}));
+		timings.push((timingData[i]) ? timingData[i][4] : 'No data');
 	}
+
+	//get current index, update pbar timing since only the current one will be outdated on submit
+	var curr = $("[id*=questionContainer]:visible");
+	var currentIndex = parseInt(curr.attr("id").substring(17, curr.attr("id").length));
+	timings[currentIndex] = $("#progressB" + currentIndex).children().children()[1]['innerHTML'];
+
+	//get exam time
+	var examPbarDiv = $('#totalProgress').children()[1];
+	timings.push(examPbarDiv.children[1]['innerHTML']);
+
 	var data = {
 		"test_id": testInfo.test_id,
 		"course_id": testInfo.course_id,
@@ -352,7 +413,8 @@ function submitExam(){
 		"problemType": type,
 		"problemNum": num,
 		"solution": solution,
-		"input": input
+		"input": input,
+		"timings": timings
 	};
 
 	$.ajax({
@@ -366,6 +428,7 @@ function submitExam(){
 	  		{
 				//Display score to student, disable submit button
 				$("#dialogSubmit").html("Final score: " + response.score);
+				$('#bannerRight > span').html('View score');
 		  	}
 		},
 		error: function(response){
@@ -406,9 +469,9 @@ function initExam()
 	warnTiming(testInfo.warnTimes);
 
 	//Init progress bar
-	initPbar($("#totalProgress .pbar_inner"), testInfo.test_length);
+	initPbar($("#totalProgress .pbar_inner"), testInfo.test_length, 'examTotal');
   	$("#progressB0").addClass("activeBar");
-	initPbar($("#progressB0").children().children()[0], 60000 * ((difficulty[0]+1)*10));
+	initPbar($("#progressB0").children().children()[0], 60000 * ((difficulty[0] + 1) * difficultyMultiplier), 0);
 }
 
 
@@ -426,7 +489,9 @@ $( "#dialogID" ).dialog({
 	buttons: {
 	    "Save": function() {
 	      if($("#idNum").val().length >= 6)
-	      {//TODO: retrieve initpbar val from server!
+	      {
+	      //TODO: retrieve initpbar val from server!
+	      //I don't remember what I meant by this... maybe I already fixed this by doing initExam?
 	      	$(this).dialog("close");
 	      	initExam();
 	      }

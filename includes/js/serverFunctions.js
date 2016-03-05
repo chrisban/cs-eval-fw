@@ -179,8 +179,10 @@ exports.processExam = function processExam(req, res, data)
 	var studentScore = 0;
 	var subStudentScore = 0;
 	var resultFile = "";
+	var prop = data.prop;
+	var difficultyMultiplier = 10;
 
-	//Remove properties field so it doesn't interfere with processing the answers
+	//Remove properties field so it doesn't interfere with processing the answers (it would appear as though it were another question but with no data. Easier just to delete the property instead of coding around it)
 	delete data.prop;
 
 	for(var i = 0; i < Object.keys(data).length; i++)
@@ -228,9 +230,9 @@ exports.processExam = function processExam(req, res, data)
 				{
 					subStudentScore += parseInt(data[i]["points"][j]);
 					studentScore += parseInt(data[i]["points"][j]);
-					resultFile += "status: correct\n";
+					resultFile += "status: correct\n\n";
 				} else
-					resultFile += "status: incorrect\n";
+					resultFile += "status: incorrect\n\n";
 
 				//result = compile(userData);
 				//console.log(i, "continued");
@@ -268,9 +270,12 @@ exports.processExam = function processExam(req, res, data)
 					resultFile += "Inorrect\n\n";
 			}
 		}
+
+		resultFile += "Time remaining: " + req.body.timings[i] + "/" + ((parseInt(data[i]['difficulty']) + 1) * difficultyMultiplier) + ":00";
 		resultFile += "\nQuestion sub-score: " + subStudentScore + "/" + subTotalPoints + "\n====================================================\n\n\n\n";
 	}
-	resultFile += "\nFINAL SCORE: " + studentScore + "/" + totalPoints + "\n";
+	resultFile += "\nTIME REMAINING: " + req.body.timings[req.body.timings.length - 1] + "/" + prop['time'] + ":00\n";
+	resultFile += "FINAL SCORE: " + studentScore + "/" + totalPoints + "\n";
 
 	//formulate paths, create directories if necessary. EEXIST e.code means dir already exists. If it doesn't, it will create.
 	var coursePath = './testResults/' + req.body.course_id + '/';
