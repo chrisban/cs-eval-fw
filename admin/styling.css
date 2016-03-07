@@ -1,0 +1,25 @@
+body {
+	background-color:#666;
+	font-family:Verdana, Geneva, sans-serif;
+	font-size: 13px;
+}
+
+#container{
+	background-color:#FFF;
+	width:1100px; 
+	margin:0px auto;
+	padding:5px 20px 20px 20px;
+	box-shadow:0px 0px 20px 0px #333333;
+}
+
+#format {
+	font-size: 11px;
+}
+
+#fileDetails {
+	padding-bottom: 20px;
+}
+
+#uploadFiles {
+	margin-left: 120px;
+}

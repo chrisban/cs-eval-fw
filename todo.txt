@@ -33,39 +33,44 @@ IN PROGRESS:
 *************
 TODO: 
 
-	- serve codemirror lang specific js files as needed instead of all regardless (in serveModule)
+	Programming:
 
-	- question timing:
-		todo:
-			- question time countdown change
-				-> how much time spent? sub max from left 
-					DECIDE WHETHER TO COUNT UP OR DOWN AND UPDATE ACCORDINGLY, SEE TODO comments
+		- serve codemirror lang specific js files as needed instead of all regardless (in serveModule)
 
-	- admin datafile 
-		-> json parser
-			-> accepts well-formed and mal-formed JSON objects.
-				-> <<>> denotes plaintext with line breaks and such that need formatting. ex: "<<plain text>>"
+		- skeleton code reset
 
-	- datafile prop field 
-		- what if prop field non-existant or length field NaN/null/etc.?
+		- question timing:
+			todo:
+				- question time countdown change
+					-> how much time spent? sub max from left 
+						DECIDE WHETHER TO COUNT UP OR DOWN AND UPDATE ACCORDINGLY, SEE TODO comments
 
+		- admin datafile 
+			-> json parser
+				-> Can also accept mal-formed JSON objects.
+					-> <<>> denotes plaintext with line breaks and such that need formatting. ex: "<<plain text>>"
 
-	- Provision (for VMs)
-
-	- lockdown browser (restricted urls - visit exam/docu, not google/SO/etc.)
-
-
-	- graphic related questions
-		- feasability? did/didn't do it, why
+		- datafile prop field 
+			- what if prop field non-existant or length field NaN/null/etc.?
 
 
-	- mc finished: 
-		done, can't look back or edit
-		done, can look back, not edit
+	Deployment:
 
-		not done, can't go forward or back
+		- Provision (for VMs)
 
-		datafile specifies
+		- lockdown browser (restricted urls - visit exam/docu, not google/SO/etc.)
+
+
+	Other:
+		- graphic related questions
+			- feasability? did/didn't do it, why
+
+
+		- Exam navigation: 
+			Currently: can go f/b always but editing part 2 locks part 1
+				-> Not done, shouldn't go to part 2?
+
+			datafile specifies
 
 
 -----------------------------------------------------------------------------------------------------------------------------------
@@ -119,7 +124,7 @@ Completed:
 		- report result/score to student (on full completion)
 		- fix total score calc
 
-timing:
+- timing:
 	done:
 		- suggested timer/progress bar
 			- suggested time tag used to select easy -> hard progression
@@ -130,3 +135,7 @@ timing:
 				- how much time spent? sub max from left
 				- pause time when question switches
 				- report time spent
+
+- admin: 
+	done:
+		- upload well-formed json files, rename them and place in correct directory

@@ -10,6 +10,12 @@
   "author": "Christopher Ban",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.13.0"
+    "body-parser": "^1.15.0",
+    "connect-busboy": "^0.0.2",
+    "deasync": "^0.1.4",
+    "express": "^4.13.0",
+    "fs": "0.0.2",
+    "requestify": "^0.1.17",
+    "uglify-js": "^2.6.2"
   }
 }

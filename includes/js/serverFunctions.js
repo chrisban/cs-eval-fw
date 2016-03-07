@@ -3,6 +3,7 @@ var fs = require('fs');
 var requestify = require('requestify');
 var deasync = require('deasync');
 var uglify = require("uglify-js");
+var busboy = require('connect-busboy');
 
 var moduleVars = require('./moduleVars');
 var codeLang = require('./codeLanguages');
@@ -329,4 +330,33 @@ exports.compile = function compile(data, language, res, type){
         	compileResult = JSON.parse(response.body);
         }
     });
+}
+
+exports.storeData = function storeData(req, res) {
+	var fstream,
+		filePath,
+		fullFilePath,
+		fileDetails;
+
+    req.busboy.on('file', function (fieldname, file, filename) {
+        fileDetails = fieldname.split('===');
+        filename = 'data' + fileDetails[1];
+    	filePath =  './dataFiles/' + fileDetails[0];
+    	fullFilePath =  './dataFiles/' + fileDetails[0] + '/' + filename + '.json';
+
+		try {
+			fs.mkdirSync(filePath);
+		} catch(e) {
+			if ( e.code != 'EEXIST' ) 
+				throw e;
+		}
+
+        fstream = fs.createWriteStream(fullFilePath);
+        file.pipe(fstream);
+    });
+
+    //TODO: write logic that attempts to fix any mal-formed JSON objects. See todo.txt for details.
+
+    res.type('json');  
+	res.send({status : "OK"});
 }

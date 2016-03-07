@@ -1,16 +1,19 @@
 var express = require('express');
 var app = express();
 var bodyParser = require('body-parser');
+var busboy = require('connect-busboy');
 
 var functions = require('./includes/js/serverFunctions');
 
-// for parsing application/json
-app.use(bodyParser.json()); 
+// for parsing application/json and files
+app.use(bodyParser.json());
+app.use(busboy());
 
 //connect static links
 //app.use('/js', express.static(__dirname + '/frontEnd/js'));
 //app.use('/css', express.static(__dirname + '/frontEnd/css'));
 app.use('/includes', express.static(__dirname + '/includes'));
+app.use('/admin', express.static(__dirname + '/admin'));
 
 
 /*********************/
@@ -55,8 +58,10 @@ app.post('/submit', function (req, res) {
 	functions.getDataFile(req, res, functions.processExam);
 });
 
-app.post('/data_upload', function (req, res) {
+app.post('/uploadFile', function (req, res) {
 	//TODO: handle file posting/uploading
+	req.pipe(req.busboy);
+	functions.storeData(req, res);
 });
 
 //start server

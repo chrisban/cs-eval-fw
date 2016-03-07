@@ -6,38 +6,61 @@
 		<script type="text/javascript" src="/includes/js/jquery-2.1.4.min.js"></script>
 		<script type="text/javascript" src="/includes/js/jquery-ui-1.11.4/jquery-ui.min.js"></script>
 		<link type="text/css" href="/includes/js/jquery-ui-1.11.4/jquery-ui.min.css" rel="stylesheet" media="screen"/>
-		<link type="text/css" href="/includes/css/screen.css" rel="stylesheet" media="screen"/>
-
+		<link type="text/css" href="/admin/styling.css" rel="stylesheet" media="screen"/>
 	</head>
-
 	<script>
 		$(function() {
 			$( "#manageFiles" ).dialog({
 				autoOpen: false,
 				buttons: [{
-					id: "dialogSubmitBtn",
-					text: "Submit",
-					click: function() {
-			  			$("#dialogSubmitBtn").button("option", "disabled", true);
-						submitExam();
-			      }
-			    },
-			    {
-			    	text: "Cancel",
+					id: "dialogCloseBtn",
+			    	text: "Close",
 			    	click: function(){
 						$(this).dialog("close");
 			    	}
 			    }]
 			});
 
-			$("#manageFilesBtn").on("click", function(){
-				$( "#manageFiles" ).dialog( "open" );
+			$("#uploadFiles").on("click", function(){
+				var file = new FormData();
+				file.append($('#courseID').val() + '===' + $('#activityID').val(), $('#fileInput')[0].files[0]);
+
+				$.ajax({
+					url: '/uploadFile',
+					type: 'POST',
+					data: file,
+					cache: false,
+					contentType: false,
+					processData: false,
+					success: function(res){
+						$( "#manageFiles" ).html('Upload status: ' + res['status']);
+						$( "#manageFiles" ).dialog('open');
+					}
+				});
 			});
 		});
 	</script>
 	<body> 
-		Upload datafile: <input type="file" id="fileinput" />
-		<input type="button" id="manageFilesBtn">
-		<div id="manageFiles"></div>
+		<div id='container'>
+			<div id='upload'> 
+				<h1>Upload datafile</h1>
+				<span id='format'> Format: JSON (<a href='/admin/examples/json/jsonExample.html'>ex</a>)<br /></span><br />
+
+				<div id='fileDetails'>
+					Course ID: <input id='courseID' type='text' /> <br /><br />
+					Activity ID: <input id='activityID' type='text' />
+				</div>
+
+				<div id='fileUpload'>
+					Upload datafile: <br />
+					<input type="file" id="fileInput" /><br />
+					<input type="button" id="uploadFiles" value='Upload'>
+				</div>
+			</div>
+
+			<div id="manageFiles"><!--jq modal--></div>
+
+			<!-- TODO: view file(s) -->
+		</div>
 	</body>
 </html>
