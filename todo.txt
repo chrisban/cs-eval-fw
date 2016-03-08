@@ -22,22 +22,12 @@ TO RESEARCH:
 	- different url per module, not defined in request? check restful standards
 
 
-
-*************
-IN PROGRESS:
- 
-	- See getscript!
-
-
-
 *************
 TODO: 
 
 	Programming:
 
 		- serve codemirror lang specific js files as needed instead of all regardless (in serveModule)
-
-		- skeleton code reset
 
 		- question timing:
 			todo:
@@ -135,6 +125,10 @@ Completed:
 				- how much time spent? sub max from left
 				- pause time when question switches
 				- report time spent
+
+- skeleon:
+	- commit button now used for resetting code
+	- code can now be reset to original state
 
 - admin: 
 	done:

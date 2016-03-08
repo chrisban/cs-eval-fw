@@ -46,6 +46,7 @@
 	position: relative; 
 	border-radius: 5px;
 	-moz-border-radius: 5px;
+	margin-right: 15px;
 }
 
 .pbar_inner{
@@ -160,12 +161,7 @@
 	border-style: dotted;
 }
 
-/* Commiting */
-.committed{
-	background-color: #9c8;
-}
-
-.commit{
+.reset{
 	position: absolute; 
 	bottom: 0;
 	right: 0;

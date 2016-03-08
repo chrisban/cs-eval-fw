@@ -100,9 +100,9 @@ var mcSubQ = "<div class='mcSubQ'><b><<mcsq>></b><br/>";
 //PLACEHOLDERS: <<n>> = question number, <<o>>, option number, <<mc>> = option
 var mcOptionTemplate = '<input type="radio" class="mc<<n>>" index="<<o>>" value="<<mc>>"><<mc>></input><br />';
 
-//Insert commit button. 1nd div: questionContainer /div (opened in pStatementTemplate).
+//Insert reset button. 1nd div: questionContainer /div (opened in pStatementTemplate).
 //PLACEHOLDERS: <<n>> = question number, <<o>>, option number, <<mc>> = option
-var qToolsTemplate = '<div id="progressB<<n>>">Suggested time: <div class="pbar_outer"><div class="pbar_inner"></div><div class="pbar_inner_txt" style="">0:00</div></div></div> <span class="commit button"> Commit </span> </div>'; 
+var qToolsTemplate = '<div id="progressB<<n>>">Suggested time: <div class="pbar_outer"><div class="pbar_inner"></div><div class="pbar_inner_txt" style="">0:00</div></div></div> <span class="reset button"> Reset Code </span> </div>'; 
 
 //PLACEHOLDERS: <<navshortcuts>> = a span for each index that can be used to quick jump to a specific question.
 var navTemplate = '<div id="nav"><hr />\

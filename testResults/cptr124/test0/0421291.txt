@@ -1,19 +1,19 @@
 ****** Question 0, type: mchoice ******
 
 Correct answer: False
-Received answer: True
+Received answer: undefined
  state: Inorrect
 
 Correct answer: True
-Received answer: True
- state: Correct
-
-Correct answer: True
-Received answer: False
+Received answer: undefined
  state: Inorrect
 
-Time remaining: 9:54/10:00
-Question sub-score: 5/15
+Correct answer: True
+Received answer: undefined
+ state: Inorrect
+
+Time remaining: 9:24/10:00
+Question sub-score: 0/15
 ====================================================
 
 
@@ -21,14 +21,14 @@ Question sub-score: 5/15
 ****** Question 1, type: mchoice ******
 
 Correct answer: i = 3 j = 5 k = 7
-Received answer: i = 3 j = 3 k = 7
+Received answer: undefined
  state: Inorrect
 
 Correct answer: i = 3 j = 3 k = 7
-Received answer: i = 5 j = 5 k = 7
+Received answer: undefined
  state: Inorrect
 
-Time remaining: 9:55/10:00
+Time remaining: No data/10:00
 Question sub-score: 0/10
 ====================================================
 
@@ -58,7 +58,7 @@ Received output:
 
 status: incorrect
 
-Time remaining: 9:57/10:00
+Time remaining: No data/10:00
 Question sub-score: 0/15
 ====================================================
 
@@ -113,7 +113,7 @@ Received output: Enter vector size: Enter element 0: Enter element 1: -1
 
 status: incorrect
 
-Time remaining: 19:58/20:00
+Time remaining: No data/20:00
 Question sub-score: 0/15
 ====================================================
 
@@ -139,11 +139,12 @@ Received output: Student
 
 status: correct
 
-Time remaining: 9:57/10:00
+Time remaining: No data/10:00
 Question sub-score: 10/10
 ====================================================
 
 
 
-TIME REMAINING: 44:43/45:00
-FINAL SCORE: 15/65
+
+TIME REMAINING: 44:24/45:00
+FINAL SCORE: 10/65

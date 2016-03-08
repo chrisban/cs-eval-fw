@@ -1,11 +1,9 @@
 //console.log('testInfo: ', testInfo);
 
-//load other codemirror resources
-loadCmResources();
-
-//Variables that track test section (0 or 1 = part 1 or 2) and specify divide (defined by number of ".mcOptions" class occurences)
+//Variables that track test section (0 or 1 = part 1 or 2), specify divide (defined by number of ".mcOptions" class occurences), and backup skeleton code
 var section = {number: 0, warn: false};
 var structure = Object.freeze({count: $("[id*=questionContainer]").length, divide: $(".mcOptions").length});
+var skeletonCode = [];
 
 //Multi-dem array [[dirty bit, max time(ms), timeDiff, time of pause(date.getTime()), current time(min)]] used to preserve timers
 var timingData = new Array();
@@ -18,7 +16,8 @@ var difficultyMultiplier = 10;
 //section1 will hold section1 answers and freeze them so they may not be modified after completing part 1
 var section1 = {};
 
-//TODO: REPLACE ./ WITH REAL LINKS TO ENDPOINT WHEN MIGRATE TO VM
+//TODO: REPLACE ./ WITH REAL LINKS TO ENDPOINT WHEN MIGRATE TO VM (maybe it's fine?)
+//might need to change when editor init calls are made until after resources are loaded	
 function loadCmResources(){
     var cmJsResources = [
 	    './includes/js/codemirror-5.3/addon/display/autorefresh.js',
@@ -34,21 +33,33 @@ function loadCmResources(){
         fileref.setAttribute("src", cmJsResources[i]);
     	$("head")[0].appendChild(fileref);
     }
+}
 
-    /*
+
+function refreshCmInstances() {
     //Refresh CM here since we added the cm resource files here instead of on page load which messes with load order.
+    //TODO: Not sure if refreshing correct object. investigate
 	$('.CodeMirror').each(function(idx, el){
+		console.log('cm instance: ', $(this)); 
 		//el.setOption('mode', 'clike');
 		el.CodeMirror.refresh();
 	});
-	*/
+}
+
+
+function backupSkeletonCode() {
+	for(var i = 0; i < structure.count; i++)
+	{
+		skeletonCode.push($('.CodeMirror')[i].CodeMirror.options.value);
+	}
+
+	//console.log('skf: ', skeletonCode);
 }
 
 
 //A function that will create a codemirror editor instance with passed id, bool readonly, and language mode.
 //Currently does not work for codemirror, as it seems to need to be loaded immediately
-function editor(id, rOnly, mode)
-{
+function editor(id, rOnly, mode) {
     CodeMirror.fromTextArea(id, 
 	{
 		readOnly: rOnly,
@@ -66,7 +77,7 @@ function editor(id, rOnly, mode)
 
 
 //Function that starts pbar, accepts a js div object, and max time
-function initPbar(bar, maxTime, key){
+function initPbar(bar, maxTime, key) {
 	timingData[key] = [0, maxTime, 1, 0, '0:00'];
 	bar = $(bar);
 	var start = new Date();
@@ -351,9 +362,12 @@ $(".compile").on("click", function(){
 
 
 //Button which applies a class to thumbnails in order to aid students in tracking which questions are complete
-$(".commit").on("click", function(){
-	recordSection();
-  	$("#navShortcutElement" + parseInt($(this).parent().attr("id").substring(17, $(this).parent().attr("id").length))).addClass("committed");
+$(".reset").on("click", function(){
+	//just going to use javascript here instead of jquery because cm is being difficult.
+	var parentId = $(this).parent().attr('id');
+	var id = parentId.charAt(parentId.length - 1);
+
+	$('.CodeMirror')[id].CodeMirror.doc.setValue(skeletonCode[id]);
 });
 
 
@@ -472,6 +486,9 @@ function initExam()
 	initPbar($("#totalProgress .pbar_inner"), testInfo.test_length, 'examTotal');
   	$("#progressB0").addClass("activeBar");
 	initPbar($("#progressB0").children().children()[0], 60000 * ((difficulty[0] + 1) * difficultyMultiplier), 0);
+
+	//store initial code state for resetting.
+	backupSkeletonCode();
 }
 
 
