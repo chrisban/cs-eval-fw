@@ -46,13 +46,26 @@
 					} else {
 						var tmpCode = JSON.stringify($('#code').val());
 
-						//only parse if skeleton code is wrapped
+						//only parse if ANY code is wrapped
 						if(tmpCode.indexOf('_<<') != -1 && tmpCode.indexOf('_>>') != -1) {
-							var split = tmpCode.split(/_<<_| _>>_/);
+							//using lookahead so we don't lose our separator and have no way of telling which was wrapped
+							//structure: [content, separator, wrap content, separator, content]
+							var split = tmpCode.split(/(_<<_|_>>_)/); 
 
-							 split[1] = split[1].replace('_<<_', '')
-												.replace('_>>_', '')
-												.replace(/\\n/g, "\\\\n");
+							var nextIsWrapped = false;
+							for(var i = 0; i < split.length; i++) {
+								//if true, next element is wrapped. Remove marker and continue to wrapped element
+								if(split[i] == "_<<_") {
+									nextIsWrapped = true;
+									split[i] = "";
+								} else if(split[i] == "_>>_") { //if true, just finished with a wrapped element. Remove marker and set flag to false.
+									nextIsWrapped = false;
+									split[i] = "";
+								} else if(nextIsWrapped === true) { //if true, this element is wrapped. Escape all newlines and set false for sake of consistency.
+									split[i] = split[i].replace(/\\n/g, "\\\\n");
+									nextIsWrapped = false;
+								}
+							}
 
 							tmpCode = split.join('');
 							console.log('total: ', JSON.parse(tmpCode));
@@ -90,8 +103,8 @@
 				If a file is selected, all text area data will be ignored.<br /><br />
 
 				<div id='fileDetails'>
-					<b>Course ID:</b> <input id='courseID' type='text' value='test'/> <br /><br />
-					<b>Activity ID:</b> <input id='activityID' type='text' value='0'/>
+					<b>Course ID:</b> <input id='courseID' type='text' /> <br /><br />
+					<b>Activity ID:</b> <input id='activityID' type='text' />
 				</div>
 
 				<div id='fileUpload'>

@@ -35,13 +35,10 @@ TODO:
 					-> how much time spent? sub max from left 
 						DECIDE WHETHER TO COUNT UP OR DOWN AND UPDATE ACCORDINGLY, SEE TODO comments
 
-		- admin datafile 
-			-> json parser
-				-> Can also accept mal-formed JSON objects.
-					-> _<< >>_ denotes plaintext with line breaks and such that need formatting. ex: "_<<plain text>>_"
-
 		- datafile prop field 
 			- what if prop field non-existant or length field NaN/null/etc.?
+
+		- Backend, see todo file
 
 
 	Deployment:
@@ -135,3 +132,5 @@ Completed:
 - admin: 
 	done:
 		- upload well-formed json files, rename them and place in correct directory
+		- support non-formatted fields (newlines/tabs/etc) 
+			_<< >>_ denotes plaintext with line breaks and such that need formatting. ex: "_<<plain text>>_"
