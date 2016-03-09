@@ -20,10 +20,10 @@ var section1 = {};
 //might need to change when editor init calls are made until after resources are loaded	
 function loadCmResources(){
     var cmJsResources = [
-	    './includes/js/codemirror-5.3/addon/display/autorefresh.js',
-	    './includes/js/codemirror-5.3/addon/edit/matchbrackets.js',
-	    './includes/js/codemirror-5.3/mode/clike/clike.js',
-	    './includes/js/codemirror-5.3/mode/python/python.js'
+	    './includes/js/codemirror-5.12/addon/display/autorefresh.js',
+	    './includes/js/codemirror-5.12/addon/edit/matchbrackets.js',
+	    './includes/js/codemirror-5.12/mode/clike/clike.js',
+	    './includes/js/codemirror-5.12/mode/python/python.js'
     ];
 
     for(var i = 0; i < cmJsResources.length; i++)
@@ -39,13 +39,30 @@ function loadCmResources(){
 function refreshCmInstances() {
     //Refresh CM here since we added the cm resource files here instead of on page load which messes with load order.
     //TODO: Not sure if refreshing correct object. investigate
-	$('.CodeMirror').each(function(idx, el){
-		console.log('cm instance: ', $(this)); 
-		//el.setOption('mode', 'clike');
-		el.CodeMirror.refresh();
-	});
-}
+	// $('.CodeMirror').each(function(idx, el){
+	// 	console.log('cm instance: ', el); 
+	// 	//el.setOption('mode', 'clike');
+	// 	el.CodeMirror.refresh();
+	// });
 
+
+	//TODO: dynamically get correct mode
+	//See this conversation with the CM developer regarding switching options: https://discuss.codemirror.net/t/issues-with-dynamically-adding-add-ons-after-load/676
+	for(var i = 0; i < structure.count; i++)
+	{
+		console.log('cm instance: ', $('.CodeMirror')[i].CodeMirror); 
+		var cm = $('.CodeMirror')[i].CodeMirror; 
+		// cm.setOption('matchBrackets', false);
+		// cm.setOption('autoRefresh', false);
+		// cm.setOption('mode', 'N/A');
+		// cm.refresh();
+
+		cm.setOption('matchBrackets', true);
+		cm.setOption('autoRefresh', true);
+		cm.setOption('mode', 'clike');
+		cm.refresh();
+	}
+}
 
 function backupSkeletonCode() {
 	for(var i = 0; i < structure.count; i++)
@@ -60,18 +77,20 @@ function backupSkeletonCode() {
 //A function that will create a codemirror editor instance with passed id, bool readonly, and language mode.
 //Currently does not work for codemirror, as it seems to need to be loaded immediately
 function editor(id, rOnly, mode) {
+	//TODO: save mode to arr
     CodeMirror.fromTextArea(id, 
 	{
 		readOnly: rOnly,
 		theme: "default",
     	lineNumbers: true,
-    	matchBrackets: true,
-    	autoRefresh: true,
+    	//matchBrackets: true,
+    	//autoRefresh: true,
     	enableCodeFormatting: true,
     	autoFormatOnStart: true,
     	autoFormatOnUncomment: true,
-    	mode: mode,
-    	styleActiveLine: true
+    	//mode: mode,
+    	styleActiveLine: true,
+    	smartIndent: true
     });
 }
 

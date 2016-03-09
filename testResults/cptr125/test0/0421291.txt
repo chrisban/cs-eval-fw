@@ -1,0 +1,15 @@
+****** Question 0, type: mchoice ******
+
+Correct answer: i = 3 j = 5 k = 7
+Received answer: i = 5 j = 5 k = 7
+ state: Inorrect
+
+Time remaining: 9:53/10:00
+Question sub-score: 0/5
+====================================================
+
+
+
+
+TIME REMAINING: 44:53/45:00
+FINAL SCORE: 0/5

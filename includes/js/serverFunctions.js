@@ -27,7 +27,6 @@ exports.requestQuizInfo = function getModuleSelector (req, res) {
 exports.getDataFile = function getDataFile(req, res, callback)
 {
 	var file = './dataFiles/' + req.body.course_id + '/data' + req.body.test_id + '.json';
-	var data = { result: "Server file load error!"};
 
 	fs.readFile(file, 'utf8', function (err, datafile) {
 		if (err) {
@@ -332,17 +331,38 @@ exports.compile = function compile(data, language, res, type){
     });
 }
 
-exports.storeData = function storeData(req, res) {
-	var fstream,
-		filePath,
-		fullFilePath,
-		fileDetails;
+exports.storeDatafile = function storeDatafile(type, req, res) {
+	res.type('json');  
 
-    req.busboy.on('file', function (fieldname, file, filename) {
-        fileDetails = fieldname.split('===');
-        filename = 'data' + fileDetails[1];
-    	filePath =  './dataFiles/' + fileDetails[0];
-    	fullFilePath =  './dataFiles/' + fileDetails[0] + '/' + filename + '.json';
+	if(type == 'file') {
+		//Write file
+		var fstream,
+			filePath,
+			fullFilePath,
+			fileDetails,
+			fname;
+
+	    req.busboy.on('file', function (fieldname, file, filename) {
+	        fileDetails = fieldname.split('===');
+	        fname = 'data' + fileDetails[1];
+	    	filePath =  './dataFiles/' + fileDetails[0];
+	    	fullFilePath =  './dataFiles/' + fileDetails[0] + '/' + fname + '.json';
+
+			try {
+				fs.mkdirSync(filePath);
+			} catch(e) {
+				if ( e.code != 'EEXIST' ) 
+					throw e;
+			}
+
+	        fstream = fs.createWriteStream(fullFilePath);
+	        file.pipe(fstream);
+
+			res.send({success : true});
+	    });
+	} else {
+		var json = JSON.parse(req.body.code);
+		filePath = './dataFiles/' + req.body.course_id;
 
 		try {
 			fs.mkdirSync(filePath);
@@ -351,12 +371,8 @@ exports.storeData = function storeData(req, res) {
 				throw e;
 		}
 
-        fstream = fs.createWriteStream(fullFilePath);
-        file.pipe(fstream);
-    });
-
-    //TODO: write logic that attempts to fix any mal-formed JSON objects. See todo.txt for details.
-
-    res.type('json');  
-	res.send({status : "OK"});
+		fs.writeFileSync(filePath + '/data' + req.body.act_id + '.json', json , 'utf-8'); 
+		
+		res.send({success : true});
+	}
 }

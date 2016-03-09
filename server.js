@@ -60,8 +60,12 @@ app.post('/submit', function (req, res) {
 
 app.post('/uploadFile', function (req, res) {
 	//TODO: handle file posting/uploading
-	req.pipe(req.busboy);
-	functions.storeData(req, res);
+	var type = 'raw';
+	if(!req.body.course_id) {
+		type = 'file';
+		req.pipe(req.busboy);
+	}
+	functions.storeDatafile(type, req, res);
 });
 
 //start server

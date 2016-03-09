@@ -9,8 +9,8 @@
 		<link type="text/css" href="/admin/styling.css" rel="stylesheet" media="screen"/>
 	</head>
 	<script>
-		$(function() {
-			$( "#manageFiles" ).dialog({
+		$( document ).ready(function() {
+			$( "#infoModal" ).dialog({
 				autoOpen: false,
 				buttons: [{
 					id: "dialogCloseBtn",
@@ -21,22 +21,64 @@
 			    }]
 			});
 
-			$("#uploadFiles").on("click", function(){
-				var file = new FormData();
-				file.append($('#courseID').val() + '===' + $('#activityID').val(), $('#fileInput')[0].files[0]);
+			$("#uploadBtn").on("click", function(){
+				//Ensure courseid and key are provided
+				if($('#courseID').val() != '' && $('#activityID').val() != '') {
+					if($('#fileInput').val() != '') {
+						var file = new FormData();
+						file.append($('#courseID').val() + '===' + $('#activityID').val(), $('#fileInput')[0].files[0]);
 
-				$.ajax({
-					url: '/uploadFile',
-					type: 'POST',
-					data: file,
-					cache: false,
-					contentType: false,
-					processData: false,
-					success: function(res){
-						$( "#manageFiles" ).html('Upload status: ' + res['status']);
-						$( "#manageFiles" ).dialog('open');
+						$.ajax({
+							url: '/uploadFile',
+							type: 'POST',
+							data: file,
+							cache: false,
+							contentType: false,
+							processData: false,
+							success: function(res){
+								$( "#infoModal" ).html('Upload validation successful: ' + res['success']);
+								$( "#infoModal" ).dialog('open');
+							},
+						    error: function(res){
+						    	console.log("Error response: ", res);
+						    }
+						});
+					} else {
+						var tmpCode = JSON.stringify($('#code').val());
+
+						//only parse if skeleton code is wrapped
+						if(tmpCode.indexOf('_<<') != -1 && tmpCode.indexOf('_>>') != -1) {
+							var split = tmpCode.split(/_<<_| _>>_/);
+
+							 split[1] = split[1].replace('_<<_', '')
+												.replace('_>>_', '')
+												.replace(/\\n/g, "\\\\n");
+
+							tmpCode = split.join('');
+							console.log('total: ', JSON.parse(tmpCode));
+						}
+						
+
+						$.ajax({
+						    url: "/uploadFile",
+						    type: "POST",
+						    dataType: "json",
+						    data: JSON.stringify({ course_id: $('#courseID').val(), act_id: $('#activityID').val(), code: tmpCode }),
+						    contentType: "application/json",
+						    cache: false,
+						    success: function(res){
+						    	$( "#infoModal" ).html('Upload validation successful: <b>' + res['success'] + '</b>');
+								$( "#infoModal" ).dialog('open');
+						    },
+						    error: function(res){
+						    	console.log("Error response: ", res);
+						    }
+						});
 					}
-				});
+				} else {
+					$( "#infoModal" ).html('You must provide course and quiz/exam IDs');
+					$( "#infoModal" ).dialog('open');
+				}
 			});
 		});
 	</script>
@@ -44,21 +86,37 @@
 		<div id='container'>
 			<div id='upload'> 
 				<h1>Upload datafile</h1>
-				<span id='format'> Format: JSON (<a href='/admin/examples/json/jsonExample.html'>ex</a>)<br /></span><br />
+				<span id='format'> Format: JSON (<a href='/admin/examples/json/jsonExample.html' target="_blank">ex</a>)<br /></span><br />
+				If a file is selected, all text area data will be ignored.<br /><br />
 
 				<div id='fileDetails'>
-					<b>Course ID:</b> <input id='courseID' type='text' /> <br /><br />
-					<b>Activity ID:</b> <input id='activityID' type='text' />
+					<b>Course ID:</b> <input id='courseID' type='text' value='test'/> <br /><br />
+					<b>Activity ID:</b> <input id='activityID' type='text' value='0'/>
 				</div>
 
 				<div id='fileUpload'>
-					<b>Upload datafile:</b> <br />
-					<input type="file" id="fileInput" /><br />
-					<input type="button" id="uploadFiles" value='Upload'>
+					<b>valid JSON datafile:</b> <br />
+					<input type="file" id="fileInput" />
 				</div>
 			</div>
 
-			<div id="manageFiles"><!--jq modal--></div>
+			<div id='lazy'>
+				<div id='codeDiv'>
+					<h2>JSON with unformatted content (hard line breaks): </h2>
+					<span id='format'> Format: JSON-esque (<a href='/admin/examples/json/jsonesqueExample.html' target="_blank">ex</a>)<br /></span><br />
+
+					<span id='note'>Please Note:<br />
+					- The 'problem' field will only use html formatting/markup.<br />
+					- If any double quotes are repeated, they must be escaped ("skeleton": " cout << \"i\"; " )<br />
+					- Each field should include no hard linebreaks. Otherwise, wrap unformatted text in the following manner: '_<<_ CONTENT _>>_' <br />&nbsp&nbsp(or explicity write /n, /t, etc.).</span>
+					<textarea id='code'></textarea>
+				</div>
+			</div>
+
+			<div id="infoModal"><!--jq modal--></div>
+
+
+			<input type="button" id="uploadBtn" value='Upload'>
 
 			<!-- TODO: view file(s) -->
 		</div>

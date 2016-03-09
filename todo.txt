@@ -38,13 +38,15 @@ TODO:
 		- admin datafile 
 			-> json parser
 				-> Can also accept mal-formed JSON objects.
-					-> <<>> denotes plaintext with line breaks and such that need formatting. ex: "<<plain text>>"
+					-> _<< >>_ denotes plaintext with line breaks and such that need formatting. ex: "_<<plain text>>_"
 
 		- datafile prop field 
 			- what if prop field non-existant or length field NaN/null/etc.?
 
 
 	Deployment:
+
+		- Remove all console output and shortcut values (hardcoded in modulevars to save me from typing the same shit all the time)
 
 		- Provision (for VMs)
 

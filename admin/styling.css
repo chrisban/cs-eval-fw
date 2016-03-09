@@ -10,6 +10,7 @@ body {
 	margin:0px auto;
 	padding:5px 20px 20px 20px;
 	box-shadow:0px 0px 20px 0px #333333;
+	overflow: auto;
 }
 
 #format {
@@ -20,6 +21,38 @@ body {
 	padding-bottom: 20px;
 }
 
-#uploadFiles {
-	margin-left: 120px;
+#uploadBtn {
+	margin-top: 60%;
+}
+
+#upload {
+	float: left;
+	width: 19%;
+	height: auto;
+}
+
+#lazy {
+	float: right;
+	width: 80%;
+	height: auto;
+	padding-left: 10px;
+	border-left: 1px dotted;
+}
+
+#note {
+	font-size: 11px;
+}
+
+#descDiv {
+	padding-bottom: 20px;
+}
+
+#code {
+	width: 880px;
+	height: 900px;
+}
+
+#codeEx {
+	width: 1100px;
+	height: 550px;
 }

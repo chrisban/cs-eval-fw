@@ -50,12 +50,12 @@ function loadCM(){
 	var fileref = document.createElement('link');
     fileref.setAttribute("rel", "stylesheet");
     fileref.setAttribute("type", "text/css");
-    fileref.setAttribute("href", './includes/js/codemirror-5.3/lib/codemirror.css');
+    fileref.setAttribute("href", './includes/js/codemirror-5.12/lib/codemirror.css');
 	$("head")[0].appendChild(fileref);
 
 	//cm.js
 	fileref = document.createElement('script');
     fileref.setAttribute("type","text/javascript");
-    fileref.setAttribute("src", './includes/js/codemirror-5.3/lib/codemirror.js');
+    fileref.setAttribute("src", './includes/js/codemirror-5.12/lib/codemirror.js');
 	$("head")[0].appendChild(fileref);
 }

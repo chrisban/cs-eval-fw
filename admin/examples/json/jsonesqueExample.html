@@ -1,0 +1,53 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <title>
+            Server-side code compilation/execution
+        </title>
+        <script type="text/javascript" src="/includes/js/jquery-2.1.4.min.js"></script>
+        <script type="text/javascript" src="/includes/js/jquery-ui-1.11.4/jquery-ui.min.js"></script>
+        <link type="text/css" href="/includes/js/jquery-ui-1.11.4/jquery-ui.min.css" rel="stylesheet" media="screen"/>
+        <link type="text/css" href="/admin/styling.css" rel="stylesheet" media="screen"/>
+    </head>
+    <script>
+       
+    </script>
+    <body> 
+        <div id='container'>
+            <textarea id='codeEx' readonly>{
+    "0": {
+        "questionType": "mchoice",
+        "language": "c++14",
+        "problem": "What does the following program print when the user enters the indicated values?<br />(<i>NH means \"answer Not Here.\"</i>)",
+        "skeleton": "_<<_#include <iostream>
+        using namespace std;
+
+        int main() {
+            int i, j, k;
+            cin >> i >> j >> k;
+            // i, j, and k are ints
+            if (i < j) {
+                if (j < k)
+                    i = j;
+                else
+                    j = k;
+            } else {
+                if (j > k)
+                    j = i;
+                else
+                    i = k;
+            }
+            cout << \"i = \" << i << \" j = \" << j << \" k = \" << k << endl;
+        } _>>_",
+        "input": [ ["3 5 7", ["i = 3 j = 5 k = 7", "i = 3 j = 3 k = 7", "i = 5 j = 5 k = 7", "i = 3 j = 5 k = 5", "i = 3 j = 7 k = 7", "NH"]] ],
+        "output": ["0", "1"],
+        "points": ["5", "5"],
+        "difficulty": "0"
+    },
+    "prop": {
+        "time": "45",
+        "warn": ["10", "5"]
+    }
+}</textarea>
+        </div>
+    </body>
+</html>

@@ -12,7 +12,7 @@ Correct answer: True
 Received answer: undefined
  state: Inorrect
 
-Time remaining: 9:24/10:00
+Time remaining: 9:57/10:00
 Question sub-score: 0/15
 ====================================================
 
@@ -58,7 +58,7 @@ Received output:
 
 status: incorrect
 
-Time remaining: No data/10:00
+Time remaining: 0:00/10:00
 Question sub-score: 0/15
 ====================================================
 
@@ -146,5 +146,5 @@ Question sub-score: 10/10
 
 
 
-TIME REMAINING: 44:24/45:00
+TIME REMAINING: 0:00/45:00
 FINAL SCORE: 10/65
