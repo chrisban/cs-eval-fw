@@ -4,6 +4,7 @@
 var section = {number: 0, warn: false};
 var structure = Object.freeze({count: $("[id*=questionContainer]").length, divide: $(".mcOptions").length});
 var skeletonCode = [];
+var modes = [];
 
 //Multi-dem array [[dirty bit, max time(ms), timeDiff, time of pause(date.getTime()), current time(min)]] used to preserve timers
 var timingData = new Array();
@@ -77,7 +78,8 @@ function backupSkeletonCode() {
 //A function that will create a codemirror editor instance with passed id, bool readonly, and language mode.
 //Currently does not work for codemirror, as it seems to need to be loaded immediately
 function editor(id, rOnly, mode) {
-	//TODO: save mode to arr
+	modes.push(mode);
+
     CodeMirror.fromTextArea(id, 
 	{
 		readOnly: rOnly,
@@ -115,7 +117,7 @@ function animateUpdate(bar, start, key, timeoutVal) {
     var maxTime = timingData[key][1];
     var timeDiff = now.getTime() - start.getTime();
 
-    //TODO: perc gives count down, using timeDiff instead would give stopwatch-esque. Do we want to count down or up? Keep in mind you must update adjustTiming() design if this is switched. Also relevant process exam display text (serverFunctions.js:192)
+    // Perc gives count down, relevant process exam display text (serverFunctions.js:192)
     var perc = Math.round((timeDiff/maxTime)*100);
     timingData[key][2] = timeDiff;
 
