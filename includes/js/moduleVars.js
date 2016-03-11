@@ -1,6 +1,8 @@
 //Defines html template data
 //placeholders denoted by lt/gt symbols e.g.: <<PLACEHOLDER>>
 
+
+//TODO: Update this info!
 /* TEMPLATE INFORMATION: 
 /NOTE: For template variable information, see var definition in this file below.
 /	   These templates should be appended to the html var (unless specefied for JS var) in a JSON object sent to the client.
@@ -42,6 +44,7 @@
 var moduleSelector = '<div id="requestInfo">\
 Course ID: <input type="text" id="courseID" value="cptr124"><br />\
 Quiz ID: <input type="text" id="quizID" value="0"><br />\
+<span id="infoStatus"></span></div>\
 </div>'
 
 

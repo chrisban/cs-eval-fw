@@ -31,6 +31,8 @@ exports.getDataFile = function getDataFile(req, res, callback)
 	fs.readFile(file, 'utf8', function (err, datafile) {
 		if (err) {
 			console.log('E: ' + err);
+			res.type('json');
+			res.send( {error: 'The course or activity ID number could not be resolved. Please check your input and contact your professor if problems persist.'} );
 			return;
 		}
 		callback(req, res, JSON.parse(datafile));
@@ -201,9 +203,10 @@ exports.processExam = function processExam(req, res, data)
 
 			resultFile += "Submitted code:\n------------------------------------------\n\n" + req.body.solution[i] + "\n\n";
 
-			//TODO: SHOULD NOT RELY SOLELY ON INPUT!! What if no input is needed?
-			for(var j = 0; j < data[i]['input'].length; j++)
+			//Loop through each 'output' aka test cases
+			for(var j = 0; j < data[i]['output'].length; j++)
 			{
+				//TODO: check if data[i][output][j].length > 1. If so, there are multiple inputs to this test case. Format accordingly
 				//User's data
 				var userData = {
 					"Program": req.body.solution[i], //user defined code
@@ -219,7 +222,25 @@ exports.processExam = function processExam(req, res, data)
 				//TEMPORARY! - wait 1sec. until compile completes. Temp solution as we are temp. using an external soap api service at the point.
 				while(done == false) {
 				    require('deasync').sleep(500);
-				  }
+				}
+
+				/*
+				//if c++,c++14,etc. use gcc
+				if(data[i]['language'].toLowerCase().indexOf('c++') != -1) {
+					// compile .cpp
+					// use bash to run .o, pipe in input, write output
+					while(file doesn't exist) {
+					    require('deasync').sleep(500);
+					}
+					
+					var output = fs.readFileSync(output.txt);
+
+					compileResult = //properly formatted output. (in case of array or something weird)
+					
+				} else if(data[i]['language'].toLowerCase() == 'python') {
+
+				}
+				*/
 
 				resultFile += "\n------------------------------------------\n\nTest Input: " + data[i]['input'][j] + "\nCorrect output: " + data[i]['output'][j] + "\nReceived output: " + compileResult.Result + "\n\n";
 

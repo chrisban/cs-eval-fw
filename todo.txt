@@ -11,6 +11,7 @@ Modularize
 
 List requirements: codemirror etc.
 prop field time + warn = req. fields now
+output field is an array of test cases [ testcase 1, [testcase 2.0, testcase 2.1] ]
 
 Python 3.5.0 -> 3 Specify elsewhere. 
 ------------

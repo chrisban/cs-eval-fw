@@ -19,9 +19,13 @@ $( "#requestInfo" ).dialog({
 				    cache: false,
 					async: false, //ensures completion before continuting on
 				    success: function(res){
-				    	console.log("[ModuleSelector.js] Success response: ", res);
-				    	$('body').html(res['response_html']);
-					    eval(res['response_script']);
+				    	if(res['error']) {
+				    		$('#infoStatus').html(res['error']);
+				    	} else {
+				    		console.log("[ModuleSelector.js] Success response: ", res);
+					    	$('body').html(res['response_html']);
+						    eval(res['response_script']);
+				    	}
 				    },
 				    error: function(res){
 				    	console.log("[ModuleSelector.js] Error response: ", res);

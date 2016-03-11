@@ -1,19 +1,19 @@
 ****** Question 0, type: mchoice ******
 
 Correct answer: False
-Received answer: undefined
+Received answer: True
  state: Inorrect
 
 Correct answer: True
-Received answer: undefined
- state: Inorrect
+Received answer: True
+ state: Correct
 
 Correct answer: True
-Received answer: undefined
- state: Inorrect
+Received answer: True
+ state: Correct
 
-Time remaining: 9:57/10:00
-Question sub-score: 0/15
+Time remaining: 8:29/10:00
+Question sub-score: 10/15
 ====================================================
 
 
@@ -21,15 +21,15 @@ Question sub-score: 0/15
 ****** Question 1, type: mchoice ******
 
 Correct answer: i = 3 j = 5 k = 7
-Received answer: undefined
- state: Inorrect
+Received answer: i = 3 j = 5 k = 7
+ state: Correct
 
 Correct answer: i = 3 j = 3 k = 7
-Received answer: undefined
+Received answer: i = 5 j = 5 k = 7
  state: Inorrect
 
-Time remaining: No data/10:00
-Question sub-score: 0/10
+Time remaining: 9:54/10:00
+Question sub-score: 5/10
 ====================================================
 
 
@@ -45,6 +45,7 @@ using namespace std;
 int main() {
      int n;
      cin >> n;
+     cout << n;
 }
 
 
@@ -54,11 +55,11 @@ Test Input: 2
 Correct output: **
 **
 
-Received output: 
+Received output: 2
 
 status: incorrect
 
-Time remaining: 0:00/10:00
+Time remaining: 9:49/10:00
 Question sub-score: 0/15
 ====================================================
 
@@ -113,7 +114,7 @@ Received output: Enter vector size: Enter element 0: Enter element 1: -1
 
 status: incorrect
 
-Time remaining: No data/20:00
+Time remaining: 19:50/20:00
 Question sub-score: 0/15
 ====================================================
 
@@ -139,12 +140,12 @@ Received output: Student
 
 status: correct
 
-Time remaining: No data/10:00
+Time remaining: 9:52/10:00
 Question sub-score: 10/10
 ====================================================
 
 
 
 
-TIME REMAINING: 0:00/45:00
-FINAL SCORE: 10/65
+TIME REMAINING: 42:55/45:00
+FINAL SCORE: 25/65

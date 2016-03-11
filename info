@@ -48,7 +48,7 @@ psuedo-code
 write code to studentCode.* (* = cpp/py/etc)
 
 run bash script above
-	-> calls gcc/whatever compilert
+	-> calls gcc/whatever compiler
 	-> pipes in input
 	-> writes to output.txt
 
