@@ -380,16 +380,10 @@ exports.compile = function compile(data, res, type){
 				// 	shell: true
 				// });
 
-				child = exec('cat ' + fileBasePath + 'input.txt | ' + fileBasePath + 'output',
-					(error, stdout, stderr) => {
-						console.log(`stdout: ${stdout}`);
-						console.log(`stderr: ${stderr}`);
-						if (error !== null) {
-							console.log(`exec error: ${error}`);
-						}
-					});
+				//TODO: get errors (if any)
+				child = exec('cat ' + fileBasePath + 'input.txt | ' + fileBasePath + 'output');
 
-				console.log('child: ', String(child));
+				response.Result += String(child.stdout);
 			}
 
 
