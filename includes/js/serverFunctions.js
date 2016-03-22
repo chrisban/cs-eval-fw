@@ -383,7 +383,7 @@ exports.compile = function compile(data, res, type){
 				//TODO: get errors (if any)
 				child = exec('cat ' + fileBasePath + 'input.txt | ' + fileBasePath + 'output');
 
-				response.Result += String(child.stdout);
+				response.Result += String(child);
 			}
 
 
