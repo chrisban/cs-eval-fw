@@ -359,6 +359,9 @@ exports.compile = function compile(data, res, type){
 				child = spawn(fileBasePath + 'output', [], {
 					shell: true
 				});
+
+				response.Errors += String(child.stderr);
+				response.Result += String(child.stdout);
 			} else {
 				//Can't get it to feed in multiple inputs unless from a file with CRLFs
 				fs.writeFileSync('./compilation/' + tmpDir + "/input.txt", data.input, 'utf-8', function(err) {
@@ -377,17 +380,15 @@ exports.compile = function compile(data, res, type){
 				// 	shell: true
 				// });
 
-				var child = exec('cat ' + fileBasePath + 'input.txt | ' + fileBasePath + 'output');
-
-				response.Result += child;
-				console.log(String(child));
+				child = exec('cat ' + fileBasePath + 'input.txt | ' + fileBasePath + 'output',
+					function (error, stdout, stderr) {
+						response.Errors += String(stderr);
+						response.Result += String(stdout);
+					});
 			}
 
 
-			console.log('\n[RUN]\nout: ', String(child));
-			console.log('\n[RUN]\nout: ', String(child.stdout), '\nerr: ', String(child.stderr));
-			response.Errors += String(child.stderr);
-			response.Result += String(child.stdout);
+			console.log('\n[RUN]: ', response);
 		}
 
 
