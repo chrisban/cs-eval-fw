@@ -27,13 +27,13 @@ exports.requestQuizInfo = function getModuleSelector (req, res) {
 //Get specified datafile
 exports.getDataFile = function getDataFile(req, res, callback)
 {
-	var file = './dataFiles/' + req.body.course_id.toUpperCase(); + '/data' + req.body.test_id + '.json';
+	var file = './dataFiles/' + req.body.course_id.toUpperCase() + '/data' + req.body.test_id + '.json';
 
 	fs.readFile(file, 'utf8', function (err, datafile) {
 		if (err) {
 			console.log('E: ' + err);
 			res.type('json');
-			res.send( {error: 'The course or activity ID number could not be resolved. Please check your input and contact your professor if problems persist.'} );
+			res.send( {error: 'The course or activity ID number could not be resolved. Please check your input and contact your professor if problems persist. ' + file} );
 			return;
 		}
 		callback(req, res, JSON.parse(datafile));
@@ -282,8 +282,8 @@ exports.processExam = function processExam(req, res, data)
 	resultFile += "FINAL SCORE: " + studentScore + "/" + totalPoints + "\n";
 
 	//formulate paths, create directories if necessary. EEXIST e.code means dir already exists. If it doesn't, it will create.
-	var coursePath = './testResults/' + req.body.course_id.toUpperCase(); + '/';
-	var testPath = './testResults/' + req.body.course_id.toUpperCase(); + '/test' + req.body.test_id + '/';
+	var coursePath = './testResults/' + req.body.course_id.toUpperCase() + '/';
+	var testPath = './testResults/' + req.body.course_id.toUpperCase() + '/test' + req.body.test_id + '/';
 	
 	try {
 	    fs.mkdirSync(coursePath);
