@@ -27,7 +27,7 @@ exports.requestQuizInfo = function getModuleSelector (req, res) {
 //Get specified datafile
 exports.getDataFile = function getDataFile(req, res, callback)
 {
-	var file = './dataFiles/' + req.body.course_id + '/data' + req.body.test_id + '.json';
+	var file = './dataFiles/' + req.body.course_id.toUpperCase(); + '/data' + req.body.test_id + '.json';
 
 	fs.readFile(file, 'utf8', function (err, datafile) {
 		if (err) {
@@ -150,7 +150,7 @@ exports.serveModule = function serveModule(req, res, data)
 		}
 
 		//TODO: Decide whether to template or leave as-is.
-		var testInfoVars = "var difficulty = [" + difficulty.join() + "]; var testInfo = Object.freeze({test_id: '" + req.body.test_id + "', course_id: '" + req.body.course_id + "', test_length: '" + data["prop"]["time"]*60000 + "', warnTimes: '" + data["prop"]["warn"] +"'});";
+		var testInfoVars = "var difficulty = [" + difficulty.join() + "]; var testInfo = Object.freeze({test_id: '" + req.body.test_id + "', course_id: '" + req.body.course_id.toUpperCase() + "', test_length: '" + data["prop"]["time"]*60000 + "', warnTimes: '" + data["prop"]["warn"] +"'});";
 		html += navTemplate + '<!--END module code-->';
 
 		var completeScript = 'loadCmResources();' + testInfoVars + baseScript + script + 'refreshCmInstances();';
@@ -282,8 +282,8 @@ exports.processExam = function processExam(req, res, data)
 	resultFile += "FINAL SCORE: " + studentScore + "/" + totalPoints + "\n";
 
 	//formulate paths, create directories if necessary. EEXIST e.code means dir already exists. If it doesn't, it will create.
-	var coursePath = './testResults/' + req.body.course_id + '/';
-	var testPath = './testResults/' + req.body.course_id + '/test' + req.body.test_id + '/';
+	var coursePath = './testResults/' + req.body.course_id.toUpperCase(); + '/';
+	var testPath = './testResults/' + req.body.course_id.toUpperCase(); + '/test' + req.body.test_id + '/';
 	
 	try {
 	    fs.mkdirSync(coursePath);
@@ -422,7 +422,7 @@ exports.storeDatafile = function storeDatafile(type, req, res) {
 	    });
 	} else {
 		var json = JSON.parse(req.body.code);
-		filePath = './dataFiles/' + req.body.course_id;
+		filePath = './dataFiles/' + req.body.course_id.toUpperCase();
 
 		try {
 			fs.mkdirSync(filePath);
