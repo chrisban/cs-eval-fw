@@ -5,7 +5,7 @@ var deasync = require('deasync');
 var uglify = require("uglify-js");
 var busboy = require('connect-busboy');
 var spawn = require('child_process').spawnSync;
-var exec = require('child_process').execSync;
+var exec = require('child_process').execFileSync;
 
 var moduleVars = require('./moduleVars');
 var codeLang = require('./codeLanguages');
