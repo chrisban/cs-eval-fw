@@ -374,7 +374,7 @@ exports.compile = function compile(data, res, type){
 
 				//'|', fileBasePath + 'output'
 				var child = exec(fileBasePath + 'output', [], {
-					input: child.stdout,
+					input: '555',
 					shell: true
 				});
 			}
