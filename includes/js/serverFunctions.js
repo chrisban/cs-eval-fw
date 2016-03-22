@@ -353,9 +353,8 @@ exports.compile = function compile(data, res, type){
 		if(String(child.stderr) != ''){
 			response.Errors += String(child.stderr) + '\n';
 		} else {
-			//if no input
-			if(data.input.length == 0) {
-				console.log("\nno input\n");
+			//if no input. There will always be at least a newline, so empty string with \n is empty input
+			if(data.input == '\n') {
 				child = spawn(fileBasePath + 'output', [], {
 					shell: true
 				});
@@ -367,9 +366,9 @@ exports.compile = function compile(data, res, type){
 				    }
 				});
 
-				// child = spawn('cat', [fileBasePath + 'input.txt', '|', fileBasePath + 'output'], {
-				// 	shell: true
-				// });
+				child = spawn('cat', [fileBasePath + 'input.txt', '|', fileBasePath + 'output'], {
+					shell: true
+				});
 			}
 
 			console.log('\n[RUN]\nout: ', String(child.stdout), '\nerr: ', String(child.stderr));
