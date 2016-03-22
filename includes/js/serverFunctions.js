@@ -372,10 +372,14 @@ exports.compile = function compile(data, res, type){
 				// 	shell: true
 				// });
 
+
+
 				//'|', fileBasePath + 'output'
 				var child = exec(fileBasePath + 'output', [], {
 					shell: true
 				});
+
+				console.log(child);
 			}
 
 			console.log('\n[RUN]\nout: ', String(child.stdout), '\nerr: ', String(child.stderr));
