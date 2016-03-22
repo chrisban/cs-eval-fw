@@ -375,6 +375,9 @@ exports.compile = function compile(data, res, type){
 					.data(function(err, stdout, stderr) {
 						child.stderr = stderr; 
 						child.stdout = stdout; 
+						console.log('finished');
+						console.log(stdout);
+						console.log(stderr);
 				});
 			}
 
