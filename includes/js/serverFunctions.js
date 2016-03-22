@@ -379,7 +379,7 @@ exports.compile = function compile(data, res, type){
 					shell: true
 				});
 
-				console.log(child);
+				console.log(String(child));
 			}
 
 			console.log('\n[RUN]\nout: ', String(child.stdout), '\nerr: ', String(child.stderr));
