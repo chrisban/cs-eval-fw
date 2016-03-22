@@ -49,7 +49,7 @@ app.post('/getModule', function (req, res) {
 
 //handle api compile requests
 app.post('/compile', function (req, res) {
-	functions.compile(req.body, null, res, "post");
+	functions.compile(req.body, res, "post");
 });
  
 //handle answer submits answers for grading

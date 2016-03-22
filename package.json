@@ -1,7 +1,7 @@
 {
   "name": "node_mst",
   "version": "0.0.1",
-  "description": "Code compilation and testing framework",
+  "description": "Code compilation and testing framework for use in an exam/quiz environment",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -9,6 +9,10 @@
   },
   "author": "Christopher Ban",
   "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/chrisban/RESTful-framework-for-programming-evaluation-in-academia.git"
+  },
   "dependencies": {
     "body-parser": "^1.15.0",
     "connect-busboy": "^0.0.2",

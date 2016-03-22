@@ -351,8 +351,8 @@ $(".compile").on("click", function(){
 
 	var data = {
 		"language": lang,
-		"Program": $(".CodeMirror")[parseInt(index)].CodeMirror.getValue(),
-		"input": $.map(lbox ,function(option) {return option.value;}).join(' ')
+		"code": $(".CodeMirror")[parseInt(index)].CodeMirror.getValue(),
+		"input": $.map(lbox ,function(option) {return option.value;}).join('\n')
 	};
 
 	$.ajax({

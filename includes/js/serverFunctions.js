@@ -4,6 +4,7 @@ var requestify = require('requestify');
 var deasync = require('deasync');
 var uglify = require("uglify-js");
 var busboy = require('connect-busboy');
+var spawn = require('child_process').spawnSync;
 
 var moduleVars = require('./moduleVars');
 var codeLang = require('./codeLanguages');
@@ -206,41 +207,23 @@ exports.processExam = function processExam(req, res, data)
 			//Loop through each 'output' aka test cases
 			for(var j = 0; j < data[i]['output'].length; j++)
 			{
-				//TODO: check if data[i][output][j].length > 1. If so, there are multiple inputs to this test case. Format accordingly
 				//User's data
 				var userData = {
-					"Program": req.body.solution[i], //user defined code
+					"code": req.body.solution[i], //user defined code
 					"input": data[i]['input'][j], //datafile defined testcase
+					"language": data[i]["language"].toLowerCase()
 				};
 
 				//TEMPORARY! - global variables due to node requring asynch, and we need synch due to temp external soap api. This will all change anyway, so use ugly globals for now here...
 				done = false;
 				compileResult = [];
-				exports.compile(userData, data[i]["language"].toLowerCase());
+				exports.compile(userData);
 
 				//see js promises?
 				//TEMPORARY! - wait 1sec. until compile completes. Temp solution as we are temp. using an external soap api service at the point.
 				while(done == false) {
 				    require('deasync').sleep(500);
 				}
-
-				/*
-				//if c++,c++14,etc. use gcc
-				if(data[i]['language'].toLowerCase().indexOf('c++') != -1) {
-					// compile .cpp
-					// use bash to run .o, pipe in input, write output
-					while(file doesn't exist) {
-					    require('deasync').sleep(500);
-					}
-					
-					var output = fs.readFileSync(output.txt);
-
-					compileResult = //properly formatted output. (in case of array or something weird)
-					
-				} else if(data[i]['language'].toLowerCase() == 'python') {
-
-				}
-				*/
 
 				resultFile += "\n------------------------------------------\n\nTest Input: " + data[i]['input'][j] + "\nCorrect output: " + data[i]['output'][j] + "\nReceived output: " + compileResult.Result + "\n\n";
 
@@ -327,30 +310,86 @@ exports.processExam = function processExam(req, res, data)
 	res.send({status : "ok", score: studentScore + "/" + totalPoints});
 }
 
-exports.compile = function compile(data, language, res, type){
-	if (data.language)
-		language = data.language;
 
-	//Get language specific compile settings
-	var compileSettings = codeLang.getSettings(language);
-	data.LanguageChoiceWrapper = compileSettings.wrapper;
-	data.compilerArgs = compileSettings.args;
+//TODO: document this as a location that needs to be modified when adding support for more languages
+exports.compile = function compile(data, res, type){
+    var response = {
+    	Errors: '',
+    	Result: ''
+    }
+    //TODO: cron-esque to wipe folder every once in awhile
+    //Generate tmp string using timestamp and ints 0-9999 for directory name
+    var tmpDir = '' + Date.now() + Math.floor(Math.random() * (9999 - 0) + 0);
 
-	//temporarily compiling via external call to api. Later on will be doing this ourselves by writing to file and executing on vm.
-	requestify.post('http://rextester.com/rundotnet/api', data)
-    .then(function(response) {
-        response.getBody();
-        if(type == "post")
-        {
-        	res.type('json');
-	  		res.send(response.body);
-        }else 
-        {
-        	done = true;
-        	compileResult = JSON.parse(response.body);
-        }
-    });
+    var fileBasePath = '~/RESTful-framework-for-programming-evaluation-in-academia/compilation/' + tmpDir + '/';
+
+    try {
+		fs.mkdirSync('./compilation/' + tmpDir);
+	} catch(e) {
+		if ( e.code != 'EEXIST' ) 
+			throw e;
+	}
+
+    //if c++,c++14,etc. use gcc
+	if(data.language.toLowerCase().indexOf('c++') != -1) {
+		//Write code to file
+	    fs.writeFileSync('./compilation/' + tmpDir + "/code.cpp", data.code, 'utf-8', function(err) {
+		    if(err) {
+		        return console.log(err);
+		    }
+		});
+
+	    //TODO: ensure deploy has the same location
+		//compile code
+		var child = spawn('g++', [fileBasePath + 'code.cpp', '-o', fileBasePath + 'output'], {
+			shell: true
+		});
+
+		console.log('[COMPILE]\nout: ', String(child.stdout), '\nerr: ', String(child.stderr));
+
+		//run code if there were no compilation errors
+		if(String(child.stderr) != ''){
+			console.log('1');
+			response.Errors += String(child.stderr) + '\n';
+		} else {
+			//if no input
+			if(data.input.length == 0) {
+				child = spawn(fileBasePath + 'output', [], {
+					shell: true
+				});
+			} else {
+				//Can't get it to feed in multiple inputs unless from a file with CRLFs
+				fs.writeFileSync('./compilation/' + tmpDir + "/input.txt", data.input, 'utf-8', function(err) {
+				    if(err) {
+				        return console.log(err);
+				    }
+				});
+
+				child = spawn('cat', [fileBasePath + 'input.txt', '|', fileBasePath + 'output'], {
+					shell: true
+				});
+			}
+
+			console.log('\n[RUN]\nout: ', String(child.stdout), '\nerr: ', String(child.stderr));
+			response.Errors += String(child.stderr);
+			response.Result += String(child.stdout);
+		}
+
+
+	} else if(data.language.toLowerCase() == 'python') {
+		
+
+	}
+
+	if(type == "post") {
+    	res.type('json');
+  		res.send(response);
+    }else  {
+    	done = true;
+    	compileResult = response;
+    }
 }
+
 
 exports.storeDatafile = function storeDatafile(type, req, res) {
 	res.type('json');  
