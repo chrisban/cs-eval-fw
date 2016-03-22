@@ -367,14 +367,14 @@ exports.compile = function compile(data, res, type){
 				    }
 				});
 
-				//'|', fileBasePath + 'output'
 				child = spawn('cat', [fileBasePath + 'input.txt'], {
     				stdio: [null, 'pipe', 'inherit'],
 					shell: true
 				});
 
-				// var subChild = spawn('cat', [fileBasePath + 'input.txt'], {
-    // 				stdio: [null, 'pipe', 'inherit'],
+				//'|', fileBasePath + 'output'
+				// var subChild = spawn('', [], {
+    			// 	stdio: [null, 'pipe', 'inherit'],
 				// 	shell: true
 				// });
 			}

@@ -367,10 +367,10 @@ $(".compile").on("click", function(){
 				closestResults.show("blind", 500);
 		  	console.log("resp:", response);
 		  	var result = "";
-		  	if(response.Errors)
-		  		result += "Errors: " + response.Errors + "\\n";
+		  	if(response.Errors && response.Errors != "null")
+		  		result += "Errors: " + response.Errors + "\n";
 		  	if(response.Warnings)
-		  		result += "Warnings: " + response.Warnings + "\\n";
+		  		result += "Warnings: " + response.Warnings + "\n";
 		  	if(response.Result)
 		  		result += response.Result;
 		  	btnContext.parent().parent().find(".codeResults").val(result);
