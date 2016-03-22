@@ -321,7 +321,7 @@ exports.compile = function compile(data, res, type){
     //Generate tmp string using timestamp and ints 0-9999 for directory name
     var tmpDir = '' + Date.now() + Math.floor(Math.random() * (9999 - 0) + 0);
 
-    var fileBasePath = '~/RESTful-framework-for-programming-evaluation-in-academia/compilation/' + tmpDir + '/';
+    var fileBasePath = '/home/cban/RESTful-framework-for-programming-evaluation-in-academia/compilation/' + tmpDir + '/';
 
     try {
 		fs.mkdirSync('./compilation/' + tmpDir);
@@ -339,6 +339,8 @@ exports.compile = function compile(data, res, type){
 		    }
 		});
 
+
+
 	    //TODO: ensure deploy has the same location
 		//compile code
 		var child = spawn('g++', [fileBasePath + 'code.cpp', '-o', fileBasePath + 'output'], {
@@ -349,7 +351,6 @@ exports.compile = function compile(data, res, type){
 
 		//run code if there were no compilation errors
 		if(String(child.stderr) != ''){
-			console.log('1');
 			response.Errors += String(child.stderr) + '\n';
 		} else {
 			//if no input

@@ -352,7 +352,7 @@ $(".compile").on("click", function(){
 	var data = {
 		"language": lang,
 		"code": $(".CodeMirror")[parseInt(index)].CodeMirror.getValue(),
-		"input": $.map(lbox ,function(option) {return option.value;}).join('\n')
+		"input": $.map(lbox ,function(option) {return option.value;}).join('\n') + '\n'
 	};
 
 	$.ajax({
