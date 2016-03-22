@@ -382,9 +382,12 @@ exports.compile = function compile(data, res, type){
 
 				child = exec('cat ' + fileBasePath + 'input.txt | ' + fileBasePath + 'output',
 					function (error, stdout, stderr) {
+						console.log('\nexec cb\n');
 						response.Errors += String(stderr);
 						response.Result += String(stdout);
 					});
+
+				console.log('child: ', child);
 			}
 
 
