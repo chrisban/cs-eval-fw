@@ -377,10 +377,7 @@ exports.compile = function compile(data, res, type){
 				// 	shell: true
 				// });
 
-				var child = exec('cat ' + fileBasePath + 'input.txt | ' + fileBasePath + 'output', {
-					input: child.stdout,
-					shell: true
-				});
+				var child = exec('cat ' + fileBasePath + 'input.txt | ' + fileBasePath + 'output');
 
 				response.Result += child;
 				console.log(String(child));
