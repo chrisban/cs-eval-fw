@@ -355,6 +355,7 @@ exports.compile = function compile(data, res, type){
 		} else {
 			//if no input
 			if(data.input.length == 0) {
+				console.log("\nno input\n");
 				child = spawn(fileBasePath + 'output', [], {
 					shell: true
 				});
