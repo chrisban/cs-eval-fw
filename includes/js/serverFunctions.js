@@ -5,7 +5,7 @@ var deasync = require('deasync');
 var uglify = require("uglify-js");
 var busboy = require('connect-busboy');
 var spawn = require('child_process').spawnSync;
-var exec = require('child_process').execFileSync;
+var exec = require('child_process').execSync;
 
 var moduleVars = require('./moduleVars');
 var codeLang = require('./codeLanguages');
@@ -372,16 +372,22 @@ exports.compile = function compile(data, res, type){
 				// 	shell: true
 				// });
 
+				// var child = exec(fileBasePath + 'output', [], {
+				// 	input: child.stdout,
+				// 	shell: true
+				// });
 
-
-				//'|', fileBasePath + 'output'
-				var child = exec(fileBasePath + 'output', [], {
+				var child = exec('cat ' + fileBasePath + 'input.txt | ' + fileBasePath + 'output', {
+					input: child.stdout,
 					shell: true
 				});
 
+				response.Result += child;
 				console.log(String(child));
 			}
 
+
+			console.log('\n[RUN]\nout: ', String(child));
 			console.log('\n[RUN]\nout: ', String(child.stdout), '\nerr: ', String(child.stderr));
 			response.Errors += String(child.stderr);
 			response.Result += String(child.stdout);
