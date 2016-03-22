@@ -367,14 +367,14 @@ exports.compile = function compile(data, res, type){
 				    }
 				});
 
-				// child = spawn('cat', [fileBasePath + 'input.txt'], {
-    // 				stdio: [null, 'pipe', 'inherit'],
-				// 	shell: true
-				// });
+				child = spawn('cat', [fileBasePath + 'input.txt'], {
+					stdio: [null, 'pipe', 'inherit'],
+					shell: true
+				});
 
 				//'|', fileBasePath + 'output'
 				var child = exec(fileBasePath + 'output', [], {
-    				input: data.input,
+					input: child.stdout,
 					shell: true
 				});
 			}
@@ -391,12 +391,12 @@ exports.compile = function compile(data, res, type){
 	}
 
 	if(type == "post") {
-    	res.type('json');
-  		res.send(response);
-    }else  {
-    	done = true;
-    	compileResult = response;
-    }
+		res.type('json');
+		res.send(response);
+	}else  {
+		done = true;
+		compileResult = response;
+	}
 }
 
 
