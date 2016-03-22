@@ -5,7 +5,6 @@ var deasync = require('deasync');
 var uglify = require("uglify-js");
 var busboy = require('connect-busboy');
 var spawn = require('child_process').spawnSync;
-var $p = require('procstreams');
 
 var moduleVars = require('./moduleVars');
 var codeLang = require('./codeLanguages');
@@ -370,15 +369,6 @@ exports.compile = function compile(data, res, type){
 				// child = spawn('cat', [fileBasePath + 'input.txt', '|', fileBasePath + 'output'], {
 				// 	shell: true
 				// });
-
-				$p('cat ' + fileBasePath + 'input.txt').pipe(fileBasePath + 'output')
-					.data(function(err, stdout, stderr) {
-						child.stderr = stderr; 
-						child.stdout = stdout; 
-						console.log('finished');
-						console.log(stdout);
-						console.log(stderr);
-				});
 			}
 
 			console.log('\n[RUN]\nout: ', String(child.stdout), '\nerr: ', String(child.stderr));
