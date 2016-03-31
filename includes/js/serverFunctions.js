@@ -356,7 +356,7 @@ exports.compile = function compile(data, res, type){
 		} else {
 			//if no input. There will always be at least a newline, so empty string with \n is empty input
 			if(data.input == '\n') {
-				child = spawn("python " + fileBasePath + 'output', [], {
+				child = spawn(fileBasePath + 'output', [], {
 					shell: true
 				});
 
@@ -370,7 +370,7 @@ exports.compile = function compile(data, res, type){
 				    }
 				});
 
-				child = exec('cat ' + fileBasePath + 'input.txt | python ' + fileBasePath + 'output');
+				child = exec('cat ' + fileBasePath + 'input.txt | ' + fileBasePath + 'output');
 
 				response.Result += String(child);
 			}
@@ -387,10 +387,10 @@ exports.compile = function compile(data, res, type){
 		        return console.log(err);
 		    }
 		});
-
+	
 		//if no input. There will always be at least a newline, so empty string with \n is empty input
 		if(data.input == '\n') {
-			child = spawn(fileBasePath + 'output', [], {
+			child = spawn("python " + fileBasePath + 'output', [], {
 				shell: true
 			});
 
@@ -404,24 +404,14 @@ exports.compile = function compile(data, res, type){
 			    }
 			});
 
-			// child = spawn('cat', [fileBasePath + 'input.txt'], {
-			// 	stdio: [null, 'pipe', 'inherit'],
-			// 	shell: true
-			// });
-
-			// var child = exec(fileBasePath + 'output', [], {
-			// 	input: child.stdout,
-			// 	shell: true
-			// });
-
-			//TODO: get errors (if any)
-			child = exec('cat ' + fileBasePath + 'input.txt | ' + fileBasePath + 'output');
+			child = exec('cat ' + fileBasePath + 'input.txt | python ' + fileBasePath + 'output');
 
 			response.Result += String(child);
 		}
 
+
 		console.log('\n[RUN]: ', response);
-		
+
 	} else {
 
 		console.log('Unkown language, cannot compile!');
