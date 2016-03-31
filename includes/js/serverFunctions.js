@@ -228,7 +228,7 @@ exports.processExam = function processExam(req, res, data)
 
 				resultFile += "\n------------------------------------------\n\nTest Input: " + data[i]['input'][j] + "\nCorrect output: " + data[i]['output'][j] + "\nReceived output: " + compileResult.Result + "\n\n";
 
-				
+
 				console.log("comparing: ", compileResult.Result, data[i]['output'][j]);
 
 				if(data[i]['output'][j] == compileResult.Result)
@@ -260,7 +260,7 @@ exports.processExam = function processExam(req, res, data)
 				//Options are randomized, so to find correct index -> match on question first via indexOf
 				var correctIndex = parseInt(data[i]['output'][j]);
 				var submittedIndex = parseInt(data[i]['input'][j][1].indexOf(req.body.solution[i][j]));
-				console.log("correctIndex: ", correctIndex, "\nsubmittedIndex", submittedIndex);
+				console.log("[j:" + j + "] + correctIndex: ", correctIndex, "\nsubmittedIndex", submittedIndex, "\n", correctIndex + submittedIndex, "\n\n");
 				resultFile += "Correct answer: " + data[i]['input'][j][1][correctIndex] + "\nReceived answer: " + data[i]['input'][j][1][submittedIndex] + "\n state: ";
 
 				//Track points
