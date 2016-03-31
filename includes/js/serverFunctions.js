@@ -348,7 +348,7 @@ exports.compile = function compile(data, res, type){
 			shell: true
 		});
 
-		console.log('[COMPILE]\nout: ', String(child.stdout), '\nerr: ', String(child.stderr));
+		//console.log('[COMPILE]\nout: ', String(child.stdout), '\nerr: ', String(child.stderr));
 
 		//run code if there were no compilation errors
 		if(String(child.stderr) != ''){
@@ -375,14 +375,11 @@ exports.compile = function compile(data, res, type){
 				response.Result += String(child);
 			}
 
-
-			console.log('\n[RUN]: ', response);
+			//console.log('\n[RUN]: ', response);
 		}
 
-
+		//if python (only supporting python 3.X)
 	} else if(data.language.toLowerCase() == 'python') {
-		console.log('begin python');
-		console.log("data: ", data);
 		//Write code to file
 	    fs.writeFileSync('./compilation/' + tmpDir + "/code.py", data.code, 'utf-8', function(err) {
 		    if(err) {
@@ -392,8 +389,7 @@ exports.compile = function compile(data, res, type){
 
 		//if no input. There will always be at least a newline, so empty string with \n is empty input
 		if(data.input == '\n') {
-			child = exec("python " + fileBasePath + 'code.py');
-			child = exec("python --version");
+			child = exec("python3 " + fileBasePath + 'code.py');
 
 			response.Result += String(child);
 		} else {
@@ -404,18 +400,15 @@ exports.compile = function compile(data, res, type){
 			    }
 			});
 
-			child = exec('cat ' + fileBasePath + 'input.txt | python ' + fileBasePath + 'code.py');
-
+			child = exec('cat ' + fileBasePath + 'input.txt | python3 ' + fileBasePath + 'code.py');
 			response.Result += String(child);
 		}
 
-
-		console.log('\n[RUN]: ', response);
-
+		//console.log('\n[RUN]: ', response);
 	} else {
 
 		console.log('Unkown language, cannot compile!');
-		console.log('f: ', data);
+		console.log('Data: ', data);
 
 		response.Result += "Unkown language, cannot compile!";
 	}
