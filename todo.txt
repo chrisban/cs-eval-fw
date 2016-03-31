@@ -27,19 +27,6 @@ TO RESEARCH:
 *************
 TODO: 
 
-	Programming:
-
-		- serve codemirror lang specific js files as needed instead of all regardless (in serveModule)
-
-		- Backend, see todo file
-
-
-	Deployment:
-
-		- Install C++/Python and ensure path
-
-		- Remove all console output and shortcut values (hardcoded in modulevars to save me from typing the same info all the time)
-
 		- Provision (for VMs)
 
 		- lockdown browser (restricted urls - visit exam/docu, not google/SO/etc.)
@@ -108,7 +95,7 @@ Completed:
 				- pause time when question switches
 				- report time spent
 
-- skeleon:
+- skeleton:
 	- commit button now used for resetting code
 	- code can now be reset to original state
 
@@ -117,3 +104,12 @@ Completed:
 		- upload well-formed json files, rename them and place in correct directory
 		- support non-formatted fields (newlines/tabs/etc) 
 			_<< >>_ denotes plaintext with line breaks and such that need formatting. ex: "_<<plain text>>_"
+
+- misc
+		- serve codemirror lang specific js files as needed instead of all regardless (in serveModule)
+		- Backend
+
+- Deployment:
+
+		- Install C++/Python and ensure path
+		- Remove all console output and shortcut values (hardcoded in modulevars to save me from typing the same info all the time)
