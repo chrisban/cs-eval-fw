@@ -107,6 +107,7 @@ Completed:
 
 - misc
 		- serve codemirror lang specific js files as needed instead of all regardless (in serveModule)
+			-> ABANDONED: https://discuss.codemirror.net/t/issues-with-dynamically-adding-add-ons-after-load/676
 		- Backend
 
 - Deployment:
