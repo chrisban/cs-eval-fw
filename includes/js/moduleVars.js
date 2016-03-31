@@ -48,7 +48,6 @@ Quiz ID: <input type="text" id="quizID" value=""><br />\
 </div>'
 
 
-//TODO: move all codemirror libs here
 var requires = '<link type="text/css" href="/includes/css/include.css" rel="stylesheet" media="screen"/>';
 
 //Container div closes at the end of navTemplate 

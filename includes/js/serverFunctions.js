@@ -45,12 +45,10 @@ exports.getDataFile = function getDataFile(req, res, callback)
 //This function pieces together the module js+html code sent back to the client using the data file + examlogic templates
 exports.serveModule = function serveModule(req, res, data)
 {
-	//TODO: serve codemirror lang specific js files as needed instead of all regardless
-
 	var html = "";
 
 	//define difficulty levels - 0: easy, 1: medium, 2: hard
-	var difficulty = [10, 20, 30];
+	var difficulty = [];
 
 	//get exported template data from moduleVars.js
 	var header = moduleVars.header; //Overall page header information/instructions
@@ -81,7 +79,6 @@ exports.serveModule = function serveModule(req, res, data)
 	if(req.body.type == 'exam')
 	{
 		html = '<!--BEGIN module code-->' + requires + header;
-		var difficulty = [];
 
 		//iterate through each question in exam datafile, replacing placeholders with index and datafile specefied information
 		for(var i = 0; i < Object.keys(data).length; i++)
@@ -136,7 +133,6 @@ exports.serveModule = function serveModule(req, res, data)
 						    }
 						}
 
-						//TODO: MOVE THIS TO MODULE VARS!!
 						html += mcSubQ.replace(/<<mcsq>>/g, data[i]["input"][j][0]);
 						for(var k = 0; k < data[i]["input"][j][1].length; k++)
 						{
@@ -150,13 +146,15 @@ exports.serveModule = function serveModule(req, res, data)
 			}
 		}
 
-		//TODO: Decide whether to template or leave as-is.
-		var testInfoVars = "var difficulty = [" + difficulty.join() + "]; var testInfo = Object.freeze({test_id: '" + req.body.test_id + "', course_id: '" + req.body.course_id.toUpperCase() + "', test_length: '" + data["prop"]["time"]*60000 + "', warnTimes: '" + data["prop"]["warn"] +"'});";
+		var testInfoVars = "var difficulty = [" + difficulty.join() + "]; var testInfo = Object.freeze({test_id: '" + req.body.test_id + "', course_id: '" + 
+			req.body.course_id.toUpperCase() + "', test_length: '" + data["prop"]["time"]*60000 + "', warnTimes: '" + data["prop"]["warn"] +"'});";
+
 		html += navTemplate + '<!--END module code-->';
 
 		//commented out, due to codemirror add-on bug regarding dynamic loading
 		//var completeScript = 'loadCmResources();' + testInfoVars + baseScript + script + 'refreshCmInstances();';
 		var completeScript = testInfoVars + baseScript + script;
+		
 		//console.log('baseScript: \n', baseScript + '\n\n');
 		//console.log('script: \n', script + '\n\n');
 		//console.log('completeScript: \n', completeScript + '\n\n');
@@ -222,16 +220,13 @@ exports.processExam = function processExam(req, res, data)
 				compileResult = [];
 				exports.compile(userData);
 
-				//see js promises?
+				//TODO: see js promises?
 				//TEMPORARY! - wait 1sec. until compile completes. Temp solution as we are temp. using an external soap api service at the point.
 				while(done == false) {
 				    require('deasync').sleep(500);
 				}
 
 				resultFile += "\n------------------------------------------\n\nTest Input: " + data[i]['input'][j] + "\nCorrect output: " + data[i]['output'][j] + "\nReceived output: " + compileResult.Result + "\n\n";
-
-				//TODO: fix needed, py gives weird newline after output. See javascript trim.
-				//console.log(':',compileResult.Result,':');
 
 				if(data[i]['output'][j] == compileResult.Result)
 				{
@@ -379,7 +374,7 @@ exports.compile = function compile(data, res, type){
 		}
 
 		//if python (only supporting python 3.X)
-	} else if(data.language.toLowerCase() == 'python') {
+	} else if(data.language.toLowerCase().indexOf("python") != -1) {
 		//Write code to file
 	    fs.writeFileSync('./compilation/' + tmpDir + "/code.py", data.code, 'utf-8', function(err) {
 		    if(err) {
@@ -402,6 +397,7 @@ exports.compile = function compile(data, res, type){
 
 			child = exec('cat ' + fileBasePath + 'input.txt | python3 ' + fileBasePath + 'code.py');
 			response.Result += String(child);
+			//TODO: find a way to get python to send its error msgs
 		}
 
 		//console.log('\n[RUN]: ', response);

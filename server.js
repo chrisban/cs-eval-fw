@@ -10,8 +10,6 @@ app.use(bodyParser.json());
 app.use(busboy());
 
 //connect static links
-//app.use('/js', express.static(__dirname + '/frontEnd/js'));
-//app.use('/css', express.static(__dirname + '/frontEnd/css'));
 app.use('/includes', express.static(__dirname + '/includes'));
 app.use('/admin', express.static(__dirname + '/admin'));
 
@@ -19,11 +17,12 @@ app.use('/admin', express.static(__dirname + '/admin'));
 /*********************/
 /* HTTP GET HANDLING */
 /*********************/
+//Exam/Quiz module
 app.get('/', function (req, res) {
-	//Proof of concept utilizing exam module. Change to or include info/usage page?
  	res.sendFile( __dirname + "/frontEnd/" );
 });
 
+//Admin page
 app.get('/admin/', function (req, res) {
  	res.sendFile( __dirname + "/admin/admin.html" );
 });
@@ -37,7 +36,6 @@ app.post('/getModuleSelector', function (req, res) {
 	functions.requestQuizInfo(req, res, functions.getModuleSelector);
 });
 
-
 //handle post request to retrieve datafiles
 app.post('/getModule', function (req, res) {
 	functions.getDataFile(req, res, functions.serveModule);
@@ -50,12 +48,11 @@ app.post('/compile', function (req, res) {
  
 //handle answer submits answers for grading
 app.post('/submit', function (req, res) {
-	//console.log(req.body);
 	functions.getDataFile(req, res, functions.processExam);
 });
 
+//handle datafile uploads/parsing
 app.post('/uploadFile', function (req, res) {
-	//TODO: handle file posting/uploading
 	var type = 'raw';
 	if(!req.body.course_id) {
 		type = 'file';
@@ -63,6 +60,7 @@ app.post('/uploadFile', function (req, res) {
 	}
 	functions.storeDatafile(type, req, res);
 });
+
 
 //start server
 var server = app.listen(8888, function () {

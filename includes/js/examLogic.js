@@ -17,7 +17,6 @@ var difficultyMultiplier = 10;
 //section1 will hold section1 answers and freeze them so they may not be modified after completing part 1
 var section1 = {};
 
-//TODO: REPLACE ./ WITH REAL LINKS TO ENDPOINT WHEN MIGRATE TO VM (maybe it's fine?)
 //might need to change when editor init calls are made until after resources are loaded	
 function loadCmResources(){
     var cmJsResources = [
@@ -47,7 +46,6 @@ function refreshCmInstances() {
 	// });
 
 
-	//TODO: dynamically get correct mode
 	//See this conversation with the CM developer regarding switching options: https://discuss.codemirror.net/t/issues-with-dynamically-adding-add-ons-after-load/676
 	for(var i = 0; i < structure.count; i++)
 	{
@@ -60,7 +58,7 @@ function refreshCmInstances() {
 
 		cm.setOption('matchBrackets', true);
 		cm.setOption('autoRefresh', true);
-		cm.setOption('mode', 'clike');
+		cm.setOption('mode', modes[i]);
 		cm.refresh();
 	}
 }
@@ -70,8 +68,6 @@ function backupSkeletonCode() {
 	{
 		skeletonCode.push($('.CodeMirror')[i].CodeMirror.options.value);
 	}
-
-	//console.log('skf: ', skeletonCode);
 }
 
 
@@ -525,8 +521,6 @@ $( "#dialogID" ).dialog({
 	    "Save": function() {
 	      if($("#idNum").val().length >= 6)
 	      {
-	      //TODO: retrieve initpbar val from server!
-	      //I don't remember what I meant by this... maybe I already fixed this by doing initExam?
 	      	$(this).dialog("close");
 	      	initExam();
 	      }

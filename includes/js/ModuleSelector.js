@@ -1,3 +1,4 @@
+//Not called due to bug in loading cm+add-ons dynamically.
 //loadCM();
 
 /*jQueryUI Modal used to warn student about submitting exam and finishing attempt*/
@@ -9,7 +10,6 @@ $( "#requestInfo" ).dialog({
 		click: function() {
 			if($('#courseID').val().length > 0 && $('#courseID').val().length > 0)
 			{
-				//TODO: remove any non a-z,0-9 characters from strings. Can't remember syntax and no internet
 				$.ajax({
 				    url: "/getModule",
 				    type: "POST",
@@ -48,7 +48,6 @@ $( "#requestInfo" ).dialog({
 });
 
 
-//Not called due to bug in loading cm+add-ons dynamically.
 function loadCM(){
 	//cm.css
 	var fileref = document.createElement('link');
