@@ -335,6 +335,8 @@ exports.compile = function compile(data, res, type){
 
     //if c++,c++14,etc. use gcc
 	if(data.language.toLowerCase().indexOf('c++') != -1) {
+		console.log('c++ compile');
+		console.log(data.language.toLowerCase());
 		//Write code to file
 	    fs.writeFileSync('./compilation/' + tmpDir + "/code.cpp", data.code, 'utf-8', function(err) {
 		    if(err) {
@@ -394,8 +396,15 @@ exports.compile = function compile(data, res, type){
 
 
 	} else if(data.language.toLowerCase() == 'python') {
+
+		console.log('python compile');
+		console.log(data.language.toLowerCase());
 		
 
+	} else {
+
+		console.log('? compile');
+		console.log(data.language.toLowerCase());
 	}
 
 	if(type == "post") {
