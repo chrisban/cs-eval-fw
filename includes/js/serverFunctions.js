@@ -393,9 +393,9 @@ exports.compile = function compile(data, res, type){
 		//if no input. There will always be at least a newline, so empty string with \n is empty input
 		if(data.input == '\n') {
 			child = exec("python " + fileBasePath + 'code.py');
+			child = exec("python --version");
 
-			response.Errors += String(child.stderr);
-			response.Result += String(child.stdout);
+			response.Result += String(child);
 		} else {
 			//Can't get it to feed in multiple inputs unless from a file with CRLFs
 			fs.writeFileSync('./compilation/' + tmpDir + "/input.txt", data.input, 'utf-8', function(err) {
