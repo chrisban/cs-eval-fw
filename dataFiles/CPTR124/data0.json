@@ -41,7 +41,7 @@
     },
     "4": {
     	"questionType": "code",
-    	"language": "python3",
+    	"language": "python",
         "problem": "In python, define and call a simple function that accepts and prints the word 'Student'.",
         "skeleton": "def greet(name):\n   print(name)\ngreet('Student')",
         "input": [""],
