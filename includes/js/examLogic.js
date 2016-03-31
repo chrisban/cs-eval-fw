@@ -444,7 +444,6 @@ function submitExam(){
 		"input": input,
 		"timings": timings
 	};
-	console.log("data: ", data);
 
 	$.ajax({
 		  type: "POST",

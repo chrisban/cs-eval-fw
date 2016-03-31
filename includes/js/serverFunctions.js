@@ -229,7 +229,7 @@ exports.processExam = function processExam(req, res, data)
 				resultFile += "\n------------------------------------------\n\nTest Input: " + data[i]['input'][j] + "\nCorrect output: " + data[i]['output'][j] + "\nReceived output: " + compileResult.Result + "\n\n";
 
 
-				console.log("comparing: ", compileResult.Result, data[i]['output'][j]);
+				//console.log("comparing: ", compileResult.Result, data[i]['output'][j]);
 
 				if(data[i]['output'][j] == compileResult.Result)
 				{
@@ -258,7 +258,7 @@ exports.processExam = function processExam(req, res, data)
 				//Options are randomized, so to find correct index -> match on question first via indexOf
 				var correctIndex = parseInt(data[i]['output'][j]);
 				var submittedIndex = parseInt(data[i]['input'][j][1].indexOf(req.body.solution[i][j]));
-				console.log("[j:" + j + "] \ncorrectIndex: ", correctIndex, "\nsubmittedIndex", submittedIndex);
+				//console.log("[j:" + j + "] \ncorrectIndex: ", correctIndex, "\nsubmittedIndex", submittedIndex);
 				resultFile += "Correct answer: " + data[i]['input'][j][1][correctIndex] + "\nReceived answer: " + data[i]['input'][j][1][submittedIndex] + "\n state: ";
 
 				//Track points
@@ -267,15 +267,12 @@ exports.processExam = function processExam(req, res, data)
 
 				if(correctIndex == submittedIndex)
 				{
-					console.log("SAME");
 					subStudentScore += parseInt(data[i]["points"][j]);
 					studentScore += parseInt(data[i]["points"][j]);
 					resultFile += "Correct\n\n";
 				} else {
 					resultFile += "Inorrect\n\n";
-					console.log("DIFF");
 				}
-				console.log("\n\n");
 			}
 		}
 
@@ -286,6 +283,7 @@ exports.processExam = function processExam(req, res, data)
 	resultFile += "FINAL SCORE: " + studentScore + "/" + totalPoints + "\n";
 
 	//formulate paths, create directories if necessary. EEXIST e.code means dir already exists. If it doesn't, it will create.
+	//We won't overwrite the coursepath or testpath to keep from losing data or student resubmissions. File creation timestamp can be used to verify timings if necessary
 	var coursePath = './testResults/' + req.body.course_id.toUpperCase() + '/';
 	var testPath = './testResults/' + req.body.course_id.toUpperCase() + '/test' + req.body.test_id + '/';
 	
