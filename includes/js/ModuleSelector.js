@@ -1,4 +1,4 @@
-//loadCM();
+loadCM();
 
 /*jQueryUI Modal used to warn student about submitting exam and finishing attempt*/
 $( "#requestInfo" ).dialog({
