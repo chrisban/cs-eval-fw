@@ -337,19 +337,18 @@ $(".compile").on("click", function(){
 	}
 	var btnContext = $(this);
 	var parentID = $(this).parent().parent().attr("id");
-	var index = parentID.substring(17, parentID.length);
+	var index = parseInt(parentID.substring(17, parentID.length));
 	var lbox = $(this).parent().parent().find("select option");
-	var mode = modes[parseInt(index)];
-	var lang = "";
+	var mode = modes[index];
 
 	//Set c++ for clike syntax specifically since it is a general styling. 
 	//We're only supporting c++ right now so no need to get more complex
 	if(mode == "clike")
-		lang = "c++";
+		mode = "c++";
 
 	var data = {
-		"language": lang,
-		"code": $(".CodeMirror")[parseInt(index)].CodeMirror.getValue(),
+		"language": mode,
+		"code": $(".CodeMirror")[index].CodeMirror.getValue(),
 		"input": $.map(lbox ,function(option) {return option.value;}).join('\n') + '\n'
 	};
 

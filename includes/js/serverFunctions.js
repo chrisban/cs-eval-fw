@@ -333,10 +333,8 @@ exports.compile = function compile(data, res, type){
 			throw e;
 	}
 
-    //if c++,c++14,etc. use gcc
+    //if c++, use gcc
 	if(data.language.toLowerCase().indexOf('c++') != -1) {
-		console.log('c++ compile');
-		console.log(data.language.toLowerCase());
 		//Write code to file
 	    fs.writeFileSync('./compilation/' + tmpDir + "/code.cpp", data.code, 'utf-8', function(err) {
 		    if(err) {
@@ -345,8 +343,6 @@ exports.compile = function compile(data, res, type){
 		});
 
 
-
-	    //TODO: ensure deploy has the same location
 		//compile code
 		var child = spawn('g++', [fileBasePath + 'code.cpp', '-o', fileBasePath + 'output'], {
 			shell: true
@@ -360,7 +356,7 @@ exports.compile = function compile(data, res, type){
 		} else {
 			//if no input. There will always be at least a newline, so empty string with \n is empty input
 			if(data.input == '\n') {
-				child = spawn(fileBasePath + 'output', [], {
+				child = spawn("python " + fileBasePath + 'output', [], {
 					shell: true
 				});
 
@@ -374,18 +370,7 @@ exports.compile = function compile(data, res, type){
 				    }
 				});
 
-				// child = spawn('cat', [fileBasePath + 'input.txt'], {
-				// 	stdio: [null, 'pipe', 'inherit'],
-				// 	shell: true
-				// });
-
-				// var child = exec(fileBasePath + 'output', [], {
-				// 	input: child.stdout,
-				// 	shell: true
-				// });
-
-				//TODO: get errors (if any)
-				child = exec('cat ' + fileBasePath + 'input.txt | ' + fileBasePath + 'output');
+				child = exec('cat ' + fileBasePath + 'input.txt | python ' + fileBasePath + 'output');
 
 				response.Result += String(child);
 			}
@@ -396,15 +381,53 @@ exports.compile = function compile(data, res, type){
 
 
 	} else if(data.language.toLowerCase() == 'python') {
+		//Write code to file
+	    fs.writeFileSync('./compilation/' + tmpDir + "/code.py", data.code, 'utf-8', function(err) {
+		    if(err) {
+		        return console.log(err);
+		    }
+		});
 
-		console.log('python compile');
-		console.log(data.language.toLowerCase());
+		//if no input. There will always be at least a newline, so empty string with \n is empty input
+		if(data.input == '\n') {
+			child = spawn(fileBasePath + 'output', [], {
+				shell: true
+			});
+
+			response.Errors += String(child.stderr);
+			response.Result += String(child.stdout);
+		} else {
+			//Can't get it to feed in multiple inputs unless from a file with CRLFs
+			fs.writeFileSync('./compilation/' + tmpDir + "/input.txt", data.input, 'utf-8', function(err) {
+			    if(err) {
+			        return console.log(err);
+			    }
+			});
+
+			// child = spawn('cat', [fileBasePath + 'input.txt'], {
+			// 	stdio: [null, 'pipe', 'inherit'],
+			// 	shell: true
+			// });
+
+			// var child = exec(fileBasePath + 'output', [], {
+			// 	input: child.stdout,
+			// 	shell: true
+			// });
+
+			//TODO: get errors (if any)
+			child = exec('cat ' + fileBasePath + 'input.txt | ' + fileBasePath + 'output');
+
+			response.Result += String(child);
+		}
+
+		console.log('\n[RUN]: ', response);
 		
-
 	} else {
 
-		console.log('? compile');
-		console.log(data.language.toLowerCase());
+		console.log('Unkown language, cannot compile!');
+		console.log('f: ', data);
+
+		response.Result += "Unkown language, cannot compile!";
 	}
 
 	if(type == "post") {
