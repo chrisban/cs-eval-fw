@@ -381,13 +381,15 @@ exports.compile = function compile(data, res, type){
 
 
 	} else if(data.language.toLowerCase() == 'python') {
+		console.log('begin python');
+		console.log("data: ", data);
 		//Write code to file
 	    fs.writeFileSync('./compilation/' + tmpDir + "/code.py", data.code, 'utf-8', function(err) {
 		    if(err) {
 		        return console.log(err);
 		    }
 		});
-	
+
 		//if no input. There will always be at least a newline, so empty string with \n is empty input
 		if(data.input == '\n') {
 			child = spawn("python " + fileBasePath + 'output', [], {
