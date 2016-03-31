@@ -24,10 +24,6 @@ app.get('/', function (req, res) {
  	res.sendFile( __dirname + "/frontEnd/" );
 });
 
-app.get('/includes/css/include.css', function (req, res) {
- 	res.sendFile( __dirname + "/includes/css/include.css" );
-});
-
 app.get('/admin/', function (req, res) {
  	res.sendFile( __dirname + "/admin/admin.html" );
 });

@@ -1,4 +1,4 @@
-loadCM();
+//loadCM();
 
 /*jQueryUI Modal used to warn student about submitting exam and finishing attempt*/
 $( "#requestInfo" ).dialog({
@@ -48,7 +48,7 @@ $( "#requestInfo" ).dialog({
 });
 
 
-//TODO: REPLACE ./ WITH REAL LINKS TO ENDPOINT WHEN MIGRATE TO VM
+//Not called due to bug in loading cm+add-ons dynamically.
 function loadCM(){
 	//cm.css
 	var fileref = document.createElement('link');

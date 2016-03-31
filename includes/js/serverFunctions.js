@@ -154,7 +154,9 @@ exports.serveModule = function serveModule(req, res, data)
 		var testInfoVars = "var difficulty = [" + difficulty.join() + "]; var testInfo = Object.freeze({test_id: '" + req.body.test_id + "', course_id: '" + req.body.course_id.toUpperCase() + "', test_length: '" + data["prop"]["time"]*60000 + "', warnTimes: '" + data["prop"]["warn"] +"'});";
 		html += navTemplate + '<!--END module code-->';
 
-		var completeScript = 'loadCmResources();' + testInfoVars + baseScript + script + 'refreshCmInstances();';
+		//commented out, due to codemirror add-on bug regarding dynamic loading
+		//var completeScript = 'loadCmResources();' + testInfoVars + baseScript + script + 'refreshCmInstances();';
+		var completeScript = testInfoVars + baseScript + script;
 		//console.log('baseScript: \n', baseScript + '\n\n');
 		//console.log('script: \n', script + '\n\n');
 		//console.log('completeScript: \n', completeScript + '\n\n');
