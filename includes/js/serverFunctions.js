@@ -392,9 +392,7 @@ exports.compile = function compile(data, res, type){
 
 		//if no input. There will always be at least a newline, so empty string with \n is empty input
 		if(data.input == '\n') {
-			child = exec("python " + fileBasePath + 'code.py', [], {
-				shell: true
-			});
+			child = exec("python " + fileBasePath + 'code.py');
 
 			response.Errors += String(child.stderr);
 			response.Result += String(child.stdout);
