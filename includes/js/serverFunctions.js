@@ -392,7 +392,7 @@ exports.compile = function compile(data, res, type){
 
 		//if no input. There will always be at least a newline, so empty string with \n is empty input
 		if(data.input == '\n') {
-			child = spawn("python " + fileBasePath + 'output', [], {
+			child = exec("python " + fileBasePath + 'code.py', [], {
 				shell: true
 			});
 
@@ -406,7 +406,7 @@ exports.compile = function compile(data, res, type){
 			    }
 			});
 
-			child = exec('cat ' + fileBasePath + 'input.txt | python ' + fileBasePath + 'output');
+			child = exec('cat ' + fileBasePath + 'input.txt | python ' + fileBasePath + 'code.py');
 
 			response.Result += String(child);
 		}
