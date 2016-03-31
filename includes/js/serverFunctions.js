@@ -228,6 +228,9 @@ exports.processExam = function processExam(req, res, data)
 
 				resultFile += "\n------------------------------------------\n\nTest Input: " + data[i]['input'][j] + "\nCorrect output: " + data[i]['output'][j] + "\nReceived output: " + compileResult.Result + "\n\n";
 
+				
+				console.log("comparing: ", compileResult.Result, data[i]['output'][j]);
+
 				if(data[i]['output'][j] == compileResult.Result)
 				{
 					subStudentScore += parseInt(data[i]["points"][j]);
@@ -251,7 +254,7 @@ exports.processExam = function processExam(req, res, data)
 		{
 			for(var j = 0; j < data[i]["input"].length; j++)
 			{
-				//console.log("comparing: ", req.body.solution[i][j], data[i]['output'][j])
+				console.log("comparing: ", req.body.solution[i][j], data[i]['output'][j]);
 
 				//Record input
 				//Options are randomized, so to find correct index -> match on question first via indexOf
