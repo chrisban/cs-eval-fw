@@ -339,15 +339,13 @@ $(".compile").on("click", function(){
 	var parentID = $(this).parent().parent().attr("id");
 	var index = parentID.substring(17, parentID.length);
 	var lbox = $(this).parent().parent().find("select option");
-	var mode = $(".CodeMirror")[parseInt(index)].CodeMirror.getOption("mode");
+	var mode = modes[parseInt(index)];
 	var lang = "";
 
-	//TODO: Needs more complex logic for clike langs instead of defaulting to C++ if not python
-	//default to python for now
+	//Set c++ for clike syntax specifically since it is a general styling. 
+	//We're only supporting c++ right now so no need to get more complex
 	if(mode == "clike")
 		lang = "c++";
-	else
-		lang = "python";
 
 	var data = {
 		"language": lang,

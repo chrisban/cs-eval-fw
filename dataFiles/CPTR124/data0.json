@@ -1,7 +1,7 @@
 {    
     "0": {
     	"questionType": "mchoice",
-    	"language": "c++14",
+    	"language": "c++",
         "problem": "Given the following declarations, evaluate the following Boolean expressions:",
         "skeleton": "int x = 3, y = 5, z = 7;",
         "input": [ ["x >= y", ["True", "False"]],  ["x >= 0 && z < 10", ["True", "False"]], ["x >= 0 || z < 10", ["True", "False"]] ],
@@ -11,7 +11,7 @@
     },
     "1": {
     	"questionType": "mchoice",
-    	"language": "c++14",
+    	"language": "c++",
         "problem": "What does the following program print when the user enters the indicated values?   (NH means \"answer Not Here.\")",
         "skeleton": "#include <iostream>\nusing namespace std;\n\nint main() {\n     int i, j, k;\n     cin >> i >> j >> k;\n     // i, j, and k are ints\n     if (i < j) {\n          if (j < k)\n               i = j;\n          else\n               j = k;\n     }\n     else {\n          if (j > k)\n               j = i;\n          else\n               i = k;\n     }\n     cout << \"i = \" << i << \" j = \" << j << \" k = \" << k << endl;\n}\n",
         "input": [ ["3 5 7", ["i = 3 j = 5 k = 7", "i = 3 j = 3 k = 7", "i = 5 j = 5 k = 7", "i = 3 j = 5 k = 5", "i = 3 j = 7 k = 7", "NH"]], ["3 5 5", ["i = 3 j = 5 k = 7", "i = 3 j = 3 k = 7", "i = 5 j = 5 k = 7", "i = 3 j = 5 k = 5", "i = 3 j = 7 k = 7", "NH"]] ],
@@ -21,7 +21,7 @@
     },
     "2": {
     	"questionType": "code",
-    	"language": "c++14",
+    	"language": "c++",
         "problem": "Write a C++ program that accepts a single integer value entered by the user. If the value entered is less than one, the program prints nothing. If the user enters a positive integer, n, the program prints an n×n box drawn with * characters. If the users enters 1, for example, the program prints<br /><br /> *<br /><br />If the user enters a 2, it prints<br /><br /> **<br /> **<br /><br />An entry of three yields<br /><br /> ***<br /> ***<br /> ***<br /><br />and so forth. If the user enters 7, it prints<br /><br /> *******<br /> *******<br /> *******<br /> *******<br /> *******<br /> *******<br /> *******<br /><br />that is, a 7×7 box of * symbols.",
         "skeleton": "#include <iostream>\nusing namespace std;\n\nint main() {\n     int n;\n     cin >> n;\n}",
         "input": ["2\n3"],
@@ -31,7 +31,7 @@
     },
     "3": {
     	"questionType": "code",
-    	"language": "c++14",
+    	"language": "c++",
         "problem": "Complete the following function that counts the even numbers in an integer vector. For example, if vector vec contains the elements 3, 5, 2, -1, and 2, the call <br /> <br /> count_evens(vec)<br /> <br />would evaluate to 2, since vec contains two even integers. The function returns zero if the vector is empty. The function does not affect the contents of the vector.  A simple test main function is provided for your convenience.",
         "skeleton": "#include <iostream>\n#include <vector>\nusing namespace std;\n\nint count_evens(const vector<int>& v){\n\n     return -1; //Replace with working code\n\n}\n\nint main() {//  Make vector     \nint size;\n     cout << \"Enter vector size: \";\n     cin >> size;\n     vector<int> v(size);\n     //  Populate the vector\n     for (int i = 0; i < size; i++) {\n          cout << \"Enter element \" << i << \": \";\n          cin >> v[i];\n     }\n\n     //  Test the function\n     cout << count_evens(v);\n}\n",
         "input": ["1", "2"],
