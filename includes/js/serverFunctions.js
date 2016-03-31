@@ -254,19 +254,19 @@ exports.processExam = function processExam(req, res, data)
 		{
 			for(var j = 0; j < data[i]["input"].length; j++)
 			{
-				console.log("comparing: ", req.body.solution[i][j], data[i]['output'][j]);
+				console.log("comparing: ", req.body.solution[i][j], data[i]['input'][j][1][submittedIndex]);
 
 				//Record input
 				//Options are randomized, so to find correct index -> match on question first via indexOf
 				var correctIndex = parseInt(data[i]['output'][j]);
 				var submittedIndex = parseInt(data[i]['input'][j][1].indexOf(req.body.solution[i][j]));
-				console.log("[j:" + j + "] + correctIndex: ", correctIndex, "\nsubmittedIndex", submittedIndex, "\n", correctIndex + submittedIndex, "\n\n");
+				console.log("[j:" + j + "] \n correctIndex: ", correctIndex, "\nsubmittedIndex", submittedIndex, "\n", correctIndex + submittedIndex, "\n\n");
 				resultFile += "Correct answer: " + data[i]['input'][j][1][correctIndex] + "\nReceived answer: " + data[i]['input'][j][1][submittedIndex] + "\n state: ";
 
 				//Track points
 				subTotalPoints += parseInt(data[i]["points"][j]);
 				totalPoints += parseInt(data[i]["points"][0]);
-				if(correctIndex == submittedIndex)
+				if(correctIndex === submittedIndex)
 				{
 					subStudentScore += parseInt(data[i]["points"][j]);
 					studentScore += parseInt(data[i]["points"][j]);
