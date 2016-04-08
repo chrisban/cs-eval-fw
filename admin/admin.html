@@ -10,6 +10,7 @@
 	</head>
 	<script>
 		$( document ).ready(function() {
+			//modal that reports upload/parse success
 			$( "#infoModal" ).dialog({
 				autoOpen: false,
 				buttons: [{
@@ -21,13 +22,16 @@
 			    }]
 			});
 
+			//Upload button
 			$("#uploadBtn").on("click", function(){
 				//Ensure courseid and key are provided
 				if($('#courseID').val() != '' && $('#activityID').val() != '') {
+					//if file, use file instead of textarea
 					if($('#fileInput').val() != '') {
 						var file = new FormData();
 						file.append($('#courseID').val() + '===' + $('#activityID').val(), $('#fileInput')[0].files[0]);
 
+						//send json file to /uploadFile endpoint
 						$.ajax({
 							url: '/uploadFile',
 							type: 'POST',
@@ -43,7 +47,7 @@
 						    	console.log("Error response: ", res);
 						    }
 						});
-					} else {
+					} else {//else use textarea
 						var tmpCode = JSON.stringify($('#code').val());
 
 						//only parse if ANY code is wrapped
@@ -71,7 +75,7 @@
 							console.log('total: ', JSON.parse(tmpCode));
 						}
 						
-
+						//send formatted json data to /uploadFile endpoint
 						$.ajax({
 						    url: "/uploadFile",
 						    type: "POST",
@@ -89,6 +93,7 @@
 						});
 					}
 				} else {
+					//alert user to missing data
 					$( "#infoModal" ).html('You must provide course and quiz/exam IDs');
 					$( "#infoModal" ).dialog('open');
 				}

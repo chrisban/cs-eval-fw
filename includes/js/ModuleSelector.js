@@ -48,6 +48,8 @@ $( "#requestInfo" ).dialog({
 });
 
 
+//Function that loads cm js/css
+//Not called due to bug in loading cm+add-ons dynamically.
 function loadCM(){
 	//cm.css
 	var fileref = document.createElement('link');

@@ -25,6 +25,8 @@
         		async: false, //ensures completion before continuting on
 			    success: function(res){
 			    	//console.log("[client] Success response: ", res);
+
+			    	//On success, populate page with response data and execute
 			    	$('body').html(res['response_html']);
 				    eval(res['response_script']);
 			    },

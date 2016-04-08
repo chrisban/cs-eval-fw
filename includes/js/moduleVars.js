@@ -1,5 +1,5 @@
 //Defines html template data
-//placeholders denoted by lt/gt symbols e.g.: <<PLACEHOLDER>>
+//placeholders denoted by lt/gt symbols e.g.: <<_PLACEHOLDER_>>
 
 
 //TODO: Update this info!
@@ -40,7 +40,7 @@
 */
 
 
-//
+//A modal which accepts course and quiz id
 var moduleSelector = '<div id="requestInfo">\
 Course ID: <input type="text" id="courseID" value=""><br />\
 Quiz ID: <input type="text" id="quizID" value=""><br />\
@@ -48,9 +48,11 @@ Quiz ID: <input type="text" id="quizID" value=""><br />\
 </div>'
 
 
+//includes css
 var requires = '<link type="text/css" href="/includes/css/include.css" rel="stylesheet" media="screen"/>';
 
-//Container div closes at the end of navTemplate 
+//header code
+//Note: Container div closes at the end of navTemplate 
  var header = '<div id="container">\
 <div id="banner"><h1>Practice Exam</h1></div>\
 <div>Enter or modify the code below and press \'Compile\' to execute and view results.</div>\
@@ -62,11 +64,12 @@ var requires = '<link type="text/css" href="/includes/css/include.css" rel="styl
 <div id="dialogWarn" title="Begin next section?">Once you begin this section, you will not be able to modify the previous section\'s answers. Do you wish to continue?</div>\
 <div id="dialogSubmit" title="Submit Exam?">Are you sure you want to submit? Once completed, you will not be able to make changes or make another attempt!</div><br/><hr>';
 
-//questionContainer will be closed at the end of ioTemplate
+//questionContainer will be closed at the end of qToolsTemplate
 //PLACEHOLDERS: <<n>> = question number, <<pstatement>> = problem statement from datafile
 var pStatementTemplate = '<div id="questionContainer<<n>>"><div id="problemStatement<<n>>"><<pstatement>></div>';
 
 
+//io template code that includes the code editor, input/results divs
 //PLACEHOLDERS: <<n>> = question number, <<code>> = skeleton code from datafile
 var ioTemplate = '<div class="inputContainer">\
 		<div class="codeContainer">\
@@ -90,11 +93,11 @@ var ioTemplate = '<div class="inputContainer">\
 	</div>';
 
 
-//template editor for multiple choice
+//template editor for multiple choice skeleton code area
 //PLACEHOLDERS: <<n>> = question number, <<code>> = skeleton code from datafile
 var mcCodeTemplate = '<div class="codeContainer"><textarea id="code<<n>>"><<code>></textarea></div><div class="mcOptions">';
 
-//template editor for multiple choice. Opens div, closes with a genericCloseDiv on server for each opened subQ due to how subQs are formed.
+//template editor for multiple choice. Opens div, needs to be closed with a genericCloseDiv in serverFunctions for each opened subQ due to how subQs are formed.
 //PLACEHOLDERS: <<mcsq>> = mc sub question
 var mcSubQ = "<div class='mcSubQ'><b><<mcsq>></b><br/>";
 
@@ -102,10 +105,11 @@ var mcSubQ = "<div class='mcSubQ'><b><<mcsq>></b><br/>";
 //PLACEHOLDERS: <<n>> = question number, <<o>>, option number, <<mc>> = option
 var mcOptionTemplate = '<input type="radio" class="mc<<n>>" index="<<o>>" value="<<mc>>"><<mc>></input><br />';
 
-//Insert reset button. 1nd div: questionContainer /div (opened in pStatementTemplate).
+//Insert reset button and progress bar. extra /div to close questionContainer (opened in pStatementTemplate).
 //PLACEHOLDERS: <<n>> = question number, <<o>>, option number, <<mc>> = option
 var qToolsTemplate = '<div id="progressB<<n>>">Suggested time: <div class="pbar_outer"><div class="pbar_inner"></div><div class="pbar_inner_txt" style="">0:00</div></div></div> <span class="reset button"> Reset Code </span> </div>'; 
 
+//template for the nagivation bar at the bottom of page
 //PLACEHOLDERS: <<navshortcuts>> = a span for each index that can be used to quick jump to a specific question.
 var navTemplate = '<div id="nav"><hr />\
 					<span id="navBLeft" class="button_disable"> << Prev </span>\

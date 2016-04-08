@@ -10,8 +10,7 @@ var modes = [];
 var timingData = new Array();
 
 
-//Difficulty multiplier used to calculate max time for questions (essentially, question difficulty * n = max minutes it should take)
-//TODO: Define in datafile and report. Default to 10 if n/a. Also update serverFunctions.js:183
+//Difficulty multiplier used to calculate max time for questions (essentially, [ question difficulty * (n + 1) ] = max minutes it should take, n being the 'level' of difficulty 0 - n)
 var difficultyMultiplier = 10;
 
 //section1 will hold section1 answers and freeze them so they may not be modified after completing part 1
@@ -36,15 +35,14 @@ function loadCmResources(){
 }
 
 
+//Refresh CM here since we added the cm resource files here instead of on page load which messes with load order.
+//NOTE: This function isn't called due to issues with dynamicall loading cm add-on libs. Because of this, they must be explicitly loaded on the page for now
 function refreshCmInstances() {
-    //Refresh CM here since we added the cm resource files here instead of on page load which messes with load order.
-    //TODO: Not sure if refreshing correct object. investigate
 	// $('.CodeMirror').each(function(idx, el){
 	// 	console.log('cm instance: ', el); 
 	// 	//el.setOption('mode', 'clike');
 	// 	el.CodeMirror.refresh();
 	// });
-
 
 	//See this conversation with the CM developer regarding switching options: https://discuss.codemirror.net/t/issues-with-dynamically-adding-add-ons-after-load/676
 	for(var i = 0; i < structure.count; i++)
@@ -55,7 +53,6 @@ function refreshCmInstances() {
 		// cm.setOption('autoRefresh', false);
 		// cm.setOption('mode', 'N/A');
 		// cm.refresh();
-
 		cm.setOption('matchBrackets', true);
 		cm.setOption('autoRefresh', true);
 		cm.setOption('mode', modes[i]);
@@ -63,6 +60,7 @@ function refreshCmInstances() {
 	}
 }
 
+//Back up skeletone code so it can be reset back to original state
 function backupSkeletonCode() {
 	for(var i = 0; i < structure.count; i++)
 	{
@@ -81,19 +79,19 @@ function editor(id, rOnly, mode) {
 		readOnly: rOnly,
 		theme: "default",
     	lineNumbers: true,
-    	//matchBrackets: true,
-    	//autoRefresh: true,
+    	matchBrackets: true,
+    	autoRefresh: true,
     	enableCodeFormatting: true,
     	autoFormatOnStart: true,
     	autoFormatOnUncomment: true,
-    	//mode: mode,
+    	mode: mode,
     	styleActiveLine: true,
     	smartIndent: true
     });
 }
 
 
-//Function that starts pbar, accepts a js div object, and max time
+//Function that starts pbar, accepts a jq object, and max time and id key
 function initPbar(bar, maxTime, key) {
 	timingData[key] = [0, maxTime, 1, 0, '0:00'];
 	bar = $(bar);
@@ -117,6 +115,7 @@ function animateUpdate(bar, start, key, timeoutVal) {
     var perc = Math.round((timeDiff/maxTime)*100);
     timingData[key][2] = timeDiff;
 
+    //update until we have reached 100%
 	if (perc <= 100 && (maxTime - timeDiff) > 0) {
 		updateProgress(bar, perc, (maxTime - timeDiff));
 		setTimeout(animateUpdate, timeoutVal, bar, start, key);
@@ -125,6 +124,7 @@ function animateUpdate(bar, start, key, timeoutVal) {
 
 
 //Updates bar and formats time remaining into minutes:seconds
+//Accepts jq obj, percentage int, and remaining time int
 function updateProgress(bar, percentage, remainingTime) {
     bar.css("width", percentage + "%");
     var formattedMin = Math.floor((remainingTime % (1000*60*60)) / (1000*60));
@@ -144,12 +144,15 @@ function updateProgress(bar, percentage, remainingTime) {
 }
 
 
-//Update label content
+//Update label content, accepts string
 function updateStatusLabel(message) {
-	console.log('Status label update: ' + message);
+	//console.log('Status label update: ' + message);
 	$('#statusLabel').html(message);
 }
 
+//function that allows timing bars to be paused
+//Accepts the current page index and the target page index
+//See timingData definition for structure information
 function adjustTiming(currentIndex, targetIndex) {
 	//if current timing isn't finished (timeDiff > 0)
 	if (timingData[currentIndex][2] > 0) {
@@ -171,11 +174,11 @@ function adjustTiming(currentIndex, targetIndex) {
 }
 
 
-//accepts an integer as target index and switches from current problem to specified problem via index
+//accepts an integer as target index and switches from current 'page' to target 'page' via index
 function goNav(targetIndex) {
 	var curr = $("[id*=questionContainer]:visible");
 	var currentIndex = parseInt(curr.attr("id").substring(17, curr.attr("id").length));
-	//if target is 0 - max# defined in structure, and target is not current view
+	//if target is 0 through max# defined in structure, and target is not current view
 	if(targetIndex >= 0 && targetIndex < structure.count && targetIndex != currentIndex)
 	{
 		//Init pbar only if question is not active to avoid resetting, while starting automatically.
@@ -212,11 +215,9 @@ function goNav(targetIndex) {
 		//if forward
 		if(targetIndex > currentIndex)
 		{
+			//If you want to keep users from seeing 2nd section before finishing 1st:
 			//If attempting to access second section from first section by checking against frozen structure.divide var. (current before divide, target after)
-			// if(currentIndex < $(".mcOptions").length && targetIndex >= $(".mcOptions").length)
-			// {
-				
-			// }
+			// if(currentIndex < $(".mcOptions").length && targetIndex >= $(".mcOptions").length) {}
 
 			curr.toggle("slide", {"direction":"left"}, function(){
 				$("#questionContainer" + targetIndex).toggle("slide", {"direction":"right"});
@@ -272,7 +273,7 @@ $("[id*=navB]").on("click", function(){
 });
 
 
-//dynamically add items from nearest selectbox.
+//dynamically add items from nearest selectbox. These inputs are passed into stdin when run
 $(".addInput").on("click", function(){
 	$(this).parent().find("select").append("<option>"+$(this).prev("input").val()+"</option>");
 	$(this).prev("input").val("");
@@ -321,8 +322,8 @@ function recordSection()
 }
 
 
-/** On compile, finds parents parents id (pos. 17 to string end as the id will always be "questionContainer#") to get q. num which is used to specify which codemirror editor. 
- * Then gets the editor value, maps inputs to array->str. Finally posts data to server via ajax call
+/** On compile, finds parents parents id (pos. 17 to string end as the id will always be "questionContainer#") to get question num which is used to specify which codemirror editor. 
+ * Then gets the editor value, maps inputs to array->str (separated by newlines). Finally posts data to server via ajax call
 **/
 $(".compile").on("click", function(){
 	//Ensures student is aware they are beginning next section
@@ -339,6 +340,7 @@ $(".compile").on("click", function(){
 
 	//Set c++ for clike syntax specifically since it is a general styling. 
 	//We're only supporting c++ right now so no need to get more complex
+	//We also support python, but since the mode is 'python' no change is needed
 	if(mode == "clike")
 		mode = "c++";
 
@@ -375,7 +377,7 @@ $(".compile").on("click", function(){
 });
 
 
-//Button which applies a class to thumbnails in order to aid students in tracking which questions are complete
+//Button which resets code to original skeleton state
 $(".reset").on("click", function(){
 	//just going to use javascript here instead of jquery because cm is being difficult.
 	var parentId = $(this).parent().attr('id');
@@ -490,6 +492,8 @@ function timeoutSubmitExam()
 	submitExam();
 }
 
+//Initialize test submit/warning timeouts, inits probressBar, and backs up skeleton code
+//Must be called right after student ID is saved
 function initExam()
 {
 	//Initialize test timeout limit and time warnings
@@ -507,6 +511,7 @@ function initExam()
 
 
 //jQueryUI Modal used to retrieve student ID
+//Must auto-open so it can get student ID first, and then call initExam()
 var errorString = "Error: ID number must be at least 6 digits";
 $( "#dialogID" ).dialog({
 	position: {my: "top+200",at: "top", of: window},
@@ -551,6 +556,8 @@ $( "#dialogID" ).dialog({
 
 
 //jQueryUI Modal used to warn student about starting new section
+//If continue is chose, first section answers are frozen and will not accept new input.
+//Opens only if section.warn var is false
 $( "#dialogWarn" ).dialog({
 	dialogClass: "no-close",
 	autoOpen: false,

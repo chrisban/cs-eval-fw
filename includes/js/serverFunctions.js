@@ -8,14 +8,14 @@ var spawn = require('child_process').spawnSync;
 var exec = require('child_process').execSync;
 
 var moduleVars = require('./moduleVars');
-var codeLang = require('./codeLanguages');
 
 
-//current dir = /includes/js
+//current dir: /includes/js
 
 
 //Get/serve getModule interface to client
 exports.requestQuizInfo = function getModuleSelector (req, res) {
+	//min and serve js file
 	var minifiedSelector = uglify.minify([__dirname + '/ModuleSelector.js']);
 	var scriptSelector = minifiedSelector.code; //all listeners and js code to be evald once client has received
 
@@ -37,6 +37,8 @@ exports.getDataFile = function getDataFile(req, res, callback)
 			res.send( {error: 'The course or activity ID number could not be resolved. Please check your input and contact your professor if problems persist. ' + file} );
 			return;
 		}
+
+		//after file is read, pass on request/response vars along with parsed json data
 		callback(req, res, JSON.parse(datafile));
 	});
 }
@@ -45,11 +47,6 @@ exports.getDataFile = function getDataFile(req, res, callback)
 //This function pieces together the module js+html code sent back to the client using the data file + examlogic templates
 exports.serveModule = function serveModule(req, res, data)
 {
-	var html = "";
-
-	//define difficulty levels - 0: easy, 1: medium, 2: hard
-	var difficulty = [];
-
 	//get exported template data from moduleVars.js
 	var header = moduleVars.header; //Overall page header information/instructions
 	var requires = moduleVars.requires; //all css/js/etc. includes
@@ -75,6 +72,11 @@ exports.serveModule = function serveModule(req, res, data)
 	var baseScript = fs.readFileSync(__dirname + '/examLogic.js', 'utf8'); //all listeners and js code to be evald once client has received
 	var script = ""; //vars to be inserted into baseScript at runtime
 
+	var html = ""; //html code to be inserted into dom client side
+
+	//define difficulty levels - 0: easy, 1: medium, 2: hard
+	var difficulty = [];
+
 	//Decide which module to serve
 	if(req.body.type == 'exam')
 	{
@@ -83,6 +85,7 @@ exports.serveModule = function serveModule(req, res, data)
 		//iterate through each question in exam datafile, replacing placeholders with index and datafile specefied information
 		for(var i = 0; i < Object.keys(data).length; i++)
 		{
+			//only look at keys 0-n, ignoring 'prop' key along with any possible malformed data
 			if(!isNaN(Object.keys(data)[i]))
 			{
 				//record question difficulty
@@ -98,6 +101,7 @@ exports.serveModule = function serveModule(req, res, data)
 				//if question type is a programming question (type: "code")
 				if(data[i]["questionType"] == "code")
 				{
+					//see ModuleVars.js file for templating documentation
 					html += pStatementTemplate.replace(/<<n>>/g, i).replace(/<<pstatement>>/, data[i]["problem"]) + ioTemplate.replace(/<<n>>/g, i).replace(/<<code>>/, data[i]["skeleton"]) + qToolsTemplate.replace(/<<n>>/, i);
 					
 					script += editorInit.replace(/<<n>>/g, i).replace(/<<lang>>/g, lang).replace(/<<rOnly>>/g, false);
@@ -146,9 +150,12 @@ exports.serveModule = function serveModule(req, res, data)
 			}
 		}
 
+		//create variables to be inserted into script executed client side. 
+		//vars defined: difficulty[per question], testInfo[test_id, course_id, test_length, warnTimes]
 		var testInfoVars = "var difficulty = [" + difficulty.join() + "]; var testInfo = Object.freeze({test_id: '" + req.body.test_id + "', course_id: '" + 
 			req.body.course_id.toUpperCase() + "', test_length: '" + data["prop"]["time"]*60000 + "', warnTimes: '" + data["prop"]["warn"] +"'});";
 
+		//insert navbar and end comment
 		html += navTemplate + '<!--END module code-->';
 
 		//commented out, due to codemirror add-on bug regarding dynamic loading
@@ -159,6 +166,7 @@ exports.serveModule = function serveModule(req, res, data)
 		//console.log('script: \n', script + '\n\n');
 		//console.log('completeScript: \n', completeScript + '\n\n');
 
+		//minify script
 		var minified = uglify.minify(completeScript, {fromString: true});
 		script = minified.code; //all listeners and js code to be evald once client has received
 	}
@@ -173,7 +181,8 @@ exports.serveModule = function serveModule(req, res, data)
 	res.send( {response_html : html, response_script: script} );
 }
 
-//Grading fn
+//Grading function. 
+//Requires linux environment to run correctly due to how compilation works (uses node spawn/exec and bash)
 exports.processExam = function processExam(req, res, data)
 {
 	console.log("processing...");
@@ -215,13 +224,13 @@ exports.processExam = function processExam(req, res, data)
 					"language": data[i]["language"].toLowerCase()
 				};
 
-				//TEMPORARY! - global variables due to node requring asynch, and we need synch due to temp external soap api. This will all change anyway, so use ugly globals for now here...
+				//Global variables due to node requring async, and we need sync because we need to wait for the compilation result before returning our object. 
 				done = false;
 				compileResult = [];
 				exports.compile(userData);
 
-				//TODO: see js promises?
-				//TEMPORARY! - wait 1sec. until compile completes. Temp solution as we are temp. using an external soap api service at the point.
+				//Should look into alternative such as js promise to return response
+				//For now, check every 500ms until compile completes. This loop generally only executes a few times max. Not too worried about overhead
 				while(done == false) {
 				    require('deasync').sleep(500);
 				}
@@ -231,26 +240,18 @@ exports.processExam = function processExam(req, res, data)
 
 				//console.log("comparing: ", compileResult.Result, data[i]['output'][j]);
 
+				//Check to see if compilation result is equal to the expected output defined in the datafile
 				if(data[i]['output'][j] == compileResult.Result)
 				{
 					subStudentScore += parseInt(data[i]["points"][j]);
 					studentScore += parseInt(data[i]["points"][j]);
 					resultFile += "status: correct\n\n";
-				} else
+				} else{
 					resultFile += "status: incorrect\n\n";
-
-				//result = compile(userData);
-				//console.log(i, "continued");
+				}
 			}
-			
 
-		//On exam finish (part one): 
-		//receive committed codes via post
-		//read in datafile via fs
-		//loop per question -> per test case to determine score
-		//write to file
-
-		}else if(req.body.problemType[i] == "mchoice")
+		} else if(req.body.problemType[i] == "mchoice")
 		{
 			for(var j = 0; j < data[i]["input"].length; j++)
 			{
@@ -301,6 +302,7 @@ exports.processExam = function processExam(req, res, data)
 	  }
 
 	//Write results to file
+	//TODO: if file exists, do not write (or maybe not overrwrite, specify duplicate, append datetime to name)
 	fs.writeFile(testPath + req.body.idNum + '.txt', resultFile, function(err) {
 	    if(err) {
 	        return console.log(err);
@@ -314,6 +316,10 @@ exports.processExam = function processExam(req, res, data)
 
 
 //TODO: document this as a location that needs to be modified when adding support for more languages
+//Compiles and or executes code
+//data: [code, input, language]
+//res: response object, exists only if called from /compile endpoint
+//type: exists only if called from /compile endpoint, if so specifies type as 'post'
 exports.compile = function compile(data, res, type){
     var response = {
     	Errors: '',
@@ -369,6 +375,7 @@ exports.compile = function compile(data, res, type){
 				    }
 				});
 
+				//cat inputs and pipe into output.o executable
 				child = exec('cat ' + fileBasePath + 'input.txt | ' + fileBasePath + 'output');
 
 				response.Result += String(child);
@@ -393,12 +400,14 @@ exports.compile = function compile(data, res, type){
 			response.Result += String(child);
 		} else {
 			//Can't get it to feed in multiple inputs unless from a file with CRLFs
+			//So right inputs to file first
 			fs.writeFileSync('./compilation/' + tmpDir + "/input.txt", data.input, 'utf-8', function(err) {
 			    if(err) {
 			        return console.log(err);
 			    }
 			});
 
+			//cat inputs and then pipe into py script
 			child = exec('cat ' + fileBasePath + 'input.txt | python3 ' + fileBasePath + 'code.py');
 			response.Result += String(child);
 			//TODO: find a way to get python to send its error msgs
@@ -422,10 +431,11 @@ exports.compile = function compile(data, res, type){
 	}
 }
 
-
+//Stores datafiles created from the admin page
 exports.storeDatafile = function storeDatafile(type, req, res) {
 	res.type('json');  
 
+	//if uploaded well-formed json file
 	if(type == 'file') {
 		//Write file
 		var fstream,
@@ -434,11 +444,14 @@ exports.storeDatafile = function storeDatafile(type, req, res) {
 			fileDetails,
 			fname;
 
+		//TODO: standardize fname naming scheme
 	    req.busboy.on('file', function (fieldname, file, filename) {
 	        fileDetails = fieldname.split('===');
 	        fname = 'data' + fileDetails[1];
-	    	filePath =  './dataFiles/' + fileDetails[0];
-	    	fullFilePath =  './dataFiles/' + fileDetails[0] + '/' + fname + '.json';
+	    	filePath =  './dataFiles/' + fileDetails[0].toUpperCase();
+	    	fullFilePath =  './dataFiles/' + fileDetails[0].toUpperCase() + '/' + fname + '.json';
+
+	    	//filepath: ./dataFiles/courseid/specifiedname.json
 
 			try {
 				fs.mkdirSync(filePath);
@@ -452,10 +465,13 @@ exports.storeDatafile = function storeDatafile(type, req, res) {
 
 			res.send({success : true});
 	    });
+
+	//else uploaded json data via text
 	} else {
 		var json = JSON.parse(req.body.code);
 		filePath = './dataFiles/' + req.body.course_id.toUpperCase();
 
+		//create directory if needed
 		try {
 			fs.mkdirSync(filePath);
 		} catch(e) {
@@ -463,6 +479,7 @@ exports.storeDatafile = function storeDatafile(type, req, res) {
 				throw e;
 		}
 
+		//write file
 		fs.writeFileSync(filePath + '/data' + req.body.act_id + '.json', json , 'utf-8'); 
 		
 		res.send({success : true});
