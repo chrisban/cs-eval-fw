@@ -36,7 +36,7 @@
         "skeleton": "#include <iostream>\nusing namespace std;\n\nint main(){}",
         "input": ["1", "2"],
         "output": ["11", "22"],
-        "points": ["15"],
+        "points": ["10", "10"],
         "difficulty": "1"
     },
     "4": {
@@ -45,7 +45,7 @@
         "problem": "In python, define and call a simple function that accepts and prints the word 'Student'.",
         "skeleton": "def greet(name):\n   print(name)\ngreet('Student')",
         "input": [""],
-        "output": ["Student\n"],
+        "output": ["Student"],
         "points": ["10"],
         "difficulty": "0"
     },
