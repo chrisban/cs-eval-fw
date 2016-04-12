@@ -238,7 +238,7 @@ exports.processExam = function processExam(req, res, data)
 				resultFile += "\n------------------------------------------\n\nTest Input: " + data[i]['input'][j] + "\n\nCorrect output: " + data[i]['output'][j] + "\n\nReceived output: " + compileResult.Result + "\n\n";
 
 
-				console.log("comparing: [" + compileResult.Result.trim() + "]\n\nans: \n[", data[i]['output'][j].trim() + "]\n");
+				//console.log("comparing: [" + compileResult.Result.trim() + "]\n\nans: \n[", data[i]['output'][j].trim() + "]\n");
 
 				//Check to see if compilation result is equal to the expected output defined in the datafile
 				//trim and add newline as parsing the json adds a leading space, and compiling adds a trailing newline. TODO: trim both?
