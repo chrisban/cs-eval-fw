@@ -363,7 +363,7 @@ $(".compile").on("click", function(){
 		  	console.log("resp:", response);
 		  	var result = "";
 		  	if(response.Errors && response.Errors != "null")
-		  		result += "Errors: " + response.Errors + "\n";
+		  		result += "Errors: ", response.Errors, "\n";
 		  	if(response.Warnings)
 		  		result += "Warnings: " + response.Warnings + "\n";
 		  	if(response.Result)
