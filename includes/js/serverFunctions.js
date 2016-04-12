@@ -415,7 +415,7 @@ exports.compile = function compile(data, res, type){
 			try{
 				child = exec("python3 " + fileBasePath + 'code.py');
 			} catch(e){
-				console.log(util.inspect(e, {showHidden: false, depth: null}));
+				//console.log(util.inspect(e, {showHidden: false, depth: null}));
 				response.Result += e;
 			}
 
@@ -433,11 +433,10 @@ exports.compile = function compile(data, res, type){
 			try{
 				child = exec('cat ' + fileBasePath + 'input.txt | python3 ' + fileBasePath + 'code.py');
 			} catch(e){
-				console.log(e);
+				//console.log(e);
 				response.Result += e;
 			}
 			response.Result += String(child);
-			//TODO: find a way to get python to send its error msgs
 		}
 
 		//console.log('\n[RUN]: ', response);
