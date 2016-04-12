@@ -5,6 +5,7 @@ var section = {number: 0, warn: false};
 var structure = Object.freeze({count: $("[id*=questionContainer]").length, divide: $(".mcOptions").length});
 var skeletonCode = [];
 var modes = [];
+var hasSubmitted = 0;
 
 //Multi-dem array [[dirty bit, max time(ms), timeDiff, time of pause(date.getTime()), current time(min)]] used to preserve timers
 var timingData = new Array();
@@ -459,6 +460,8 @@ function submitExam(){
 				//Display score to student, disable submit button
 				$("#dialogSubmit").html("Final score: " + response.score);
 				$('#bannerRight > span').html('View score');
+				hasSubmitted = 1;
+				hasSubmitted = Object.freeze(hasSubmitted);
 		  	}
 		},
 		error: function(response){
@@ -487,9 +490,11 @@ function warnTiming (warnTimes) {
 //Open submit modal, lock submit btn, then submit exam
 function timeoutSubmitExam()
 {
-	$("#dialogSubmit").dialog("open");
-	$("#dialogSubmitBtn").button("option", "disabled", true); 
-	submitExam();
+	if(hasSubmitted == 0) {
+		$("#dialogSubmit").dialog("open");
+		$("#dialogSubmitBtn").button("option", "disabled", true); 
+		submitExam();
+	}
 }
 
 //Initialize test submit/warning timeouts, inits probressBar, and backs up skeleton code
