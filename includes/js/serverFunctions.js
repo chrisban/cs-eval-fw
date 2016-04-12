@@ -238,7 +238,7 @@ exports.processExam = function processExam(req, res, data)
 				resultFile += "\n------------------------------------------\n\nTest Input: " + data[i]['input'][j] + "\nCorrect output: " + data[i]['output'][j] + "\nReceived output: " + compileResult.Result + "\n\n";
 
 
-				//console.log("comparing: ", compileResult.Result, data[i]['output'][j]);
+				console.log("comparing: ", compileResult.Result, "\n\nans: \n"data[i]['output'][j]);
 
 				//Check to see if compilation result is equal to the expected output defined in the datafile
 				if(data[i]['output'][j] == compileResult.Result)
