@@ -414,7 +414,7 @@ exports.compile = function compile(data, res, type){
 			try{
 				child = exec("python3 " + fileBasePath + 'code.py', function(err, stdout, stderr) {
 					response.Errors = err;
-				);
+				});
 			} catch(e){
 				console.log(e);
 			}
@@ -433,7 +433,7 @@ exports.compile = function compile(data, res, type){
 			try{
 				child = exec('cat ' + fileBasePath + 'input.txt | python3 ' + fileBasePath + 'code.py', function(err, stdout, stderr) {
 					response.Errors = err;
-				);
+				});
 			} catch(e){
 				console.log(e);
 			}
