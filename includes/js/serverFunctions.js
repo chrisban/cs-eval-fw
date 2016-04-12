@@ -208,15 +208,15 @@ exports.processExam = function processExam(req, res, data)
 
 		if(req.body.problemType[i] == "code")
 		{
-			//Track points
-			subTotalPoints += parseInt(data[i]["points"][0]);
-			totalPoints += parseInt(data[i]["points"][0]);
-
 			resultFile += "Submitted code:\n------------------------------------------\n\n" + req.body.solution[i] + "\n\n";
 
 			//Loop through each 'output' aka test cases
 			for(var j = 0; j < data[i]['output'].length; j++)
 			{
+				//Track points
+				subTotalPoints += parseInt(data[i]["points"][j]);
+				totalPoints += parseInt(data[i]["points"][j]);
+				
 				//User's data
 				var userData = {
 					"code": req.body.solution[i], //user defined code
@@ -238,10 +238,10 @@ exports.processExam = function processExam(req, res, data)
 				resultFile += "\n------------------------------------------\n\nTest Input: " + data[i]['input'][j] + "\n\nCorrect output: " + data[i]['output'][j] + "\n\nReceived output: " + compileResult.Result + "\n\n";
 
 
-				//console.log("comparing: [" + compileResult.Result + "]\n\nans: \n[", data[i]['output'][j] + "]\n");
+				console.log("comparing: [" + compileResult.Result + "]\n\nans: \n[", data[i]['output'][j] + "]\n");
 
 				//Check to see if compilation result is equal to the expected output defined in the datafile
-				//trim and add newline as parsing the json adds a leading space, and compiling adds a trailing newline.
+				//trim and add newline as parsing the json adds a leading space, and compiling adds a trailing newline. TODO: trim both?
 				if(data[i]['output'][j].trim() + "\n" == compileResult.Result)
 				{
 					subStudentScore += parseInt(data[i]["points"][j]);
