@@ -417,7 +417,7 @@ exports.compile = function compile(data, res, type){
 			} catch(e){
 				//console.log(util.inspect(e, {showHidden: false, depth: null}));
 				var err = String(e);
-				var errIdx = err.indexOf("line");
+				var errIdx = err.indexOf("code.py");
 				if(errIdx < 0 || errIdx > err.length)
 					errIdx = 0;
 				response.Result += err.substring(errIdx + 3, err.length);
