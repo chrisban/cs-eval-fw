@@ -414,7 +414,9 @@ exports.compile = function compile(data, res, type){
 			try{
 				child = exec("python3 " + fileBasePath + 'code.py');
 			} catch(e){
-				console.log('f', e);
+				console.log('a', e[0]);
+				console.log('\n');
+				console.log('b', e[0][1]);
 				response.Errors = e;
 			}
 
