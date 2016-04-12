@@ -357,9 +357,16 @@ exports.compile = function compile(data, res, type){
 
 
 		//compile code
-		var child = spawn('g++', [fileBasePath + 'code.cpp', '-o', fileBasePath + 'output'], {
-			shell: true
-		});
+		var child;
+		if(data.language.toLowerCase().indexOf('c++14') != -1) {
+			child = spawn('g++-5 -std=c++14', [fileBasePath + 'code.cpp', '-o', fileBasePath + 'output'], {
+				shell: true
+			});
+		} else{
+			child = spawn('g++-5', [fileBasePath + 'code.cpp', '-o', fileBasePath + 'output'], {
+				shell: true
+			});
+		}
 
 		//console.log('[COMPILE]\nout: ', String(child.stdout), '\nerr: ', String(child.stderr));
 
