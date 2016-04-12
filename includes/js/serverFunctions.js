@@ -420,7 +420,7 @@ exports.compile = function compile(data, res, type){
 				var errIdx = err.indexOf("code.py\",");
 				if(errIdx < 0 || errIdx > err.length)
 					errIdx = 0;
-				response.Result += err.substring(errIdx + 3, err.length);
+				response.Result += err.substring(errIdx + 10, err.length);
 			}
 
 			response.Result += String(child);
@@ -442,7 +442,7 @@ exports.compile = function compile(data, res, type){
 				var errIdx = err.indexOf("code.py\",");
 				if(errIdx < 0 || errIdx > err.length)
 					errIdx = 0;
-				response.Result += err.substring(errIdx + 3, err.length);
+				response.Result += err.substring(errIdx + 10, err.length);
 			}
 			response.Result += String(child);
 		}
