@@ -416,7 +416,8 @@ exports.compile = function compile(data, res, type){
 				child = exec("python3 " + fileBasePath + 'code.py');
 			} catch(e){
 				//console.log(util.inspect(e, {showHidden: false, depth: null}));
-				response.Result += e;
+				var errIdx = e.indexOf("line");
+				response.Result += e.substring(errIdx, e.length);
 			}
 
 			response.Result += String(child);
@@ -434,7 +435,8 @@ exports.compile = function compile(data, res, type){
 				child = exec('cat ' + fileBasePath + 'input.txt | python3 ' + fileBasePath + 'code.py');
 			} catch(e){
 				//console.log(e);
-				response.Result += e;
+				var errIdx = e.indexOf("line");
+				response.Result += e.substring(errIdx, e.length);
 			}
 			response.Result += String(child);
 		}
