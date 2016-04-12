@@ -45,7 +45,7 @@
         "problem": "In python, define and call a simple function that accepts and prints the word 'Student'.",
         "skeleton": "def greet(name):\n   print(name)\ngreet('Student')",
         "input": [""],
-        "output": ["Student\n"],
+        "output": ["Student"],
         "points": ["10"],
         "difficulty": "0"
     },
