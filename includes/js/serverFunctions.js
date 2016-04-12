@@ -6,6 +6,7 @@ var uglify = require("uglify-js");
 var busboy = require('connect-busboy');
 var spawn = require('child_process').spawnSync;
 var exec = require('child_process').execSync;
+var util = require('util');
 
 var moduleVars = require('./moduleVars');
 
@@ -412,11 +413,10 @@ exports.compile = function compile(data, res, type){
 		var child;
 		if(data.input == '\n') {
 			try{
-				child = exec("python3 " + fileBasePath + 'code.py', function(err, stdout, stderr) {
-					response.Errors = err;
-				});
+				child = exec("python3 " + fileBasePath + 'code.py');
 			} catch(e){
-				console.log(e);
+				console.log(util.inspect(e, {showHidden: false, depth: null}));
+				response.Result += e;
 			}
 
 			response.Result += String(child);
@@ -431,11 +431,10 @@ exports.compile = function compile(data, res, type){
 
 			//cat inputs and then pipe into py script
 			try{
-				child = exec('cat ' + fileBasePath + 'input.txt | python3 ' + fileBasePath + 'code.py', function(err, stdout, stderr) {
-					response.Errors = err;
-				});
+				child = exec('cat ' + fileBasePath + 'input.txt | python3 ' + fileBasePath + 'code.py');
 			} catch(e){
 				console.log(e);
+				response.Result += e;
 			}
 			response.Result += String(child);
 			//TODO: find a way to get python to send its error msgs
