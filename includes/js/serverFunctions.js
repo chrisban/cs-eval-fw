@@ -412,12 +412,11 @@ exports.compile = function compile(data, res, type){
 		var child;
 		if(data.input == '\n') {
 			try{
-				child = exec("python3 " + fileBasePath + 'code.py');
+				child = exec("python3 " + fileBasePath + 'code.py', function(err, stdout, stderr) {
+					response.Errors = err;
+				);
 			} catch(e){
-				console.log('a', e[0]);
-				console.log('\n');
-				console.log('b', e[0][1]);
-				response.Errors = e;
+				console.log(e);
 			}
 
 			response.Result += String(child);
@@ -432,9 +431,11 @@ exports.compile = function compile(data, res, type){
 
 			//cat inputs and then pipe into py script
 			try{
-				child = exec('cat ' + fileBasePath + 'input.txt | python3 ' + fileBasePath + 'code.py');
+				child = exec('cat ' + fileBasePath + 'input.txt | python3 ' + fileBasePath + 'code.py', function(err, stdout, stderr) {
+					response.Errors = err;
+				);
 			} catch(e){
-				response.Errors = e;
+				console.log(e);
 			}
 			response.Result += String(child);
 			//TODO: find a way to get python to send its error msgs
