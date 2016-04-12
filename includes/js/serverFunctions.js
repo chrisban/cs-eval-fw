@@ -409,8 +409,13 @@ exports.compile = function compile(data, res, type){
 		});
 
 		//if no input. There will always be at least a newline, so empty string with \n is empty input
+		var child;
 		if(data.input == '\n') {
-			child = exec("python3 " + fileBasePath + 'code.py');
+			try{
+				child = exec("python3 " + fileBasePath + 'code.py');
+			} catch(e){
+				response.Errors = e;
+			}
 
 			response.Result += String(child);
 		} else {
@@ -423,7 +428,11 @@ exports.compile = function compile(data, res, type){
 			});
 
 			//cat inputs and then pipe into py script
-			child = exec('cat ' + fileBasePath + 'input.txt | python3 ' + fileBasePath + 'code.py');
+			try{
+				child = exec('cat ' + fileBasePath + 'input.txt | python3 ' + fileBasePath + 'code.py');
+			} catch(e){
+				response.Errors = e;
+			}
 			response.Result += String(child);
 			//TODO: find a way to get python to send its error msgs
 		}
