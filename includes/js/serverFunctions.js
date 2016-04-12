@@ -377,9 +377,15 @@ exports.compile = function compile(data, res, type){
 		} else {
 			//if no input. There will always be at least a newline, so empty string with \n is empty input
 			if(data.input == '\n') {
-				child = spawn(fileBasePath + 'output', [], {
-					shell: true
-				});
+				try{
+					child = spawn(fileBasePath + 'output', [], {
+						shell: true
+					});
+				} catch(e){
+					//console.log(util.inspect(e, {showHidden: false, depth: null}));
+					var err = String(e);
+					response.Errors += err;
+				}
 
 				response.Errors += String(child.stderr);
 				response.Result += String(child.stdout);
@@ -392,7 +398,13 @@ exports.compile = function compile(data, res, type){
 				});
 
 				//cat inputs and pipe into output.o executable
-				child = exec('cat ' + fileBasePath + 'input.txt | ' + fileBasePath + 'output');
+				try{
+					child = exec('cat ' + fileBasePath + 'input.txt | ' + fileBasePath + 'output');
+				} catch(e){
+					//console.log(util.inspect(e, {showHidden: false, depth: null}));
+					var err = String(e);
+					response.Errors += err;
+				}
 
 				response.Result += String(child);
 			}
@@ -420,7 +432,7 @@ exports.compile = function compile(data, res, type){
 				var errIdx = err.indexOf("code.py\",");
 				if(errIdx < 0 || errIdx > err.length)
 					errIdx = 0;
-				response.Result += err.substring(errIdx + 10, err.length);
+				response.Errors += err.substring(errIdx + 10, err.length);
 			}
 
 			response.Result += String(child);
@@ -442,7 +454,7 @@ exports.compile = function compile(data, res, type){
 				var errIdx = err.indexOf("code.py\",");
 				if(errIdx < 0 || errIdx > err.length)
 					errIdx = 0;
-				response.Result += err.substring(errIdx + 10, err.length);
+				response.Errors += err.substring(errIdx + 10, err.length);
 			}
 			response.Result += String(child);
 		}
