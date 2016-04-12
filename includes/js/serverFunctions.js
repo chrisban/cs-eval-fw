@@ -418,7 +418,9 @@ exports.compile = function compile(data, res, type){
 				//console.log(util.inspect(e, {showHidden: false, depth: null}));
 				var err = String(e);
 				var errIdx = err.indexOf("line");
-				response.Result += err.substring(errIdx, err.length);
+				if(errIdx < 0 || errIdx > err.length)
+					errIdx = 0;
+				response.Result += err.substring(errIdx + 3, err.length);
 			}
 
 			response.Result += String(child);
@@ -435,9 +437,12 @@ exports.compile = function compile(data, res, type){
 			try{
 				child = exec('cat ' + fileBasePath + 'input.txt | python3 ' + fileBasePath + 'code.py');
 			} catch(e){
-				//console.log(e);
-				var errIdx = e.indexOf("line");
-				response.Result += e.substring(errIdx, e.length);
+			//console.log(util.inspect(e, {showHidden: false, depth: null}));
+				var err = String(e);
+				var errIdx = err.indexOf("code.py");
+				if(errIdx < 0 || errIdx > err.length)
+					errIdx = 0;
+				response.Result += err.substring(errIdx + 3, err.length);
 			}
 			response.Result += String(child);
 		}
