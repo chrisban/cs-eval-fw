@@ -235,10 +235,10 @@ exports.processExam = function processExam(req, res, data)
 				    require('deasync').sleep(500);
 				}
 
-				resultFile += "\n------------------------------------------\n\nTest Input: " + data[i]['input'][j] + "\nCorrect output: " + data[i]['output'][j] + "\nReceived output: " + compileResult.Result + "\n\n";
+				resultFile += "\n------------------------------------------\n\nTest Input: " + data[i]['input'][j] + "\n\nCorrect output: " + data[i]['output'][j] + "\n\nReceived output: " + compileResult.Result + "\n\n";
 
 
-				console.log("comparing: [" + compileResult.Result + "]\n\nans: \n[", data[i]['output'][j] + "]\n");
+				//console.log("comparing: [" + compileResult.Result + "]\n\nans: \n[", data[i]['output'][j] + "]\n");
 
 				//Check to see if compilation result is equal to the expected output defined in the datafile
 				//trim and add newline as parsing the json adds a leading space, and compiling adds a trailing newline.
