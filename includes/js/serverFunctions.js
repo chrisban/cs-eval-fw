@@ -194,10 +194,11 @@ exports.processExam = function processExam(req, res, data)
 	var resultFile = "";
 	var prop = data.prop;
 	var difficultyMultiplier = 10;
-
+	
 	//Remove properties field so it doesn't interfere with processing the answers (it would appear as though it were another question but with no data. Easier just to delete the property instead of coding around it)
 	delete data.prop;
 
+	console.log("i-Loop start");
 	for(var i = 0; i < Object.keys(data).length; i++)
 	{
 		//reset subtotal points, print next question label
@@ -210,6 +211,7 @@ exports.processExam = function processExam(req, res, data)
 		{
 			resultFile += "Submitted code:\n------------------------------------------\n\n" + req.body.solution[i] + "\n\n";
 
+			console.log("j-Loop start");
 			//Loop through each 'output' aka test cases
 			for(var j = 0; j < data[i]['output'].length; j++)
 			{
@@ -223,18 +225,18 @@ exports.processExam = function processExam(req, res, data)
 					"input": data[i]['input'][j], //datafile defined testcase
 					"language": data[i]["language"].toLowerCase()
 				};
-
+				console.log("compile start");
 				//Global variables due to node requring async, and we need sync because we need to wait for the compilation result before returning our object. 
 				done = false;
 				compileResult = [];
 				exports.compile(userData);
-
+				
 				//Should look into alternative such as js promise to return response
 				//For now, check every 500ms until compile completes. This loop generally only executes a few times max. Not too worried about overhead
 				while(done == false) {
 				    require('deasync').sleep(500);
 				}
-
+				console.log("compile finish");
 				resultFile += "\n------------------------------------------\n\nTest Input: " + data[i]['input'][j] + "\n\nCorrect output: " + data[i]['output'][j] + "\n\nReceived output: " + compileResult.Result + "\n\n";
 
 
@@ -254,6 +256,7 @@ exports.processExam = function processExam(req, res, data)
 
 		} else if(req.body.problemType[i] == "mchoice")
 		{
+			console.log("mchoice j-Loop start");
 			for(var j = 0; j < data[i]["input"].length; j++)
 			{
 				//Record input
@@ -289,12 +292,15 @@ exports.processExam = function processExam(req, res, data)
 	var coursePath = './testResults/' + req.body.course_id.toUpperCase() + '/';
 	var testPath = './testResults/' + req.body.course_id.toUpperCase() + '/test' + req.body.test_id + '/';
 	
+	console.log("create class dir");
 	try {
 	    fs.mkdirSync(coursePath);
 	  } catch(e) {
 	    if ( e.code != 'EEXIST' ) 
 	    	throw e;
 	  }
+	  
+	  console.log("create test dir");
 	  try {
 	    fs.mkdirSync(testPath);
 	  } catch(e) {
@@ -302,6 +308,7 @@ exports.processExam = function processExam(req, res, data)
 	    	throw e;
 	  }
 
+	console.log("write result file");
 	//Write results to file
 	//TODO: if file exists, do not write (or maybe not overrwrite, specify duplicate, append datetime to name)
 	fs.writeFile(testPath + req.body.idNum + '.txt', resultFile, function(err) {
