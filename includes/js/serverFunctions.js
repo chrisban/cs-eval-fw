@@ -242,7 +242,7 @@ exports.processExam = function processExam(req, res, data)
 
 				//Check to see if compilation result is equal to the expected output defined in the datafile
 				//trim and add newline as parsing the json adds a leading space, and compiling adds a trailing newline.
-				if(trim(data[i]['output'][j]) + "\n" == compileResult.Result)
+				if(data[i]['output'][j].trim() + "\n" == compileResult.Result)
 				{
 					subStudentScore += parseInt(data[i]["points"][j]);
 					studentScore += parseInt(data[i]["points"][j]);
