@@ -416,8 +416,9 @@ exports.compile = function compile(data, res, type){
 				child = exec("python3 " + fileBasePath + 'code.py');
 			} catch(e){
 				//console.log(util.inspect(e, {showHidden: false, depth: null}));
-				var errIdx = String(e).indexOf("line");
-				response.Result += e.substring(errIdx, e.length);
+				var err = String(e);
+				var errIdx = err.indexOf("line");
+				response.Result += err.substring(errIdx, err.length);
 			}
 
 			response.Result += String(child);
