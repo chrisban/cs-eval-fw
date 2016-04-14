@@ -394,9 +394,9 @@ exports.compile = function compile(data, res, type){
 							console.log(`stdout: ${stdout}`);
 							console.log(`stderr: ${stderr}`);
 
-							response.Errors += String(execChild.stderr);
-							response.Result += String(execChild.stdout);
-								
+							response.Errors += stderr;
+							response.Result += stdout;
+
 							if(type == "post") {
 								console.log("sending response: ", stdout);
 
@@ -430,8 +430,8 @@ exports.compile = function compile(data, res, type){
 							console.log(`stdout: ${stdout}`);
 							console.log(`stderr: ${stderr}`);
 
-							response.Errors += String(execChild.stderr);
-							response.Result += String(execChild.stdout);
+							response.Errors += stderr;
+							response.Result += stdout;
 								
 							if(type == "post") {
 								console.log("sending response: ", stdout);
