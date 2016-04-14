@@ -389,17 +389,32 @@ exports.compile = function compile(data, res, type){
 			//if no input. There will always be at least a newline, so empty string with \n is empty input
 			if(data.input == '\n') {
 				try{
-					execChild = spawn(fileBasePath + 'output', [], {
-						shell: true
-					});
+					execChild = exec(fileBasePath + 'output',
+						(error, stdout, stderr) => {
+							console.log(`stdout: ${stdout}`);
+							console.log(`stderr: ${stderr}`);
+
+							response.Errors += String(execChild.stderr);
+							response.Result += String(execChild.stdout);
+								
+							if(type == "post") {
+								console.log("sending response: ", stdout);
+
+								res.type('json');
+								res.send(response);
+							}else  {
+								done = true;
+								compileResult = response;
+							}
+						}
+					);
+
 				} catch(e){
 					//console.log(util.inspect(e, {showHidden: false, depth: null}));
 					var err = String(e);
 					response.Errors += err;
 				}
 
-				response.Errors += String(execChild.stderr);
-				response.Result += String(execChild.stdout);
 			} else {
 				//Can't get it to feed in multiple inputs unless from a file with CRLFs
 				fs.writeFileSync('./compilation/' + tmpDir + "/input.txt", data.input, 'utf-8', function(err) {
@@ -412,21 +427,24 @@ exports.compile = function compile(data, res, type){
 				try{
 					execChild = exec('cat ' + fileBasePath + 'input.txt | ' + fileBasePath + 'output',
 						(error, stdout, stderr) => {
-						if (error !== null) {
-							console.log(`exec error: ${error}`);
-						} else {
 							console.log(`stdout: ${stdout}`);
 							console.log(`stderr: ${stderr}`);
 
+							response.Errors += String(execChild.stderr);
+							response.Result += String(execChild.stdout);
+								
 							if(type == "post") {
+								console.log("sending response: ", stdout);
+
 								res.type('json');
-								res.send(stdout);
+								res.send(response);
 							}else  {
 								done = true;
-								compileResult = stdout;
+								compileResult = response;
 							}
 						}
-					});
+					);
+
 				} catch(e){
 					//console.log(util.inspect(e, {showHidden: false, depth: null}));
 					var err = String(e);
@@ -504,6 +522,7 @@ exports.compile = function compile(data, res, type){
 						console.log(`stderr: ${stderr}`);
 
 						if(type == "post") {
+							console.log("sending response: ", stdout);
 							res.type('json');
 							res.send(stdout);
 						}else  {
@@ -535,7 +554,7 @@ exports.compile = function compile(data, res, type){
 		console.log('Data: ', data);
 
 		response.Result += "Unkown language, cannot compile!";
-		
+
 		if(type == "post") {
 			res.type('json');
 			res.send(response);
