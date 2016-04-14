@@ -5,7 +5,7 @@ var deasync = require('deasync');
 var uglify = require("uglify-js");
 var busboy = require('connect-busboy');
 var spawn = require('child_process').spawnSync;
-var exec = require('child_process').execSync;
+var exec = require('child_process').exec;
 var util = require('util');
 
 var moduleVars = require('./moduleVars');
@@ -405,7 +405,22 @@ exports.compile = function compile(data, res, type){
 
 				//cat inputs and pipe into output.o executable
 				try{
-					execChild = exec('cat ' + fileBasePath + 'input.txt | ' + fileBasePath + 'output');
+					execChild = exec('cat ' + fileBasePath + 'input.txt | ' + fileBasePath + 'output',
+						(error, stdout, stderr) => {
+							console.log(`stdout: ${stdout}`);
+							console.log(`stderr: ${stderr}`);
+
+							if(type == "post") {
+								res.type('json');
+								res.send(stdout);
+							}else  {
+								done = true;
+								compileResult = String(stdout);
+							}
+						if (error !== null) {
+							console.log(`exec error: ${error}`);
+						}
+					});
 				} catch(e){
 					//console.log(util.inspect(e, {showHidden: false, depth: null}));
 					var err = String(e);
