@@ -408,7 +408,7 @@ exports.compile = function compile(data, res, type){
 				    }
 				});
 
-				//cat inputs and pipe into output.o executable
+				//cat inputs and pipe into output.o executable	
 				try{
 					execChild = exec('cat ' + fileBasePath + 'input.txt | ' + fileBasePath + 'output',
 						(error, stdout, stderr) => {
@@ -423,7 +423,7 @@ exports.compile = function compile(data, res, type){
 								res.send(stdout);
 							}else  {
 								done = true;
-								compileResult = String(stdout);
+								compileResult = stdout;
 							}
 						}
 					});
@@ -470,7 +470,7 @@ exports.compile = function compile(data, res, type){
 							res.send(stdout);
 						}else  {
 							done = true;
-							compileResult = String(stdout);
+							compileResult = stdout;
 						}
 					}
 				});
@@ -508,7 +508,7 @@ exports.compile = function compile(data, res, type){
 							res.send(stdout);
 						}else  {
 							done = true;
-							compileResult = String(stdout);
+							compileResult = stdout;
 						}
 					}
 				});
@@ -535,15 +535,23 @@ exports.compile = function compile(data, res, type){
 		console.log('Data: ', data);
 
 		response.Result += "Unkown language, cannot compile!";
+		
+		if(type == "post") {
+			res.type('json');
+			res.send(response);
+		}else  {
+			done = true;
+			compileResult = response;
+		}
 	}
 
-	if(type == "post") {
-		res.type('json');
-		res.send(response);
-	}else  {
-		done = true;
-		compileResult = response;
-	}
+	// if(type == "post") {
+	// 	res.type('json');
+	// 	res.send(response);
+	// }else  {
+	// 	done = true;
+	// 	compileResult = response;
+	// }
 }
 
 //Stores datafiles created from the admin page
