@@ -412,6 +412,9 @@ exports.compile = function compile(data, res, type){
 				try{
 					execChild = exec('cat ' + fileBasePath + 'input.txt | ' + fileBasePath + 'output',
 						(error, stdout, stderr) => {
+						if (error !== null) {
+							console.log(`exec error: ${error}`);
+						} else {
 							console.log(`stdout: ${stdout}`);
 							console.log(`stderr: ${stderr}`);
 
@@ -422,8 +425,6 @@ exports.compile = function compile(data, res, type){
 								done = true;
 								compileResult = String(stdout);
 							}
-						if (error !== null) {
-							console.log(`exec error: ${error}`);
 						}
 					});
 				} catch(e){
@@ -456,7 +457,23 @@ exports.compile = function compile(data, res, type){
 		var execChild;
 		if(data.input == '\n') {
 			try{
-				execChild = exec("python3 " + fileBasePath + 'code.py');
+				execChild = exec("python3 " + fileBasePath + 'code.py',
+					(error, stdout, stderr) => {
+					if (error !== null) {
+						console.log(`exec error: ${error}`);
+					} else {
+						console.log(`stdout: ${stdout}`);
+						console.log(`stderr: ${stderr}`);
+
+						if(type == "post") {
+							res.type('json');
+							res.send(stdout);
+						}else  {
+							done = true;
+							compileResult = String(stdout);
+						}
+					}
+				});
 			} catch(e){
 				//console.log(util.inspect(e, {showHidden: false, depth: null}));
 				var err = String(e);
@@ -478,7 +495,23 @@ exports.compile = function compile(data, res, type){
 
 			//cat inputs and then pipe into py script
 			try{
-				execChild = exec('cat ' + fileBasePath + 'input.txt | python3 ' + fileBasePath + 'code.py');
+				execChild = exec('cat ' + fileBasePath + 'input.txt | python3 ' + fileBasePath + 'code.py',
+					(error, stdout, stderr) => {
+					if (error !== null) {
+						console.log(`exec error: ${error}`);
+					} else {
+						console.log(`stdout: ${stdout}`);
+						console.log(`stderr: ${stderr}`);
+
+						if(type == "post") {
+							res.type('json');
+							res.send(stdout);
+						}else  {
+							done = true;
+							compileResult = String(stdout);
+						}
+					}
+				});
 			} catch(e){
 			//console.log(util.inspect(e, {showHidden: false, depth: null}));
 				var err = String(e);
