@@ -397,7 +397,7 @@ exports.compile = function compile(data, res, type){
 							response.Result += stdout;
 								
 							if(type == "post") {
-								console.log("sending response: ", stdout);
+								//console.log("sending response: ", stdout);
 
 								res.type('json');
 								res.send(response);
@@ -432,7 +432,7 @@ exports.compile = function compile(data, res, type){
 							response.Result += stdout;
 								
 							if(type == "post") {
-								console.log("sending response: ", stdout);
+								//console.log("sending response: ", stdout);
 
 								res.type('json');
 								res.send(response);
@@ -473,21 +473,22 @@ exports.compile = function compile(data, res, type){
 			try{
 				execChild = exec("python3 " + fileBasePath + 'code.py',
 					(error, stdout, stderr) => {
-					if (error !== null) {
-						console.log(`exec error: ${error}`);
-					} else {
-						console.log(`stdout: ${stdout}`);
-						console.log(`stderr: ${stderr}`);
+						console.log(`Compile error: ${error}`);
 
+						response.Errors += stderr;
+						response.Result += stdout;
+							
 						if(type == "post") {
+							//console.log("sending response: ", stdout);
+
 							res.type('json');
-							res.send(stdout);
+							res.send(response);
 						}else  {
 							done = true;
-							compileResult = stdout;
+							compileResult = response;
 						}
 					}
-				});
+				);
 			} catch(e){
 				//console.log(util.inspect(e, {showHidden: false, depth: null}));
 				var err = String(e);
@@ -497,7 +498,6 @@ exports.compile = function compile(data, res, type){
 				response.Errors += err.substring(errIdx + 10, err.length);
 			}
 
-			response.Result += String(execChild);
 		} else {
 			//Can't get it to feed in multiple inputs unless from a file with CRLFs
 			//So right inputs to file first
@@ -511,22 +511,22 @@ exports.compile = function compile(data, res, type){
 			try{
 				execChild = exec('cat ' + fileBasePath + 'input.txt | python3 ' + fileBasePath + 'code.py',
 					(error, stdout, stderr) => {
-					if (error !== null) {
-						console.log(`exec error: ${error}`);
-					} else {
-						console.log(`stdout: ${stdout}`);
-						console.log(`stderr: ${stderr}`);
+						console.log(`Compile error: ${error}`);
 
+						response.Errors += stderr;
+						response.Result += stdout;
+							
 						if(type == "post") {
-							console.log("sending response: ", stdout);
+							//console.log("sending response: ", stdout);
+
 							res.type('json');
-							res.send(stdout);
+							res.send(response);
 						}else  {
 							done = true;
-							compileResult = stdout;
+							compileResult = response;
 						}
 					}
-				});
+				);
 			} catch(e){
 			//console.log(util.inspect(e, {showHidden: false, depth: null}));
 				var err = String(e);
@@ -535,7 +535,6 @@ exports.compile = function compile(data, res, type){
 					errIdx = 0;
 				response.Errors += err.substring(errIdx + 10, err.length);
 			}
-			response.Result += String(execChild);
 		}
 
 			// setTimeout(function(){
