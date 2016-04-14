@@ -370,10 +370,15 @@ exports.compile = function compile(data, res, type){
 			});
 		}
 
-		setTimeout(function(){
+		var to = setTimeout(function(){
 		  console.log('Max compile time reached: sending sigkill');
 		  compileChild.kill();
 		}, 5000);
+
+		compileChild.on('exit', function(){
+		  clearTimeout(to);
+		  console.log('Child exited!');
+		});
 
 		//console.log('[COMPILE]\nout: ', String(compileChild.stdout), '\nerr: ', String(compileChild.stderr));
 
