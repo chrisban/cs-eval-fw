@@ -358,27 +358,33 @@ exports.compile = function compile(data, res, type){
 
 
 		//compile code
-		var child;
+		var compileChild;
+		var execChild;
 		if(data.language.toLowerCase().indexOf('c++14') != -1) {
-			child = spawn('g++-5 -std=c++14', [fileBasePath + 'code.cpp', '-o', fileBasePath + 'output'], {
+			compileChild = spawn('g++-5 -std=c++14', [fileBasePath + 'code.cpp', '-o', fileBasePath + 'output'], {
 				shell: true
 			});
 		} else{
-			child = spawn('g++-5', [fileBasePath + 'code.cpp', '-o', fileBasePath + 'output'], {
+			compileChild = spawn('g++-5', [fileBasePath + 'code.cpp', '-o', fileBasePath + 'output'], {
 				shell: true
 			});
 		}
 
-		//console.log('[COMPILE]\nout: ', String(child.stdout), '\nerr: ', String(child.stderr));
+		setTimeout(function(){
+		  console.log('Max compile time reached: sending sigkill');
+		  compileChild.kill();
+		}, 5000);
+
+		//console.log('[COMPILE]\nout: ', String(compileChild.stdout), '\nerr: ', String(compileChild.stderr));
 
 		//run code if there were no compilation errors
-		if(String(child.stderr) != ''){
-			response.Errors += String(child.stderr) + '\n';
+		if(String(compileChild.stderr) != ''){
+			response.Errors += String(compileChild.stderr) + '\n';
 		} else {
 			//if no input. There will always be at least a newline, so empty string with \n is empty input
 			if(data.input == '\n') {
 				try{
-					child = spawn(fileBasePath + 'output', [], {
+					execChild = spawn(fileBasePath + 'output', [], {
 						shell: true
 					});
 				} catch(e){
@@ -387,8 +393,8 @@ exports.compile = function compile(data, res, type){
 					response.Errors += err;
 				}
 
-				response.Errors += String(child.stderr);
-				response.Result += String(child.stdout);
+				response.Errors += String(execChild.stderr);
+				response.Result += String(execChild.stdout);
 			} else {
 				//Can't get it to feed in multiple inputs unless from a file with CRLFs
 				fs.writeFileSync('./compilation/' + tmpDir + "/input.txt", data.input, 'utf-8', function(err) {
@@ -399,15 +405,20 @@ exports.compile = function compile(data, res, type){
 
 				//cat inputs and pipe into output.o executable
 				try{
-					child = exec('cat ' + fileBasePath + 'input.txt | ' + fileBasePath + 'output');
+					execChild = exec('cat ' + fileBasePath + 'input.txt | ' + fileBasePath + 'output');
 				} catch(e){
 					//console.log(util.inspect(e, {showHidden: false, depth: null}));
 					var err = String(e);
 					response.Errors += err;
 				}
 
-				response.Result += String(child);
+				response.Result += String(execChild);
 			}
+
+			setTimeout(function(){
+			  console.log('Max execution time reached: sending sigkill');
+			  execChild.kill();
+			}, 5000);
 
 			//console.log('\n[RUN]: ', response);
 		}
@@ -422,10 +433,10 @@ exports.compile = function compile(data, res, type){
 		});
 
 		//if no input. There will always be at least a newline, so empty string with \n is empty input
-		var child;
+		var execChild;
 		if(data.input == '\n') {
 			try{
-				child = exec("python3 " + fileBasePath + 'code.py');
+				execChild = exec("python3 " + fileBasePath + 'code.py');
 			} catch(e){
 				//console.log(util.inspect(e, {showHidden: false, depth: null}));
 				var err = String(e);
@@ -435,7 +446,7 @@ exports.compile = function compile(data, res, type){
 				response.Errors += err.substring(errIdx + 10, err.length);
 			}
 
-			response.Result += String(child);
+			response.Result += String(execChild);
 		} else {
 			//Can't get it to feed in multiple inputs unless from a file with CRLFs
 			//So right inputs to file first
@@ -447,7 +458,7 @@ exports.compile = function compile(data, res, type){
 
 			//cat inputs and then pipe into py script
 			try{
-				child = exec('cat ' + fileBasePath + 'input.txt | python3 ' + fileBasePath + 'code.py');
+				execChild = exec('cat ' + fileBasePath + 'input.txt | python3 ' + fileBasePath + 'code.py');
 			} catch(e){
 			//console.log(util.inspect(e, {showHidden: false, depth: null}));
 				var err = String(e);
@@ -456,8 +467,13 @@ exports.compile = function compile(data, res, type){
 					errIdx = 0;
 				response.Errors += err.substring(errIdx + 10, err.length);
 			}
-			response.Result += String(child);
+			response.Result += String(execChild);
 		}
+
+			setTimeout(function(){
+			  console.log('Max execution time reached: sending sigkill');
+			  execChild.kill();
+			}, 5000);
 
 		//console.log('\n[RUN]: ', response);
 	} else {
