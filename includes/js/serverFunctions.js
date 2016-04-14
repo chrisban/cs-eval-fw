@@ -391,12 +391,11 @@ exports.compile = function compile(data, res, type){
 				try{
 					execChild = exec(fileBasePath + 'output',
 						(error, stdout, stderr) => {
-							console.log(`stdout: ${stdout}`);
-							console.log(`stderr: ${stderr}`);
+							console.log(`Compile error: ${error}`);
 
 							response.Errors += stderr;
 							response.Result += stdout;
-
+								
 							if(type == "post") {
 								console.log("sending response: ", stdout);
 
@@ -427,8 +426,7 @@ exports.compile = function compile(data, res, type){
 				try{
 					execChild = exec('cat ' + fileBasePath + 'input.txt | ' + fileBasePath + 'output',
 						(error, stdout, stderr) => {
-							console.log(`stdout: ${stdout}`);
-							console.log(`stderr: ${stderr}`);
+							console.log(`Compile error: ${error}`);
 
 							response.Errors += stderr;
 							response.Result += stdout;
@@ -450,8 +448,6 @@ exports.compile = function compile(data, res, type){
 					var err = String(e);
 					response.Errors += err;
 				}
-
-				response.Result += String(execChild);
 			}
 
 			// setTimeout(function(){
