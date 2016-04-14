@@ -370,15 +370,15 @@ exports.compile = function compile(data, res, type){
 			});
 		}
 
-		var to = setTimeout(function(){
-		  console.log('Max compile time reached: sending sigkill');
-		  compileChild.kill();
-		}, 5000);
+		// var to = setTimeout(function(){
+		//   console.log('Max compile time reached: sending sigkill');
+		//   compileChild.kill();
+		// }, 5000);
 
-		compileChild.on('exit', function(){
-		  clearTimeout(to);
-		  console.log('Child exited!');
-		});
+		// compileChild.on('exit', function(){
+		//   clearTimeout(to);
+		//   console.log('Child exited!');
+		// });
 
 		//console.log('[COMPILE]\nout: ', String(compileChild.stdout), '\nerr: ', String(compileChild.stderr));
 
@@ -435,10 +435,10 @@ exports.compile = function compile(data, res, type){
 				response.Result += String(execChild);
 			}
 
-			setTimeout(function(){
-			  console.log('Max execution time reached: sending sigkill');
-			  execChild.kill();
-			}, 5000);
+			// setTimeout(function(){
+			//   console.log('Max execution time reached: sending sigkill');
+			//   execChild.kill();
+			// }, 5000);
 
 			//console.log('\n[RUN]: ', response);
 		}
@@ -490,10 +490,10 @@ exports.compile = function compile(data, res, type){
 			response.Result += String(execChild);
 		}
 
-			setTimeout(function(){
-			  console.log('Max execution time reached: sending sigkill');
-			  execChild.kill();
-			}, 5000);
+			// setTimeout(function(){
+			//   console.log('Max execution time reached: sending sigkill');
+			//   execChild.kill();
+			// }, 5000);
 
 		//console.log('\n[RUN]: ', response);
 	} else {
