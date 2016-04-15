@@ -351,6 +351,10 @@ $(".compile").on("click", function(){
 		"input": $.map(lbox ,function(option) {return option.value;}).join('\n') + '\n'
 	};
 
+	//Alert user that compilation has begun
+	var closestResults = btnContext.parent().parent().find(".results");
+	if(!closestResults.is(":visible"))
+		closestResults.show("blind", 500);
 	btnContext.parent().parent().find(".codeResults").val("Working...");
 
 	$.ajax({
@@ -360,9 +364,6 @@ $(".compile").on("click", function(){
 		  data: JSON.stringify(data),
     	  contentType: "application/json",
 		  success: function(response){
-		  	var closestResults = btnContext.parent().parent().find(".results");
-			if(!closestResults.is(":visible"))
-				closestResults.show("blind", 500);
 		  	console.log("resp:", response);
 		  	var result = "";
 		  	if(response.Errors && response.Errors != "null")
