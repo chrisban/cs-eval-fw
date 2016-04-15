@@ -393,7 +393,7 @@ exports.compile = function compile(data, res, type){
 						(error, stdout, stderr) => {
 							console.log(`Compile error: ${error}`);
 
-							response.Errors += stderr;
+							response.Errors += error + "\n" + stderr;
 							response.Result += stdout;
 								
 							if(type == "post") {
@@ -428,7 +428,7 @@ exports.compile = function compile(data, res, type){
 						(error, stdout, stderr) => {
 							console.log(`Compile error: ${error}`);
 
-							response.Errors += stderr;
+							response.Errors += error + "\n" + stderr;;
 							response.Result += stdout;
 								
 							if(type == "post") {
@@ -466,11 +466,11 @@ exports.compile = function compile(data, res, type){
 		var execChild;
 		if(data.input == '\n') {
 			try{
-				execChild = exec("python3 " + fileBasePath + 'code.py',
+				execChild = exec("python3 " + fileBasePath + 'code.py', { timeout: 1000, killSignal: 'SIGKILL'}, 
 					(error, stdout, stderr) => {
 						console.log(`Compile error: ${error}`);
 
-						response.Errors += stderr;
+						response.Errors += error + "\n" + stderr;;
 						response.Result += stdout;
 							
 						if(type == "post") {
@@ -504,11 +504,11 @@ exports.compile = function compile(data, res, type){
 
 			//cat inputs and then pipe into py script
 			try{
-				execChild = exec('cat ' + fileBasePath + 'input.txt | python3 ' + fileBasePath + 'code.py',
+				execChild = exec('cat ' + fileBasePath + 'input.txt | python3 ' + fileBasePath + 'code.py', { timeout: 1000, killSignal: 'SIGKILL'}, 
 					(error, stdout, stderr) => {
 						console.log(`Compile error: ${error}`);
 
-						response.Errors += stderr;
+						response.Errors += error + "\n" + stderr;;
 						response.Result += stdout;
 							
 						if(type == "post") {
