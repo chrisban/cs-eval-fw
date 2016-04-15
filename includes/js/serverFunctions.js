@@ -424,7 +424,7 @@ exports.compile = function compile(data, res, type){
 
 				//cat inputs and pipe into output.o executable	
 				try{
-					execChild = exec('cat ' + fileBasePath + 'input.txt | ' + fileBasePath + 'output',
+					execChild = exec('cat ' + fileBasePath + 'input.txt | ' + fileBasePath + 'output', { timeout: 1000, killSignal: 'SIGKILL'}, 
 						(error, stdout, stderr) => {
 							console.log(`Compile error: ${error}`);
 
@@ -449,11 +449,6 @@ exports.compile = function compile(data, res, type){
 					response.Errors += err;
 				}
 			}
-
-			// setTimeout(function(){
-			//   console.log('Max execution time reached: sending sigkill');
-			//   execChild.kill();
-			// }, 5000);
 
 			//console.log('\n[RUN]: ', response);
 		}
