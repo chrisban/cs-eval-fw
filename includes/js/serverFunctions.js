@@ -391,9 +391,10 @@ exports.compile = function compile(data, res, type){
 				try{
 					execChild = exec(fileBasePath + 'output',
 						(error, stdout, stderr) => {
-							console.log(`Runtime error: ${error}`);
-							if(error !== null)
+							if(error !== null){
 								response.Errors += error + "\n";
+								console.log(`Runtime error: ${error}`);
+							}
 							response.Errors += stderr;
 							response.Result += stdout;
 								
@@ -427,9 +428,10 @@ exports.compile = function compile(data, res, type){
 				try{
 					execChild = exec('cat ' + fileBasePath + 'input.txt | ' + fileBasePath + 'output', { timeout: 10000, killSignal: 'SIGKILL'}, 
 						(error, stdout, stderr) => {
-							console.log(`Runtime error: ${error}`);
-							if(error !== null)
+							if(error !== null){
 								response.Errors += error + "\n";
+								console.log(`Runtime error: ${error}`);
+							}
 							response.Errors += stderr;
 							response.Result += stdout;
 								
@@ -470,9 +472,10 @@ exports.compile = function compile(data, res, type){
 			try{
 				execChild = exec("python3 " + fileBasePath + 'code.py', { timeout: 10000, killSignal: 'SIGKILL'}, 
 					(error, stdout, stderr) => {
-						console.log(`Runtime error: ${error}`);
-						if(error !== null)
+						if(error !== null){
 							response.Errors += error + "\n";
+							console.log(`Runtime error: ${error}`);
+						}
 						response.Errors += stderr;
 						response.Result += stdout;
 							
@@ -509,9 +512,10 @@ exports.compile = function compile(data, res, type){
 			try{
 				execChild = exec('cat ' + fileBasePath + 'input.txt | python3 ' + fileBasePath + 'code.py', { timeout: 10000, killSignal: 'SIGKILL'}, 
 					(error, stdout, stderr) => {
-						console.log(`Runtime error: ${error}`);
-						if(error !== null)
+						if(error !== null){
 							response.Errors += error + "\n";
+							console.log(`Runtime error: ${error}`);
+						}
 						response.Errors += stderr;
 						response.Result += stdout;
 							
