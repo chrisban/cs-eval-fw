@@ -351,6 +351,8 @@ $(".compile").on("click", function(){
 		"input": $.map(lbox ,function(option) {return option.value;}).join('\n') + '\n'
 	};
 
+	btnContext.parent().parent().find(".codeResults").val("Working...");
+
 	$.ajax({
 		  type: "POST",
 		  url: "/compile",
