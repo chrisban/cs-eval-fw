@@ -391,7 +391,7 @@ exports.compile = function compile(data, res, type){
 				try{
 					execChild = exec(fileBasePath + 'output',
 						(error, stdout, stderr) => {
-							console.log(`Compile error: ${error}`);
+							console.log(`Runtime error: ${error}`);
 
 							response.Errors += error + "\n" + stderr;
 							response.Result += stdout;
@@ -424,9 +424,9 @@ exports.compile = function compile(data, res, type){
 
 				//cat inputs and pipe into output.o executable	
 				try{
-					execChild = exec('cat ' + fileBasePath + 'input.txt | ' + fileBasePath + 'output', { timeout: 1000, killSignal: 'SIGKILL'}, 
+					execChild = exec('cat ' + fileBasePath + 'input.txt | ' + fileBasePath + 'output', { timeout: 10000, killSignal: 'SIGKILL'}, 
 						(error, stdout, stderr) => {
-							console.log(`Compile error: ${error}`);
+							console.log(`Runtime error: ${error}`);
 
 							response.Errors += error + "\n" + stderr;;
 							response.Result += stdout;
@@ -466,9 +466,9 @@ exports.compile = function compile(data, res, type){
 		var execChild;
 		if(data.input == '\n') {
 			try{
-				execChild = exec("python3 " + fileBasePath + 'code.py', { timeout: 1000, killSignal: 'SIGKILL'}, 
+				execChild = exec("python3 " + fileBasePath + 'code.py', { timeout: 10000, killSignal: 'SIGKILL'}, 
 					(error, stdout, stderr) => {
-						console.log(`Compile error: ${error}`);
+						console.log(`Runtime error: ${error}`);
 
 						response.Errors += error + "\n" + stderr;;
 						response.Result += stdout;
@@ -504,9 +504,9 @@ exports.compile = function compile(data, res, type){
 
 			//cat inputs and then pipe into py script
 			try{
-				execChild = exec('cat ' + fileBasePath + 'input.txt | python3 ' + fileBasePath + 'code.py', { timeout: 1000, killSignal: 'SIGKILL'}, 
+				execChild = exec('cat ' + fileBasePath + 'input.txt | python3 ' + fileBasePath + 'code.py', { timeout: 10000, killSignal: 'SIGKILL'}, 
 					(error, stdout, stderr) => {
-						console.log(`Compile error: ${error}`);
+						console.log(`Runtime error: ${error}`);
 
 						response.Errors += error + "\n" + stderr;;
 						response.Result += stdout;
