@@ -13,7 +13,7 @@
     	"questionType": "code",
     	"language": "c++",
         "problem": "Write a function that adds up only the even values in a vector of whole numbers (not those in even-numbered locations, but those whose values are even) and returns that sum.",
-        "skeleton": "",
+        "skeleton": "#include <iostream>\n#include <vector>\n\n\nusing namespace std;\n\nint addOnlyEvens(vector<int> numbers);\n\nint main()\n{\n	cout << \"This should add up to 10: \" <<\n		addOnlyEvens(vector<int>({2, 3, 5, 6, 1, 2})) << endl;\n	return 0;\n}\n\nint addOnlyEvens(vector<int> numbers)\n{\n	\n}",
         "input": [""],
         "output": ["10"],
         "points": ["15"],
