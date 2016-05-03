@@ -382,9 +382,16 @@ exports.compile = function compile(data, res, type){
 
 		console.log('[COMPILE]\nout: ', String(compileChild.stdout), '\nerr: ', String(compileChild.stderr));
 
-		//run code if there were no compilation errors
+		//If there are errors - report, else run code if there were no compilation errors
 		if(String(compileChild.stderr) != ''){
 			response.Errors += String(compileChild.stderr) + '\n';
+			if(type == "post") {
+				res.type('json');
+				res.send(response);
+			}else  {
+				done = true;
+				compileResult = response;
+			}
 		} else {
 			//if no input. There will always be at least a newline, so empty string with \n is empty input
 			if(data.input == '\n') {
