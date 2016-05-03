@@ -380,7 +380,7 @@ exports.compile = function compile(data, res, type){
 		//   console.log('Child exited!');
 		// });
 
-		//console.log('[COMPILE]\nout: ', String(compileChild.stdout), '\nerr: ', String(compileChild.stderr));
+		console.log('[COMPILE]\nout: ', String(compileChild.stdout), '\nerr: ', String(compileChild.stderr));
 
 		//run code if there were no compilation errors
 		if(String(compileChild.stderr) != ''){
@@ -454,7 +454,7 @@ exports.compile = function compile(data, res, type){
 				}
 			}
 
-			//console.log('\n[RUN]: ', response);
+			console.log('\n[RUN]: ', response);
 		}
 
 		//if python (only supporting python 3.X)
