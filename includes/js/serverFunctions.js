@@ -1,6 +1,5 @@
 /*File comments*/
 var fs = require('fs');
-var requestify = require('requestify');
 var deasync = require('deasync');
 var uglify = require("uglify-js");
 var busboy = require('connect-busboy');
@@ -17,7 +16,7 @@ var moduleVars = require('./moduleVars');
 //Get/serve getModule interface to client
 exports.requestQuizInfo = function getModuleSelector (req, res) {
     //min and serve js file
-    var minifiedSelector = uglify.minify([__dirname + '/ModuleSelector.js']);
+    var minifiedSelector = uglify.minify([__dirname + "/ModuleSelector.js"]);
     var scriptSelector = minifiedSelector.code; //all listeners and js code to be evald once client has received
 
     //send object
@@ -90,7 +89,7 @@ exports.serveModule = function serveModule(req, res, data)
             if(!isNaN(Object.keys(data)[i]))
             {
                 //record question difficulty
-                difficulty.push(parseInt(data[i]["difficulty"]));
+                difficulty.push(parseFloat(data[i]["difficulty"]));
 
                 var lang = ""
                 //Catch instances of c-like languages regardless of version. This is used to style the codemirror editor.
@@ -118,8 +117,10 @@ exports.serveModule = function serveModule(req, res, data)
                     {
                         var tempSubQ = data[i]["input"][j][1];
 
+                        //Array of non-sorted options
+                        var tf = ["true", "false", "yes", "no", "legal", "illegal"];
                         //Shuffle only non true/false MC
-                        if(tempSubQ[0].toLowerCase() != "true" && tempSubQ[0].toLowerCase() != "false")
+                        if(tf.indexOf(tempSubQ[0].toLowerCase()) == -1)
                         {
                             //Shuffle subquestions via fisher-yates shuffle
                             var counter = tempSubQ.length, temp, index;
@@ -195,6 +196,7 @@ exports.processExam = function processExam(req, res, data)
     var resultFile = "";
     var prop = data.prop;
     var difficultyMultiplier = 10;
+    var difficultyValue = 0;
     
     //Remove properties field so it doesn't interfere with processing the answers (it would appear as though it were another question but with no data. Easier just to delete the property instead of coding around it)
     delete data.prop;
@@ -205,6 +207,7 @@ exports.processExam = function processExam(req, res, data)
         //reset subtotal points, print next question label
         subTotalPoints = 0;
         subStudentScore = 0;
+        difficultyValue = (parseFloat(data[i]["difficulty"]) == 0) ? (difficultyMultiplier * .5) : ((parseFloat(data[i]["difficulty"])) * difficultyMultiplier);
         resultFile += "****** Question " + i + ", type: " + req.body.problemType[i] + " ******\n\n";
 
 
@@ -214,7 +217,7 @@ exports.processExam = function processExam(req, res, data)
 
             console.log("j-Loop start");
             //Loop through each 'output' aka test cases
-            for(var j = 0; j < data[i]['output'].length; j++)
+            for(var j = 0; j < data[i]["output"].length; j++)
             {
                 //Track points
                 subTotalPoints += parseInt(data[i]["points"][j]);
@@ -223,7 +226,7 @@ exports.processExam = function processExam(req, res, data)
                 //User's data
                 var userData = {
                     "code": req.body.solution[i], //user defined code
-                    "input": data[i]['input'][j], //datafile defined testcase
+                    "input": data[i]["input"][j], //datafile defined testcase
                     "language": data[i]["language"].toLowerCase()
                 };
                 console.log("compile start");
@@ -238,14 +241,14 @@ exports.processExam = function processExam(req, res, data)
                     require('deasync').sleep(500);
                 }
                 console.log("compile finish");
-                resultFile += "\n------------------------------------------\n\nTest Input: " + data[i]['input'][j] + "\n\nCorrect output: " + data[i]['output'][j] + "\n\nReceived output: " + compileResult.Result + "\n\n";
+                resultFile += "\n------------------------------------------\n\nTest Input: " + data[i]["input"][j] + "\n\nCorrect output: " + data[i]["output"][j] + "\n\nReceived output: " + compileResult.Result + "\n\n";
 
 
-                //console.log("comparing: [" + compileResult.Result.trim() + "]\n\nans: \n[", data[i]['output'][j].trim() + "]\n");
+                //console.log("comparing: [" + compileResult.Result.trim() + "]\n\nans: \n[", data[i]["output"][j].trim() + "]\n");
 
                 //Check to see if compilation result is equal to the expected output defined in the datafile
                 //trim and add newline as parsing the json adds a leading space, and compiling adds a trailing newline. TODO: trim both?
-                if(data[i]['output'][j].trim() == compileResult.Result.trim())
+                if(data[i]["output"][j].trim() == compileResult.Result.trim())
                 {
                     subStudentScore += parseInt(data[i]["points"][j]);
                     studentScore += parseInt(data[i]["points"][j]);
@@ -262,10 +265,10 @@ exports.processExam = function processExam(req, res, data)
             {
                 //Record input
                 //Options are randomized, so to find correct index -> match on question first via indexOf
-                var correctIndex = parseInt(data[i]['output'][j]);
-                var submittedIndex = parseInt(data[i]['input'][j][1].indexOf(req.body.solution[i][j]));
+                var correctIndex = parseInt(data[i]["output"][j]);
+                var submittedIndex = parseInt(data[i]["input"][j][1].indexOf(req.body.solution[i][j]));
                 //console.log("[j:" + j + "] \ncorrectIndex: ", correctIndex, "\nsubmittedIndex", submittedIndex);
-                resultFile += "Correct answer: " + data[i]['input'][j][1][correctIndex] + "\nReceived answer: " + data[i]['input'][j][1][submittedIndex] + "\n state: ";
+                resultFile += "Correct answer: " + data[i]["input"][j][1][correctIndex] + "\nReceived answer: " + data[i]["input"][j][1][submittedIndex] + "\n state: ";
 
                 //Track points
                 subTotalPoints += parseInt(data[i]["points"][j]);
@@ -277,15 +280,15 @@ exports.processExam = function processExam(req, res, data)
                     studentScore += parseInt(data[i]["points"][j]);
                     resultFile += "Correct\n\n";
                 } else {
-                    resultFile += "Inorrect\n\n";
+                    resultFile += "Incorrect\n\n";
                 }
             }
         }
 
-        resultFile += "Time remaining: " + req.body.timings[i] + "/" + ((parseInt(data[i]['difficulty']) + 1) * difficultyMultiplier) + ":00";
+        resultFile += "Time remaining: " + req.body.timings[i] + "/" + difficultyValue + ":00";
         resultFile += "\nQuestion sub-score: " + subStudentScore + "/" + subTotalPoints + "\n====================================================\n\n\n\n";
     }
-    resultFile += "\nTIME REMAINING: " + req.body.timings[req.body.timings.length - 1] + "/" + prop['time'] + ":00\n";
+    resultFile += "\nTIME REMAINING: " + req.body.timings[req.body.timings.length - 1] + "/" + prop["time"] + ":00\n";
     resultFile += "FINAL SCORE: " + studentScore + "/" + totalPoints + "\n";
 
     //formulate paths, create directories if necessary. EEXIST e.code means dir already exists. If it doesn't, it will create.
@@ -338,7 +341,8 @@ exports.compile = function compile(data, res, type){
     //Generate tmp string using timestamp and ints 0-9999 for directory name
     var tmpDir = '' + Date.now() + Math.floor(Math.random() * (9999 - 0) + 0);
 
-    var fileBasePath = '/home/cban/RESTful-framework-for-programming-evaluation-in-academia/compilation/' + tmpDir + '/';
+    //TODO: remove ~, restore "/home/cban/RESTful..."
+    var fileBasePath = '~/RESTful-framework-for-programming-evaluation-in-academia/compilation/' + tmpDir + '/';
 
     try {
         fs.mkdirSync('./compilation/' + tmpDir);
@@ -361,11 +365,11 @@ exports.compile = function compile(data, res, type){
         var compileChild;
         var execChild;
         if(data.language.toLowerCase().indexOf('c++14') != -1) {
-            compileChild = spawn('g++-5 -std=c++14', [fileBasePath + 'code.cpp', '-o', fileBasePath + 'output'], {
+            compileChild = spawn('g++-5 -std=c++14', [fileBasePath + "code.cpp", "-o", fileBasePath + "output"], {
                 shell: true
             });
         } else{
-            compileChild = spawn('g++-5 -std=c++11', [fileBasePath + 'code.cpp', '-o', fileBasePath + 'output'], {
+            compileChild = spawn('g++-5 -std=c++11', [fileBasePath + "code.cpp", "-o", fileBasePath + "output"], {
                 shell: true
             });
         }

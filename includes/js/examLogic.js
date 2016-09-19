@@ -161,7 +161,7 @@ function adjustTiming(currentIndex, targetIndex) {
 		timingData[currentIndex][0] = 1;
 		var now = new Date();
 		timingData[currentIndex][3] = now.getTime();
-		timingData[currentIndex][4] = $("#progressB" + currentIndex).children().children()[1]['innerHTML'];
+		timingData[currentIndex][4] = $("#progressB" + currentIndex).children().children()[1]["innerHTML"];
 
 	}
 
@@ -186,7 +186,8 @@ function goNav(targetIndex) {
 		if($("#progressB" + targetIndex).hasClass("activeBar") == false)
 		{
 			$("#progressB" + targetIndex).addClass("activeBar");
-			initPbar($("#progressB" + targetIndex).children().children()[0], 60000 * ((difficulty[targetIndex] + 1) * difficultyMultiplier), targetIndex);
+			var difficultyValue = (parseFloat(difficulty[targetIndex]) == 0) ? (difficultyMultiplier * .5) : (parseFloat(difficulty[targetIndex]) * difficultyMultiplier);
+			initPbar($("#progressB" + targetIndex).children().children()[0], 60000 * difficultyValue, targetIndex);
 		}
 		
 		//disable/enable next/prev buttons as needed
@@ -434,11 +435,11 @@ function submitExam(){
 	//get current index, update pbar timing since only the current one will be outdated on submit
 	var curr = $("[id*=questionContainer]:visible");
 	var currentIndex = parseInt(curr.attr("id").substring(17, curr.attr("id").length));
-	timings[currentIndex] = $("#progressB" + currentIndex).children().children()[1]['innerHTML'];
+	timings[currentIndex] = $("#progressB" + currentIndex).children().children()[1]["innerHTML"];
 
 	//get exam time
 	var examPbarDiv = $('#totalProgress').children()[1];
-	timings.push(examPbarDiv.children[1]['innerHTML']);
+	timings.push(examPbarDiv.children[1]["innerHTML"]);
 
 	var data = {
 		"test_id": testInfo.test_id,
@@ -510,7 +511,8 @@ function initExam()
 	//Init progress bar
 	initPbar($("#totalProgress .pbar_inner"), testInfo.test_length, 'examTotal');
   	$("#progressB0").addClass("activeBar");
-	initPbar($("#progressB0").children().children()[0], 60000 * ((difficulty[0] + 1) * difficultyMultiplier), 0);
+  	var difficultyValue = (parseFloat(difficulty[0]) == 0) ? (difficultyMultiplier * .5) : (parseFloat(difficulty[0]) * difficultyMultiplier);
+	initPbar($("#progressB0").children().children()[0], 60000 * difficultyValue, 0);
 
 	//store initial code state for resetting.
 	backupSkeletonCode();

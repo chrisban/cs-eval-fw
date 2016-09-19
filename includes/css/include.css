@@ -3,6 +3,17 @@
 	font-size: 12px;
 }
 
+.quote {
+	display: block;
+	margin: 15px 60px 15px 60px;
+	padding: 10px;
+	background-color: #404040;
+	color: #ffffff;
+    border: solid;
+    border-width: 2px;
+    border-color: #000000;
+}
+
 #container{
 	background-color:#FFF;
 	width:1100px; 

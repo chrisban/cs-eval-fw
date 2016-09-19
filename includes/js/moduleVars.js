@@ -42,8 +42,8 @@
 
 //A modal which accepts course and quiz id
 var moduleSelector = '<div id="requestInfo">\
-Course ID: <input type="text" id="courseID" value=""><br />\
-Quiz ID: <input type="text" id="quizID" value=""><br />\
+Course ID: <input type="text" id="courseID" value="" size="10"><br />\
+Quiz ID: <input type="text" id="quizID" size="15" value=""><br />\
 <span id="infoStatus"></span></div>\
 </div>'
 

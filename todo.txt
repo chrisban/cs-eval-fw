@@ -17,6 +17,8 @@ Python 3.5.0 -> 3 Specify elsewhere.
 
 future work:
 	cm dynaimc bugs
+	explain boxes for all questions
+	make mc true/false synonymous with yes/no
 ------------
 
 
