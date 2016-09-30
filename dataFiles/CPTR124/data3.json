@@ -1,0 +1,36 @@
+{    
+    "0": {
+        "questionType": "mchoice",
+        "language": "python",
+        "problem": "The following questions focus on python expressions\n",
+        "skeleton": "#Regarding python expressions",
+        "input": [["Is the literal 4 a valid Python expression?", ["Yes", "No"]], ["Is the variable <span class=quote>x</span> a valid Python expression?", ["Yes", "No"]], ["Is x + 4 a valid Python expression?", ["Yes", "No"]]],
+        "output": ["0", "0"],
+        "points": ["2", "2"],
+        "difficulty": ".3"
+    },
+    "1": {
+        "questionType": "mchoice",
+        "language": "python",
+        "problem": "Evaluate the following complex Python expressions:\n",
+        "skeleton": "#complex expressions\n\ni1 = 2\ni2 = 5\ni3 = -3\nd1 = 2.0\nd2 = 5.0\nd3 = -0.5",
+        "input": [["What will the following expression: <span class=quote>i1 + (i2 * i3)</span> produce", ["-13", "17", "13.0", "2.45e10"]], ["What will the following expression: <span class=quote>i1 // (i2 + i3)</span> produce", ["0", "1", "SyntaxError"]], ["What will the following expression: <span class=quote>3 * (d1 + d2) * (d1 - d3)</span> produce", ["52.0", "52.5", "31.5", "SyntaxError"]]],
+        "output": ["0", "1", "0"],
+        "points": ["3", "3", "3"],
+        "difficulty": ".7"
+    },
+    "2": {
+        "questionType": "code",
+        "language": "python",
+        "problem": "#Note: Circumference = 2PIr\n\n",
+        "skeleton": "r = 0\nPI = 3.14159\n# Formula for the area of a circle given its radius\nC = 2*PI*r\n# Get the radius from the user\nr = float(input(\"Please enter the circle's radius: \"))\n# Print the circumference\nprint(\"\\nCircumference is\", C)",
+        "input": [".5"],
+        "output": ["3.14159"],
+        "points": ["10"],
+        "difficulty": "1.5"
+    },
+    "prop": {
+        "time": "25",
+        "warn": ["10", "5"]
+    }
+}
