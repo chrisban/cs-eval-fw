@@ -14,9 +14,9 @@
         "language": "python",
         "problem": "Examine the following Python identifiers and determine if each identifier is either <i>legal</i> or <i>illegal</i>:",
         "skeleton": "#Regarding Python identifiers",
-        "input": [["fred", ["legal", "illegal"]], ["if", ["legal", "illegal"]], ["2x", ["legal", "illegal"]], ["-4", ["legal", "illegal"]], ["sum_total", ["legal", "illegal"]], ["sumTotal", ["legal", "illegal"]], ["sum-total", ["legal", "illegal"]], ["sum total", ["legal", "illegal"]], ["While", ["legal", "illegal"]], ["x2", ["legal", "illegal"]], ["Private", ["legal", "illegal"]],["public", ["legal", "illegal"]], ["$16", ["legal", "illegal"]], ["xTwo", ["legal", "illegal"]], ["_static", ["legal", "illegal"]], ["___", ["legal", "illegal"]], ["10%", ["legal", "illegal"]], ["a27834", ["legal", "illegal"]], ["a27834", ["legal", "illegal"]]], 
-        "output": ["0", "1", "1", "1", "0", "0", "1", "1", "0", "0", "0", "0", "1", "0", "0", "0", "1", "0", "1"],
-        "points": ["2", "2", "2", "2", "2", "2", "2", "2", "2", "2", "2", "2", "2", "2", "2", "2", "2", "2", "2"],
+        "input": [["fred", ["legal", "illegal"]], ["if", ["legal", "illegal"]], ["2x", ["legal", "illegal"]], ["-4", ["legal", "illegal"]], ["sum_total", ["legal", "illegal"]], ["sumTotal", ["legal", "illegal"]], ["sum-total", ["legal", "illegal"]], ["sum total", ["legal", "illegal"]], ["While", ["legal", "illegal"]], ["x2", ["legal", "illegal"]], ["Private", ["legal", "illegal"]],["public", ["legal", "illegal"]], ["$16", ["legal", "illegal"]], ["xTwo", ["legal", "illegal"]], ["_static", ["legal", "illegal"]], ["___", ["legal", "illegal"]], ["10%", ["legal", "illegal"]], ["a27834", ["legal", "illegal"]]], 
+        "output": ["0", "1", "1", "1", "0", "0", "1", "1", "0", "0", "0", "0", "1", "0", "0", "0", "1", "0"],
+        "points": ["2", "2", "2", "2", "2", "2", "2", "2", "2", "2", "2", "2", "2", "2", "2", "2", "2", "2"],
         "difficulty": "0"
     }, 
     "2": {

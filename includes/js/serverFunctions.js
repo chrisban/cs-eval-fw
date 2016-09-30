@@ -333,6 +333,8 @@ exports.processExam = function processExam(req, res, data)
 //res: response object, exists only if called from /compile endpoint
 //type: exists only if called from /compile endpoint, if so specifies type as 'post'
 exports.compile = function compile(data, res, type){
+    var regHomePathPattern = new RegExp("(RESTful-framework-for-programming-evaluation-in-academia)","g");
+    var regFullPathPattern = new RegExp("(\/Users\/chrisban\/RESTful-framework-for-programming-evaluation-in-academia)","g");
     var response = {
         Errors: '',
         Result: ''
@@ -390,6 +392,8 @@ exports.compile = function compile(data, res, type){
         if(String(compileChild.stderr) != ''){
             response.Errors += String(compileChild.stderr) + '\n';
             if(type == "post") {
+                response.Errors = response.Errors.replace(regFullPathPattern, "FULL_WORKING_PATH").replace(regHomePathPattern, "WORKING_PATH");
+
                 res.type('json');
                 res.send(response);
             }else  {
@@ -403,7 +407,7 @@ exports.compile = function compile(data, res, type){
                     execChild = exec(fileBasePath + 'output',
                         (error, stdout, stderr) => {
                             if(error !== null){
-                                response.Errors += error + "\n";
+                                ////response.Errors += error + "\n";
                                 console.log(`Runtime error: ${error}`);
                             }
                             response.Errors += stderr;
@@ -411,7 +415,8 @@ exports.compile = function compile(data, res, type){
                                 
                             if(type == "post") {
                                 //console.log("sending response: ", stdout);
-
+                                response.Errors = response.Errors.replace(regFullPathPattern, "FULL_WORKING_PATH").replace(regHomePathPattern, "WORKING_PATH");
+                                
                                 res.type('json');
                                 res.send(response);
                             }else  {
@@ -440,7 +445,7 @@ exports.compile = function compile(data, res, type){
                     execChild = exec('cat ' + fileBasePath + 'input.txt | ' + fileBasePath + 'output', { timeout: 10000, killSignal: 'SIGKILL'}, 
                         (error, stdout, stderr) => {
                             if(error !== null){
-                                response.Errors += error + "\n";
+                                //response.Errors += error + "\n";
                                 console.log(`Runtime error: ${error}`);
                             }
                             response.Errors += stderr;
@@ -448,9 +453,9 @@ exports.compile = function compile(data, res, type){
                                 
                             if(type == "post") {
                                 //console.log("sending response: ", stdout);
-
+                                response.Errors = response.Errors.replace(regFullPathPattern, "FULL_WORKING_PATH").replace(regHomePathPattern, "WORKING_PATH");
                                 res.type('json');
-                                res.send(response);
+                                res.send(response.Errors);
                             }else  {
                                 done = true;
                                 compileResult = response;
@@ -470,6 +475,7 @@ exports.compile = function compile(data, res, type){
 
         //if python (only supporting python 3.X)
     } else if(data.language.toLowerCase().indexOf("python") != -1) {
+        console.log("python");
         //Write code to file
         fs.writeFileSync('./compilation/' + tmpDir + "/code.py", data.code, 'utf-8', function(err) {
             if(err) {
@@ -484,7 +490,7 @@ exports.compile = function compile(data, res, type){
                 execChild = exec("python3 " + fileBasePath + 'code.py', { timeout: 10000, killSignal: 'SIGKILL'}, 
                     (error, stdout, stderr) => {
                         if(error !== null){
-                            response.Errors += error + "\n";
+                            //response.Errors += error + "\n";
                             console.log(`Runtime error: ${error}`);
                         }
                         response.Errors += stderr;
@@ -492,7 +498,7 @@ exports.compile = function compile(data, res, type){
                             
                         if(type == "post") {
                             //console.log("sending response: ", stdout);
-
+                            response.Errors = response.Errors.replace(regFullPathPattern, "FULL_WORKING_PATH").replace(regHomePathPattern, "WORKING_PATH");
                             res.type('json');
                             res.send(response);
                         }else  {
@@ -524,7 +530,7 @@ exports.compile = function compile(data, res, type){
                 execChild = exec('cat ' + fileBasePath + 'input.txt | python3 ' + fileBasePath + 'code.py', { timeout: 10000, killSignal: 'SIGKILL'}, 
                     (error, stdout, stderr) => {
                         if(error !== null){
-                            response.Errors += error + "\n";
+                            //response.Errors += error + "\n";
                             console.log(`Runtime error: ${error}`);
                         }
                         response.Errors += stderr;
@@ -532,7 +538,7 @@ exports.compile = function compile(data, res, type){
                             
                         if(type == "post") {
                             //console.log("sending response: ", stdout);
-
+                            response.Errors = response.Errors.replace(regFullPathPattern, "FULL_WORKING_PATH").replace(regHomePathPattern, "WORKING_PATH");
                             res.type('json');
                             res.send(response);
                         }else  {
@@ -542,7 +548,7 @@ exports.compile = function compile(data, res, type){
                     }
                 );
             } catch(e){
-            //console.log(util.inspect(e, {showHidden: false, depth: null}));
+            console.log(util.inspect(e, {showHidden: false, depth: null}));
                 var err = String(e);
                 var errIdx = err.indexOf("code.py\",");
                 if(errIdx < 0 || errIdx > err.length)
@@ -565,6 +571,7 @@ exports.compile = function compile(data, res, type){
         response.Result += "Unkown language, cannot compile!";
 
         if(type == "post") {
+            response.Errors = response.Errors.replace(regFullPathPattern, "FULL_WORKING_PATH").replace(regHomePathPattern, "WORKING_PATH");
             res.type('json');
             res.send(response);
         }else  {
