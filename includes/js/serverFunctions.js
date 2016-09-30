@@ -207,6 +207,7 @@ exports.processExam = function processExam(req, res, data)
         //reset subtotal points, print next question label
         subTotalPoints = 0;
         subStudentScore = 0;
+        //TODO: DOCUMENT MULTIPLIER PATTERN
         difficultyValue = (parseFloat(data[i]["difficulty"]) == 0) ? (difficultyMultiplier * .5) : ((parseFloat(data[i]["difficulty"])) * difficultyMultiplier);
         resultFile += "****** Question " + i + ", type: " + req.body.problemType[i] + " ******\n\n";
 
@@ -333,8 +334,9 @@ exports.processExam = function processExam(req, res, data)
 //res: response object, exists only if called from /compile endpoint
 //type: exists only if called from /compile endpoint, if so specifies type as 'post'
 exports.compile = function compile(data, res, type){
+    //NOTE: UPDATE THIS IF IN NEW ENVIRONMENT
     var regHomePathPattern = new RegExp("(RESTful-framework-for-programming-evaluation-in-academia)","g");
-    var regFullPathPattern = new RegExp("(\/Users\/chrisban\/RESTful-framework-for-programming-evaluation-in-academia)","g");
+    var regFullPathPattern = new RegExp("(\/home\/cban\/RESTful-framework-for-programming-evaluation-in-academia)","g");
     var response = {
         Errors: '',
         Result: ''
