@@ -32,8 +32,8 @@
     "3": {
         "questionType": "code",
         "language": "python",
-        "problem": "Consider the following program that attempts to compute the circumference of a circle given the radius entered by the user. Given a circle’s radius, <i>r</i>, the circle’s circumference, <i>C</i> is given by the formula: <span class=quote>C = 2πr</span>",
-        "skeleton": "r = 0\nPI = 3.14159\n# Get the radius from the user\nr = float(input("Please enter the circle's radius: "))\n# Formula for the area of a circle given its radius\nC = 2*PI*r\n# Print the circumference\nprint("\nCircumference is", C)",
+        "problem": "Write a Python program containing exactly one print statement that produces the following output:<br /><span class=\"quote\">A<br />B<br />C<br />D<br />E<br />F</span>",
+        "skeleton": "",
         "input": [],
         "output": ["A\\nB\\nC\\nD\\nE\\nF"],
         "points": ["10"],
