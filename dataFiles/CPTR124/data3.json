@@ -23,7 +23,7 @@
         "questionType": "code",
         "language": "python",
         "problem": "#Note: Circumference = 2PIr\n\n",
-        "skeleton": "r = 0\nPI = 3.14159\n# Formula for the area of a circle given its radius\nC = 2*PI*r\n# Get the radius from the user\nr = float(input(\"Please enter the circle's radius: \"))\n# Print the circumference\nprint(\"\\nCircumference is\", C)",
+        "skeleton": "r = 0\nPI = 3.14159\n# Formula for the area of a circle given its radius\nC = 2*PI*r\n# Get the radius from the user\nr = float(input(\"Please enter the circle's radius: \"))\n# Print the circumference\nprint(\"\nCircumference is\", C)",
         "input": [".5"],
         "output": ["3.14159"],
         "points": ["10"],
