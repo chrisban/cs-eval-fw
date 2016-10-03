@@ -115,7 +115,7 @@
 }
 
 .mcOptions{
-	padding-top: 20px;
+	padding: 20px 0px 20px 0px;
 	float: right;
 	width: 43%;
 	font-family: monospace;

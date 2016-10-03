@@ -1,0 +1,47 @@
+{    
+    "0": {
+        "questionType": "mchoice",
+        "language": "python",
+        "problem": "The following questions focus on python boolean expressions\n",
+        "skeleton": "#Regarding python boolean expressions",
+        "input": [["What possible values can a Boolean expression have?", ["True, False, and None", "True, False", "True and None", "All are valid"]], ["Is the value -16 interpreted as True or False?", ["True", "False"]], 
+            ["Where does the term Boolean originate?", ["Discrete math", "George Boole", "The latin definition for Boole"]]],
+        "output": ["1", "0", "1"],
+        "points": ["1", "1", "1"],
+        "difficulty": ".3"
+    },
+    "1": {
+        "questionType": "mchoice",
+        "language": "python",
+        "problem": "Evaluate the following Boolean expressions:\n",
+        "skeleton": "#Regarding python boolean expressions\n\nx, y = 3, 5\nb1, b2, b3, b4 = true, false, x == 3, y < 3\n",
+        "input": [["b3", ["True", "False"]], ["b1 and b2 or b3", ["True", "False"]], ["not (not b1 or not b2 or not b3)", ["True", "False"]], ["not (not b1 and not b2 and not b3)", ["True", "False"]]],
+        "output": ["0", "1", "1", "0"],
+        "points": ["1", "1", "1", "1"],
+        "difficulty": ".4"
+    },
+    "2": {
+        "questionType": "code",
+        "language": "python",
+        "problem": "Write a Python program that requests an integer value from the user. If the value is between 1 and 100 inclusive, print ”OK;” otherwise, do not print anything.\n",
+        "skeleton": "",
+        "input": ["50", "150"],
+        "output": ["OK", ""],
+        "points": ["5"],
+        "difficulty": ".5"
+    },
+    "2": {
+        "questionType": "code",
+        "language": "python",
+        "problem": "Write a Python program that requests five integer values from the user. It then prints one of two things: if any of the values entered are duplicates, it prints \"DUPLICATES\"; otherwise, it prints \"ALL UNIQUE\".\n",
+        "skeleton": "",
+        "input": [["1", "2", "3", "4", "5"], ["1", "2", "1", "4", "4"]],
+        "output": ["ALL UNIQUE", "DUPLICATES"],
+        "points": ["5"],
+        "difficulty": ".6"
+    },
+    "prop": {
+        "time": "20",
+        "warn": ["10", "5"]
+    }
+}

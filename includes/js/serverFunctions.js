@@ -9,6 +9,8 @@ var util = require('util');
 
 var moduleVars = require('./moduleVars');
 
+var ISDEBUG = 0;
+
 
 //current dir: /includes/js
 
@@ -34,7 +36,7 @@ exports.getDataFile = function getDataFile(req, res, callback)
         if (err) {
             console.log('E: ' + err);
             res.type('json');
-            res.send( {error: 'The course or activity ID number could not be resolved. Please check your input and contact your professor if problems persist. ' + file} );
+            res.send( {error: 'The course or activity ID number could not be resolved. Please check your input and contact your professor if problems persist. ' + ((ISDEBUG) ? file : '')} );
             return;
         }
 
@@ -273,7 +275,7 @@ exports.processExam = function processExam(req, res, data)
 
                 //Track points
                 subTotalPoints += parseInt(data[i]["points"][j]);
-                totalPoints += parseInt(data[i]["points"][0]);
+                totalPoints += parseInt(data[i]["points"][j]);
 
                 if(correctIndex == submittedIndex)
                 {
