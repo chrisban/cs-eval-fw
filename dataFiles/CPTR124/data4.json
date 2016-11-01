@@ -27,7 +27,7 @@
         "skeleton": "",
         "input": ["50", "150"],
         "output": ["OK", ""],
-        "points": ["5"],
+        "points": ["2.5", "2.5"],
         "difficulty": ".5"
     },
     "2": {
@@ -37,7 +37,7 @@
         "skeleton": "",
         "input": [["1", "2", "3", "4", "5"], ["1", "2", "1", "4", "4"]],
         "output": ["ALL UNIQUE", "DUPLICATES"],
-        "points": ["5"],
+        "points": ["2.5", "2.5"],
         "difficulty": ".6"
     },
     "prop": {

@@ -522,7 +522,7 @@ exports.compile = function compile(data, res, type){
 
         } else {
             //Can't get it to feed in multiple inputs unless from a file with CRLFs
-            //So right inputs to file first
+            //So write inputs to file first
             fs.writeFileSync('./compilation/' + tmpDir + "/input.txt", data.input, 'utf-8', function(err) {
                 if(err) {
                     return console.log(err);

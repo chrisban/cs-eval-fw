@@ -76,7 +76,8 @@ var ioTemplate = '<div class="inputContainer">\
 			<textarea id="code<<n>>"><<code>></textarea>\
 		</div>\
 		<div class="codeInput">\
-			<span class="label"> Inputs will be read in order for every line read performed.</span><br /><br /><br />\
+			<span class="label"> Inputs will be read in order for every line read performed. If you want to pass in an array, use this format: [int1, int2] or ["str1", "str2"].<br /><br />\
+			To parse an array from input, import json and store/parse the array via json.loads(input()).<br />If you need to specify type: <br />import json<br />from decimal import Decimal<br />x = json.loads(input(), parseInt or Float=Decimal</span><br /><br /><br />\
 			<span class="label">New input: </span><input type="text" class="cin" size="10"/> <button class="addInput" type="button"> <b>+</b> </button> <br /><br />\
 			<div>\
 				<span class="label">Current inputs:</span> <select class="inputSel">\
