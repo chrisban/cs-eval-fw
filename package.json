@@ -15,15 +15,19 @@
   },
   "dependencies": {
     "body-parser": "^1.15.0",
+    "cloudcmd": "^5.7.6",
     "connect-busboy": "^0.0.2",
     "deasync": "^0.1.4",
-    "express": "^4.13.0",
+    "directory-tree": "^1.1.1",
+    "express": "^4.14.0",
     "fs": "0.0.2",
+    "socket.io": "^1.5.1",
     "uglify-js": "^2.6.2"
   },
   "bugs": {
-    "url": "https://github.com/chrisban/RESTful-framework-for-programming-evaluation-in-academia/issues"
+    "url": "https://github.com/chrisban/cs-eval-fw/issues"
   },
-  "homepage": "https://github.com/chrisban/RESTful-framework-for-programming-evaluation-in-academia#readme",
-  "devDependencies": {}
+  "homepage": "https://github.com/chrisban/cs-eval-fw#readme",
+  "devDependencies": {},
+  "keywords": []
 }

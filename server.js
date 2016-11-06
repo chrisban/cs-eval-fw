@@ -12,7 +12,6 @@ app.use(busboy());
 //connect static links
 app.use('/includes', express.static(__dirname + '/includes'));
 app.use('/admin', express.static(__dirname + '/admin'));
-var dataFilesDir = express.static(__dirname) + '/dataFiles';
 
 
 /*********************/
@@ -26,6 +25,11 @@ app.get('/', function (req, res) {
 //Admin page
 app.get('/admin/', function (req, res) {
  	res.sendFile( __dirname + "/admin/admin.html" );
+});
+
+//GET file manager tree data (json)
+app.get('/getTree', function (req, res) {
+	functions.getTree('./dataFiles', res)
 });
 
 

@@ -6,6 +6,7 @@ var busboy = require('connect-busboy');
 var spawn = require('child_process').spawnSync;
 var exec = require('child_process').exec;
 var util = require('util');
+var dirTree = require('directory-tree');
 
 var moduleVars = require('./moduleVars');
 
@@ -13,6 +14,17 @@ var ISDEBUG = 0;
 
 
 //current dir: /includes/js
+
+exports.getTree = function getTree (dir, res) {
+    var tree = dirTree(dir);
+    // console.log(JSON.stringify(tree));
+
+    tree = JSON.stringify(tree).replace(/\bname+/g, "text");
+
+    //send object
+    res.type('json');
+    res.send( tree );
+}
 
 
 //Get/serve getModule interface to client

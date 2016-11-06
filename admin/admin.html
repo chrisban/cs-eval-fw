@@ -6,6 +6,11 @@
 		<script type="text/javascript" src="/includes/js/jquery-2.1.4.min.js"></script>
 		<script type="text/javascript" src="/includes/js/jquery-ui-1.11.4/jquery-ui.min.js"></script>
 		<link type="text/css" href="/includes/js/jquery-ui-1.11.4/jquery-ui.min.css" rel="stylesheet" media="screen"/>
+		<link type="text/css" href="/includes/js/jquery-ui-1.11.4/jquery-ui.min.css" rel="stylesheet" media="screen"/>
+
+		<script type="text/javascript" src="/includes/js/jstree.min.js"></script>
+		<link type="text/css" href="/includes/css/treeStyle.min.css" rel="stylesheet" media="screen"/>
+
 		<link type="text/css" href="/admin/styling.css" rel="stylesheet" media="screen"/>
 	</head>
 	<script>
@@ -22,6 +27,30 @@
 			    }]
 			});
 
+			//create tree instance
+			$("#manageFilesDiv").jstree({
+				'core' : {
+					'data': {
+						"url" : "/getTree",
+        				"dataType" : "json"
+					},
+					'check_callback' : function (operation, node, parent, position, more) {
+						if(operation === "copy_node" || operation === "move_node") {
+							if(parent.id === "#") {
+								return false; // prevent moving a child above or below the root
+							}
+						}
+							return true; // allow everything else
+					}
+				},
+				"plugins" : ["dnd","contextmenu, checkbox, sort, unique, changed"]
+			});
+
+			$('#manageFilesDiv').on("changed.jstree", function (e, data) {
+			  console.log(data.selected);
+			});
+
+			//Tab switching
 			$("#manageFilesBtn").on("click", function() {
 				console.log('mClick');
 				if(!($("#manage").is(':visible'))) {
@@ -146,8 +175,8 @@
 					<span id="uploadFilesBtn" class="link canSelect">[ Upload ]</span>
 				</div>
 
-				<div id='manage'> 
-					manage div
+				<div id='manage'>
+					This interface is currently read-only. Editing will be available shortly...
 				</div>
 
 
@@ -170,9 +199,7 @@
 			</div>
 
 			<div id='workDiv'>
-				<div id='manageFilesDiv'>
-					manageDiv workspace
-				</div>
+				<div id='manageFilesDiv'></div>
 				<div id='codeDiv' class='hidden'>
 					<h2>JSON with unformatted content (hard line breaks): </h2>
 
