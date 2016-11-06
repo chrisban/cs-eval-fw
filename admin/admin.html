@@ -22,6 +22,44 @@
 			    }]
 			});
 
+			$("#manageFilesBtn").on("click", function() {
+				console.log('mClick');
+				if(!($("#manage").is(':visible'))) {
+					console.log(" manage isnt vis");
+					$("#upload").toggle( "slide", { direction: "left" }, "slow", function () {
+						$("#manageFilesBtn").removeClass("canSelect");
+						$("#uploadFilesBtn").addClass("canSelect");
+
+						$("#tabPointer").html(" < ");
+
+						$("#codeDiv").toggle( "slide", { direction: "right" }, "slow", function () {
+							$("#manageFilesDiv").toggle( "slide", { direction: "right" }, "slow" );
+						});
+
+						$("#manage").toggle( "slide", { direction: "left" }, "slow" );
+					});
+				}
+			});
+
+			$("#uploadFilesBtn").on("click", function() {
+				console.log('uClick');
+				if(!($("#upload").is(":visible"))) {
+					console.log("upload isnt vis");
+					$("#manage").toggle( "slide", { direction: "right" }, "slow", function () {
+						$("#manageFilesBtn").addClass("canSelect");
+						$("#uploadFilesBtn").removeClass("canSelect");
+
+						$("#tabPointer").html(" > ");
+
+						$("#manageFilesDiv").toggle( "slide", { direction: "left" }, "slow", function () {
+							$("#codeDiv").toggle( "slide", { direction: "left" }, "slow" );
+						});
+
+						$("#upload").toggle( "slide", { direction: "right" }, "slow" );
+					});
+				}
+			});
+
 			//Upload button
 			$("#uploadBtn").on("click", function(){
 				//Ensure courseid and key are provided
@@ -102,38 +140,50 @@
 	</script>
 	<body> 
 		<div id='container'>
-			<div id='upload'> 
-				<h1>Upload datafile</h1>
-				<span id='format'> Format: JSON (<a href='/admin/examples/json/jsonExample.html' target="_blank">ex</a>)<br /></span><br />
-				If a file is selected, all text area data on the right will be ignored.<br /><br />
-
-				<div id='fileDetails'>
-					<b>Course ID:</b> <input id='courseID' type='text' /> <br /><br />
-					<b>Activity ID:</b> <input id='activityID' type='text' />
+			<div class="tabDiv">
+				<div id="tabHeaders">
+					<span id="manageFilesBtn" class="link">[ Manage ]</span> <b><span id="tabPointer"><</span></b>
+					<span id="uploadFilesBtn" class="link canSelect">[ Upload ]</span>
 				</div>
 
-				<div id='fileUpload'>
-					<b>valid JSON datafile:</b> <br />
-					<input type="file" id="fileInput" />
+				<div id='manage'> 
+					manage div
+				</div>
+
+
+				<div id='upload' class='hidden'> 
+					<span id='format'> Format: JSON (<a href='/admin/examples/json/jsonExample.html' target="_blank">ex</a>)<br /></span><br />
+					If a file is selected, all text area data on the right will be ignored.<br /><br />
+
+					<div id='fileDetails'>
+						<b>Course ID:</b> <input id='courseID' type='text' /> <br /><br />
+						<b>Activity ID:</b> <input id='activityID' type='text' />
+					</div>
+
+					<div id='fileUpload'>
+						<b>valid JSON datafile:</b> <br />
+						<input type="file" id="fileInput" />
+					</div>
+
+					<input type="button" id="uploadBtn" value='Upload'>
 				</div>
 			</div>
 
-			<div id='lazy'>
-				<div id='codeDiv'>
+			<div id='workDiv'>
+				<div id='manageFilesDiv'>
+					manageDiv workspace
+				</div>
+				<div id='codeDiv' class='hidden'>
 					<h2>JSON with unformatted content (hard line breaks): </h2>
-					<span id='format'> Format: JSON-esque (<a href='/admin/examples/json/jsonesqueExample.html' target="_blank">ex</a>)<br /></span><br />
 
 					<span id='note'>Please Note:<br />
-					- The 'problem' field will only use html formatting/markup.<br />
-					- If any double quotes are repeated, they must be escaped ("skeleton": " cout << \"i\"; " )<br />
-					- Each field should include no hard linebreaks. Otherwise, wrap unformatted text in the following manner: '_<<_ CONTENT _>>_' <br />&nbsp&nbsp(or explicity write /n, /t, etc.).</span>
+					-
+					</span>
 					<textarea id='code'></textarea>
 				</div>
 			</div>
 
 			<div id="infoModal"><!--jq modal--></div>
-			<input type="button" id="uploadBtn" value='Upload'>
-			
 		</div>
 	</body>
 </html>

@@ -4,6 +4,10 @@ body {
 	font-size: 13px;
 }
 
+.hidden {
+	display: none;
+}
+
 #container{
 	background-color:#FFF;
 	width:1100px; 
@@ -11,6 +15,19 @@ body {
 	padding:5px 20px 20px 20px;
 	box-shadow:0px 0px 20px 0px #333333;
 	overflow: auto;
+}
+
+
+.canSelect {
+	color: #86b796 !important;
+	cursor: pointer;
+	font-weight: normal;
+}
+
+.link {
+	text-decoration: underline;
+	font-weight: bold !important;
+
 }
 
 #format {
@@ -25,13 +42,13 @@ body {
 	margin-top: 60%;
 }
 
-#upload {
+.tabDiv {
 	float: left;
 	width: 19%;
 	height: auto;
 }
 
-#lazy {
+#workDiv, #manageFilesDiv {
 	float: right;
 	width: 80%;
 	height: auto;

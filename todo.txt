@@ -32,6 +32,8 @@ TO RESEARCH:
 *************
 TODO: 
 
+		- drop down help/info box regarding input and arrays
+		
 		- cron jobs to clear compilation files
 
 		- auth /admin

@@ -12,6 +12,7 @@ app.use(busboy());
 //connect static links
 app.use('/includes', express.static(__dirname + '/includes'));
 app.use('/admin', express.static(__dirname + '/admin'));
+var dataFilesDir = express.static(__dirname) + '/dataFiles';
 
 
 /*********************/
