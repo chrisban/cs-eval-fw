@@ -27,6 +27,25 @@
 			    }]
 			});
 
+			$( "#editModal" ).dialog({
+				autoOpen: false,
+		        height : 600,
+		        width : 850,
+				buttons: [{
+					id: "dialogSaveBtn",
+			    	text: "Save",
+			    	click: function(){
+						$(this).dialog("close");
+			    	}
+			    }, {
+			    	id:"dialogCloseBtn",
+			    	text: "Cancel",
+			    	click: function(){
+						$(this).dialog("close");
+			    	}
+			    }]
+			});
+
 			//create tree instance
 			$("#manageFilesDiv").jstree({
 				'core' : {
@@ -43,8 +62,26 @@
 							return true; // allow everything else
 					}
 				},
-				"plugins" : ["dnd","contextmenu, checkbox, sort, unique, changed"]
-			});
+				"plugins" : ["dnd","contextmenu", "sort", "unique", "changed"],
+					"contextmenu": {
+						"items": function ($node) {
+							return {
+								"Edit": {
+									"label": "Edit datafile",
+									"action": function (obj) {
+										loadDatafile($node.original.path, editNode);
+									}
+								},
+								"Delete": {
+									"label": "Delete datafile",
+									"action": function (obj) {
+										this.remove(obj);
+									}
+								}
+							};
+						}
+					}
+				});
 
 			$('#manageFilesDiv').on("changed.jstree", function (e, data) {
 			  console.log(data.selected);
@@ -166,6 +203,32 @@
 				}
 			});
 		});
+
+	function editNode(jsonData) {
+		console.log(jsonData);
+		$('#editFile').val(JSON.stringify(jsonData), null, "\t");
+		$('#editModal').dialog('open');
+	}
+
+	function loadDatafile(path, callback) {
+		var pathArr = path.split("/"); // 'Order will be root/courseid/quiz.json'
+		$.ajax({
+		    url: "/getModule",
+		    type: "POST",
+		    dataType: "json",
+		    data: JSON.stringify({ dataOnly: 'true', course_id: pathArr[1], test_id: pathArr[2].substring(4, (pathArr[2].length - 5))}),
+		    contentType: "application/json",
+		    cache: false,
+		    success: function(res){
+				callback(res.datafile);
+		    },
+		    error: function(res){
+		    	console.log("Error response: ", res);
+		    }
+		});
+	}
+
+
 	</script>
 	<body> 
 		<div id='container'>
@@ -211,6 +274,8 @@
 			</div>
 
 			<div id="infoModal"><!--jq modal--></div>
+			<div id="editModal"><textarea id="editFile"></textarea><!--jq modal--></div>
+
 		</div>
 	</body>
 </html>

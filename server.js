@@ -43,7 +43,7 @@ app.post('/getModuleSelector', function (req, res) {
 
 //handle post request to retrieve datafiles
 app.post('/getModule', function (req, res) {
-	functions.getDataFile(req, res, functions.serveModule);
+	functions.getDataFile(req, res, (req.body.dataOnly == 'true') ? functions.serveFile : functions.serveModule);
 });
 
 //handle api compile requests

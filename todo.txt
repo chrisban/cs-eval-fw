@@ -19,6 +19,10 @@ future work:
 	cm dynaimc bugs
 	explain boxes for all questions
 	make mc true/false synonymous with yes/no
+
+
+auth: admin: %%76.main.ACTUALLY.village.52%%
+		rhalterman: haltermanr (1?)
 ------------
 
 

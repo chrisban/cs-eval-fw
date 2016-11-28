@@ -57,6 +57,11 @@ exports.getDataFile = function getDataFile(req, res, callback)
     });
 }
 
+exports.serveFile = function serveFile(req, res, json) {
+    res.type('json');
+    res.send( {datafile : json} );
+}
+
 
 //This function pieces together the module js+html code sent back to the client using the data file + examlogic templates
 exports.serveModule = function serveModule(req, res, data)

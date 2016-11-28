@@ -24,7 +24,7 @@
         "language": "python",
         "problem": "Answer the following questions regarding Python literals:\n",
         "skeleton": "#Regarding Python Literals",
-        "input": [["How is the value 2.45×10<sup>5</sup> expressed as a Python literal?", ["245000", "245000.0", "2.45e5", "2.45e10"]], ["Which answer expresses the literal value correctly as a Python literal ", ["<span clas=quote>4.49*10<sup>-26</sup></span>", "<span clas=quote>4.49e-26</span>", "<span clas=quote>4.49-26e</span>"]], ["Is \"i\" a string literal or variable?", ["String literal", "variable"]]],
+        "input": [["How is the value 2.45×10<sup>5</sup> expressed as a Python literal?", ["245000", "245000.0", "2.45e5", "2.45e10"]], ["Which answer expresses the literal value correctly as a Python literal ", ["<span class=quote>4.49*10<sup>-26</sup></span>", "<span class=quote>4.49e-26</span>", "<span class=quote>4.49-26e</span>"]], ["Is \"i\" a string literal or variable?", ["String literal", "variable"]]],
         "output": ["2", "1", "0"],
         "points": ["2", "2", "2"],
         "difficulty": ".8"
