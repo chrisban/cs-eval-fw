@@ -10,10 +10,24 @@ var dirTree = require('directory-tree');
 
 var moduleVars = require('./moduleVars');
 
-var ISDEBUG = 0;
+var USER = "admin";
+var PASSWORD = "pass";
+var ISDEBUG = 0;    
 
 
 //current dir: /includes/js
+
+exports.checkAuth = function checkAuth(req, res) {
+    var creds = JSON.stringify(req.body);
+    if(JSON.parse(creds).username == USER && JSON.parse(creds).password == PASSWORD) {
+        console.log("Logged in");
+        req.session.loggedInUser = creds.username;
+        res.redirect('/admin');
+    } else {
+        res.type('json');
+        res.send( {status : "Invalid credentials"} );  
+    }
+}
 
 exports.getTree = function getTree (dir, res) {
     var tree = dirTree(dir);

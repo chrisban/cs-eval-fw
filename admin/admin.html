@@ -127,6 +127,22 @@
 			});
 
 			//Upload button
+			$.ajax({
+				url: '/uploadFile',
+				type: 'POST',
+				data: file,
+				cache: false,
+				contentType: false,
+				processData: false,
+				success: function(res){
+					$( "#infoModal" ).html('Upload validation successful: ' + res['success']);
+					$( "#infoModal" ).dialog('open');
+				},
+			    error: function(res){
+			    	console.log("Error response: ", res);
+			    }
+			});
+			
 			$("#uploadBtn").on("click", function(){
 				//Ensure courseid and key are provided
 				if($('#courseID').val() != '' && $('#activityID').val() != '') {
@@ -135,7 +151,23 @@
 						var file = new FormData();
 						file.append($('#courseID').val() + '===' + $('#activityID').val(), $('#fileInput')[0].files[0]);
 
-						//send json file to /uploadFile endpoint
+						//send json 
+						$.ajax({
+							url: '/uploadFile',
+							type: 'POST',
+							data: file,
+							cache: false,
+							contentType: false,
+							processData: false,
+							success: function(res){
+								$( "#infoModal" ).html('Upload validation successful: ' + res['success']);
+								$( "#infoModal" ).dialog('open');
+							},
+						    error: function(res){
+						    	console.log("Error response: ", res);
+						    }
+						});file to /uploadFile endpoint
+						
 						$.ajax({
 							url: '/uploadFile',
 							type: 'POST',
@@ -226,6 +258,10 @@
 		    	console.log("Error response: ", res);
 		    }
 		});
+	}
+
+	function saveDatafile () {
+		
 	}
 
 

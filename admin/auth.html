@@ -1,0 +1,60 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>
+			Server-side code compilation/execution
+		</title>
+		<script type="text/javascript" src="/includes/js/jquery-2.1.4.min.js"></script>
+		<script type="text/javascript" src="/includes/js/jquery-ui-1.11.4/jquery-ui.min.js"></script>
+		<link type="text/css" href="/includes/js/jquery-ui-1.11.4/jquery-ui.min.css" rel="stylesheet" media="screen"/>
+		<link type="text/css" href="/includes/js/jquery-ui-1.11.4/jquery-ui.min.css" rel="stylesheet" media="screen"/>
+
+		<script type="text/javascript" src="/includes/js/jstree.min.js"></script>
+		<link type="text/css" href="/includes/css/treeStyle.min.css" rel="stylesheet" media="screen"/>
+
+		<link type="text/css" href="/admin/styling.css" rel="stylesheet" media="screen"/>
+	</head>
+	<script>
+		$( document ).ready(function() {
+			//modal that reports upload/parse success
+			$( "#login" ).dialog({
+				autoOpen: true,
+				buttons: [{
+					id: "loginModal",
+			    	text: "login",
+			    	click: function(){
+						//Login button
+ 
+						var dataObj = {
+							"username": $('#username').val(),
+							"password": $('#password').val()
+						}
+
+						$.ajax({
+							url: '/authorize',	
+							type: 'POST',
+						    dataType: "json",
+							data: JSON.stringify(dataObj),
+					    	contentType: "application/json",
+							success: function(res){
+							},
+						    error: function(res){
+						    	console.log("Error response: ", res);
+						    	$("#info").show();
+						    	$("#info").html("Could not authenticate user");
+						    }
+						});
+					}
+				}]
+			});
+		});
+	</script>
+
+<body>
+	<div id='container' style="position: center; margin-top: 100px; width: 250px;">
+		<div id="login"><!--jq modal-->
+		Login: <input id="username" name="username" type=text><br />
+		Password:<input id="password" name="password" type=password><br />
+		</div>
+		<div class="hidden" id="info"></div>
+	</div>
+</body>
