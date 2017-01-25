@@ -1,4 +1,0 @@
-AuthName "Please enter an authorized username/password:"
-AuthType Basic
-AuthUserFile ~/Documents/thesis/cs-eval-fr/admin/.htpasswd
-require valid-user
