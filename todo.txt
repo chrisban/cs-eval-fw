@@ -16,13 +16,12 @@ output field is an array of test cases [ testcase 1, [testcase 2.0, testcase 2.1
 Python 3.5.0 -> 3 Specify elsewhere. 
 
 future work:
-	cm dynaimc bugs
+	cm dynamic bugs
 	explain boxes for all questions
 	make mc true/false synonymous with yes/no
 
 
-auth: admin: %%76.main.ACTUALLY.village.52%%
-		rhalterman: haltermanr (1?)
+auth: admin:secret
 ------------
 
 
@@ -35,6 +34,7 @@ TO RESEARCH:
 
 *************
 TODO: 
+		- Write promises for compilation fn (both stand-alone and exam-proc)
 
 		- drop down help/info box regarding input and arrays
 		
