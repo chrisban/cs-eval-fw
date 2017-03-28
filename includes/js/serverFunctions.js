@@ -371,7 +371,7 @@ exports.compile = function compile(data, res, type){
         var tmpDir = '' + Date.now() + Math.floor(Math.random() * (9999 - 0) + 0);
 
         //TODO: For debug: "'~/Documents/Thesis/cs-eval-fw/compilation/' + tmpDir + '/';"
-        var fileBasePath = '~/Documents/Thesis/cs-eval-fw/compilation/' + tmpDir + '/'; //~/RESTful-framework-for-programming-evaluation-in-academia/compilation' + tmpDir + '/';
+        var fileBasePath = '~/RESTful-framework-for-programming-evaluation-in-academia/compilation' + tmpDir + '/';
 
         try {
             fs.mkdirSync('./compilation/' + tmpDir);
