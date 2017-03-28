@@ -36,6 +36,8 @@ TO RESEARCH:
 TODO: 
 		- For compiling during processing, timeout instead of sleep
 
+		- implement catches for promise .thens
+
 		- drop down help/info box regarding input and arrays
 		
 		- cron jobs to clear compilation files
