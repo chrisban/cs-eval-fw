@@ -34,7 +34,7 @@ TO RESEARCH:
 
 *************
 TODO: 
-		- Write promises for compilation fn (both stand-alone and exam-proc)
+		- For compiling during processing, timeout instead of sleep
 
 		- drop down help/info box regarding input and arrays
 		
