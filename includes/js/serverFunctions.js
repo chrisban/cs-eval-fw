@@ -251,15 +251,19 @@ exports.processExam = function processExam(req, res, data)
                 };
                 console.log("compile start");
                 //Global variables due to node requring async, and we need sync because we need to wait for the compilation result before returning our object. 
-                done = false;
-                compileResult = [];
-                exports.compile(userData);
-                
-                //Should look into alternative such as js promise to return response
-                //For now, check every 500ms until compile completes. This loop generally only executes a few times max. Not too worried about overhead
-                while(done == false) {
+                var compileResult;
+                exports.compile(userData).then(function(data) {
+                    compileResult = data;
+                });
+
+                while(compileResult === undefined) {
                     require('deasync').sleep(500);
+                    console.log("waiting...");
                 }
+
+                console.log("got result:", compileResult)
+
+
                 console.log("compile finish");
                 resultFile += "\n------------------------------------------\n\nTest Input: " + data[i]["input"][j] + "\n\nCorrect output: " + data[i]["output"][j] + "\n\nReceived output: " + compileResult.Result + "\n\n";
 
@@ -353,117 +357,150 @@ exports.processExam = function processExam(req, res, data)
 //res: response object, exists only if called from /compile endpoint
 //type: exists only if called from /compile endpoint, if so specifies type as 'post'
 exports.compile = function compile(data, res, type){
-    //NOTE: UPDATE THIS IF IN NEW ENVIRONMENT
-    var regHomePathPattern = new RegExp("(RESTful-framework-for-programming-evaluation-in-academia)","g");
-    var regFullPathPattern = new RegExp("(\/home\/cban\/RESTful-framework-for-programming-evaluation-in-academia)","g");
-    var response = {
-        Errors: '',
-        Result: ''
-    }
-    //TODO: cron-esque to wipe folder every once in awhile
-    //Generate tmp string using timestamp and ints 0-9999 for directory name
-    var tmpDir = '' + Date.now() + Math.floor(Math.random() * (9999 - 0) + 0);
 
-    //TODO: For debug: "'~/Documents/Thesis/cs-eval-fw/compilation/' + tmpDir + '/';"
-    var fileBasePath = '~/Documents/Thesis/cs-eval-fw/compilation/' + tmpDir + '/'; //~/RESTful-framework-for-programming-evaluation-in-academia/compilation' + tmpDir + '/';
+    return new Promise(function (resolve, reject) {
+        //NOTE: UPDATE THIS IF IN NEW ENVIRONMENT
+        var regHomePathPattern = new RegExp("(RESTful-framework-for-programming-evaluation-in-academia)","g");
+        var regFullPathPattern = new RegExp("(\/home\/cban\/RESTful-framework-for-programming-evaluation-in-academia)","g");
+        var response = {
+            Errors: '',
+            Result: ''
+        }
+        //TODO: cron-esque to wipe folder every once in awhile
+        //Generate tmp string using timestamp and ints 0-9999 for directory name
+        var tmpDir = '' + Date.now() + Math.floor(Math.random() * (9999 - 0) + 0);
 
-    try {
-        fs.mkdirSync('./compilation/' + tmpDir);
-    } catch(e) {
-        if ( e.code != 'EEXIST' ) 
-            throw e;
-    }
+        //TODO: For debug: "'~/Documents/Thesis/cs-eval-fw/compilation/' + tmpDir + '/';"
+        var fileBasePath = '~/Documents/Thesis/cs-eval-fw/compilation/' + tmpDir + '/'; //~/RESTful-framework-for-programming-evaluation-in-academia/compilation' + tmpDir + '/';
 
-    //if c++, use gcc
-    if(data.language.toLowerCase().indexOf('c++') != -1) {
-        //Write code to file
-        fs.writeFileSync('./compilation/' + tmpDir + "/code.cpp", data.code, 'utf-8', function(err) {
-            if(err) {
-                return console.log(err);
-            }
-        });
-
-
-        //compile code
-        var compileChild;
-        var execChild;
-        if(data.language.toLowerCase().indexOf('c++14') != -1) {
-            compileChild = spawn('g++-5 -std=c++14', [fileBasePath + "code.cpp", "-o", fileBasePath + "output"], {
-                shell: true
-            });
-        } else{
-            compileChild = spawn('g++-5 -std=c++11', [fileBasePath + "code.cpp", "-o", fileBasePath + "output"], {
-                shell: true
-            });
+        try {
+            fs.mkdirSync('./compilation/' + tmpDir);
+        } catch(e) {
+            if ( e.code != 'EEXIST' ) 
+                throw e;
         }
 
-        // var to = setTimeout(function(){
-        //   console.log('Max compile time reached: sending sigkill');
-        //   compileChild.kill();
-        // }, 5000);
+        //if c++, use gcc
+        if(data.language.toLowerCase().indexOf('c++') != -1) {
+            //Write code to file
+            fs.writeFileSync('./compilation/' + tmpDir + "/code.cpp", data.code, 'utf-8', function(err) {
+                if(err) {
+                    return console.log(err);
+                }
+            });
 
-        // compileChild.on('exit', function(){
-        //   clearTimeout(to);
-        //   console.log('Child exited!');
-        // });
 
-        //console.log('[COMPILE]\nout: ', String(compileChild.stdout), '\nerr: ', String(compileChild.stderr));
-
-        //If there are errors - report, else run code if there were no compilation errors
-        if(String(compileChild.stderr) != ''){
-            response.Errors += String(compileChild.stderr) + '\n';
-            if(type == "post") {
-                response.Errors = response.Errors.replace(regFullPathPattern, "FULL_WORKING_PATH").replace(regHomePathPattern, "WORKING_PATH");
-
-                res.type('json');
-                res.send(response);
-            }else  {
-                done = true;
-                compileResult = response;
+            //compile code
+            var compileChild;
+            var execChild;
+            if(data.language.toLowerCase().indexOf('c++14') != -1) {
+                compileChild = spawn('g++-5 -std=c++14', [fileBasePath + "code.cpp", "-o", fileBasePath + "output"], {
+                    shell: true
+                });
+            } else{
+                compileChild = spawn('g++-5 -std=c++11', [fileBasePath + "code.cpp", "-o", fileBasePath + "output"], {
+                    shell: true
+                });
             }
-        } else {
-            //if no input. There will always be at least a newline, so empty string with \n is empty input
-            if(data.input == '\n') {
-                try{
-                    execChild = exec(fileBasePath + 'output',
-                        (error, stdout, stderr) => {
-                            if(error !== null){
-                                ////response.Errors += error + "\n";
-                                console.log(`Runtime error: ${error}`);
-                            }
-                            response.Errors += stderr;
-                            response.Result += stdout;
-                                
-                            if(type == "post") {
-                                //console.log("sending response: ", stdout);
-                                response.Errors = response.Errors.replace(regFullPathPattern, "FULL_WORKING_PATH").replace(regHomePathPattern, "WORKING_PATH");
-                                
-                                res.type('json');
-                                res.send(response);
-                            }else  {
-                                done = true;
-                                compileResult = response;
-                            }
-                        }
-                    );
 
-                } catch(e){
-                    //console.log(util.inspect(e, {showHidden: false, depth: null}));
-                    var err = String(e);
-                    response.Errors += err;
+            // var to = setTimeout(function(){
+            //   console.log('Max compile time reached: sending sigkill');
+            //   compileChild.kill();
+            // }, 5000);
+
+            // compileChild.on('exit', function(){
+            //   clearTimeout(to);
+            //   console.log('Child exited!');
+            // });
+
+            //console.log('[COMPILE]\nout: ', String(compileChild.stdout), '\nerr: ', String(compileChild.stderr));
+
+            //If there are errors - report, else run code if there were no compilation errors
+            if(String(compileChild.stderr) != ''){
+                response.Errors += String(compileChild.stderr) + '\n';
+                if(type == "post") {
+                    response.Errors = response.Errors.replace(regFullPathPattern, "FULL_WORKING_PATH").replace(regHomePathPattern, "WORKING_PATH");
+                }
+                resolve(response);
+            } else {
+                //if no input. There will always be at least a newline, so empty string with \n is empty input
+                if(data.input == '\n') {
+                    try{
+                        execChild = exec(fileBasePath + 'output',
+                            (error, stdout, stderr) => {
+                                if(error !== null){
+                                    ////response.Errors += error + "\n";
+                                    console.log(`Runtime error: ${error}`);
+                                }
+                                response.Errors += stderr;
+                                response.Result += stdout;
+                                    
+                                if(type == "post") {
+                                    //console.log("sending response: ", stdout);
+                                    response.Errors = response.Errors.replace(regFullPathPattern, "FULL_WORKING_PATH").replace(regHomePathPattern, "WORKING_PATH");
+                                }
+                                resolve(response);
+                            }
+                        );
+
+                    } catch(e){
+                        //console.log(util.inspect(e, {showHidden: false, depth: null}));
+                        var err = String(e);
+                        response.Errors += err;
+                    }
+
+                } else {
+                    //Can't get it to feed in multiple inputs unless from a file with CRLFs
+                    fs.writeFileSync('./compilation/' + tmpDir + "/input.txt", data.input, 'utf-8', function(err) {
+                        if(err) {
+                            return console.log(err);
+                        }
+                    });
+
+                    //cat inputs and pipe into output.o executable  
+                    try{
+                        execChild = exec('cat ' + fileBasePath + 'input.txt | ' + fileBasePath + 'output', { timeout: 10000, killSignal: 'SIGKILL'}, 
+                            (error, stdout, stderr) => {
+                                if(error !== null){
+                                    //response.Errors += error + "\n";
+                                    console.log(`Runtime error: ${error}`);
+                                }
+                                response.Errors += stderr;
+                                response.Result += stdout;
+                                    
+                                if(type == "post") {
+                                    //console.log("sending response: ", stdout);
+                                    response.Errors = response.Errors.replace(regFullPathPattern, "FULL_WORKING_PATH").replace(regHomePathPattern, "WORKING_PATH");
+                                }
+                                resolve(response);
+                            }
+                        );
+
+                    } catch(e){
+                        //console.log(util.inspect(e, {showHidden: false, depth: null}));
+                        var err = String(e);
+                        response.Errors += err;
+                    }
                 }
 
-            } else {
-                //Can't get it to feed in multiple inputs unless from a file with CRLFs
-                fs.writeFileSync('./compilation/' + tmpDir + "/input.txt", data.input, 'utf-8', function(err) {
-                    if(err) {
-                        return console.log(err);
-                    }
-                });
+                //console.log('\n[RUN]: ', response);
+            }
 
-                //cat inputs and pipe into output.o executable  
+            //if python (only supporting python 3.X)
+        } else if(data.language.toLowerCase().indexOf("python") != -1) {
+            console.log("python");
+            //Write code to file
+            fs.writeFileSync('./compilation/' + tmpDir + "/code.py", data.code, 'utf-8', function(err) {
+                if(err) {
+                    return console.log(err);
+                }
+            });
+
+            //if no input. There will always be at least a newline, so empty string with \n is empty input
+            var execChild;
+            if(data.input == '\n') {
                 try{
-                    execChild = exec('cat ' + fileBasePath + 'input.txt | ' + fileBasePath + 'output', { timeout: 10000, killSignal: 'SIGKILL'}, 
+                    execChild = exec("python3 " + fileBasePath + 'code.py', { timeout: 10000, killSignal: 'SIGKILL'}, 
                         (error, stdout, stderr) => {
                             if(error !== null){
                                 //response.Errors += error + "\n";
@@ -475,139 +512,83 @@ exports.compile = function compile(data, res, type){
                             if(type == "post") {
                                 //console.log("sending response: ", stdout);
                                 response.Errors = response.Errors.replace(regFullPathPattern, "FULL_WORKING_PATH").replace(regHomePathPattern, "WORKING_PATH");
-                                res.type('json');
-                                res.send(response.Errors);
-                            }else  {
-                                done = true;
-                                compileResult = response;
                             }
+                            resolve(response);
                         }
                     );
-
                 } catch(e){
                     //console.log(util.inspect(e, {showHidden: false, depth: null}));
                     var err = String(e);
-                    response.Errors += err;
+                    var errIdx = err.indexOf("code.py\",");
+                    if(errIdx < 0 || errIdx > err.length)
+                        errIdx = 0;
+                    response.Errors += err.substring(errIdx + 10, err.length);
+                }
+
+            } else {
+                //Can't get it to feed in multiple inputs unless from a file with CRLFs
+                //So write inputs to file first
+                fs.writeFileSync('./compilation/' + tmpDir + "/input.txt", data.input, 'utf-8', function(err) {
+                    if(err) {
+                        return console.log(err);
+                    }
+                });
+
+                //cat inputs and then pipe into py script
+                try{
+                    execChild = exec('cat ' + fileBasePath + 'input.txt | python3 ' + fileBasePath + 'code.py', { timeout: 10000, killSignal: 'SIGKILL'}, 
+                        (error, stdout, stderr) => {
+                            if(error !== null){
+                                //response.Errors += error + "\n";
+                                console.log(`Runtime error: ${error}`);
+                            }
+                            response.Errors += stderr;
+                            response.Result += stdout;
+                                
+                            if(type == "post") {
+                                //console.log("sending response: ", stdout);
+                                response.Errors = response.Errors.replace(regFullPathPattern, "FULL_WORKING_PATH").replace(regHomePathPattern, "WORKING_PATH");
+                            }
+                            resolve(response);
+                        }
+                    );
+                } catch(e){
+                console.log(util.inspect(e, {showHidden: false, depth: null}));
+                    var err = String(e);
+                    var errIdx = err.indexOf("code.py\",");
+                    if(errIdx < 0 || errIdx > err.length)
+                        errIdx = 0;
+                    response.Errors += err.substring(errIdx + 10, err.length);
                 }
             }
+
+                // setTimeout(function(){
+                //   console.log('Max execution time reached: sending sigkill');
+                //   execChild.kill();
+                // }, 5000);
 
             //console.log('\n[RUN]: ', response);
-        }
-
-        //if python (only supporting python 3.X)
-    } else if(data.language.toLowerCase().indexOf("python") != -1) {
-        console.log("python");
-        //Write code to file
-        fs.writeFileSync('./compilation/' + tmpDir + "/code.py", data.code, 'utf-8', function(err) {
-            if(err) {
-                return console.log(err);
-            }
-        });
-
-        //if no input. There will always be at least a newline, so empty string with \n is empty input
-        var execChild;
-        if(data.input == '\n') {
-            try{
-                execChild = exec("python3 " + fileBasePath + 'code.py', { timeout: 10000, killSignal: 'SIGKILL'}, 
-                    (error, stdout, stderr) => {
-                        if(error !== null){
-                            //response.Errors += error + "\n";
-                            console.log(`Runtime error: ${error}`);
-                        }
-                        response.Errors += stderr;
-                        response.Result += stdout;
-                            
-                        if(type == "post") {
-                            //console.log("sending response: ", stdout);
-                            response.Errors = response.Errors.replace(regFullPathPattern, "FULL_WORKING_PATH").replace(regHomePathPattern, "WORKING_PATH");
-                            res.type('json');
-                            res.send(response);
-                        }else  {
-                            done = true;
-                            compileResult = response;
-                        }
-                    }
-                );
-            } catch(e){
-                //console.log(util.inspect(e, {showHidden: false, depth: null}));
-                var err = String(e);
-                var errIdx = err.indexOf("code.py\",");
-                if(errIdx < 0 || errIdx > err.length)
-                    errIdx = 0;
-                response.Errors += err.substring(errIdx + 10, err.length);
-            }
-
         } else {
-            //Can't get it to feed in multiple inputs unless from a file with CRLFs
-            //So write inputs to file first
-            fs.writeFileSync('./compilation/' + tmpDir + "/input.txt", data.input, 'utf-8', function(err) {
-                if(err) {
-                    return console.log(err);
-                }
-            });
 
-            //cat inputs and then pipe into py script
-            try{
-                execChild = exec('cat ' + fileBasePath + 'input.txt | python3 ' + fileBasePath + 'code.py', { timeout: 10000, killSignal: 'SIGKILL'}, 
-                    (error, stdout, stderr) => {
-                        if(error !== null){
-                            //response.Errors += error + "\n";
-                            console.log(`Runtime error: ${error}`);
-                        }
-                        response.Errors += stderr;
-                        response.Result += stdout;
-                            
-                        if(type == "post") {
-                            //console.log("sending response: ", stdout);
-                            response.Errors = response.Errors.replace(regFullPathPattern, "FULL_WORKING_PATH").replace(regHomePathPattern, "WORKING_PATH");
-                            res.type('json');
-                            res.send(response);
-                        }else  {
-                            done = true;
-                            compileResult = response;
-                        }
-                    }
-                );
-            } catch(e){
-            console.log(util.inspect(e, {showHidden: false, depth: null}));
-                var err = String(e);
-                var errIdx = err.indexOf("code.py\",");
-                if(errIdx < 0 || errIdx > err.length)
-                    errIdx = 0;
-                response.Errors += err.substring(errIdx + 10, err.length);
+            console.log('Unkown language, cannot compile!');
+            console.log('Data: ', data);
+
+            response.Result += "Unkown language, cannot compile!";
+
+            if(type == "post") {
+                response.Errors = response.Errors.replace(regFullPathPattern, "FULL_WORKING_PATH").replace(regHomePathPattern, "WORKING_PATH");
             }
+            resolve(response);
         }
 
-            // setTimeout(function(){
-            //   console.log('Max execution time reached: sending sigkill');
-            //   execChild.kill();
-            // }, 5000);
-
-        //console.log('\n[RUN]: ', response);
-    } else {
-
-        console.log('Unkown language, cannot compile!');
-        console.log('Data: ', data);
-
-        response.Result += "Unkown language, cannot compile!";
-
-        if(type == "post") {
-            response.Errors = response.Errors.replace(regFullPathPattern, "FULL_WORKING_PATH").replace(regHomePathPattern, "WORKING_PATH");
-            res.type('json');
-            res.send(response);
-        }else  {
-            done = true;
-            compileResult = response;
-        }
-    }
-
-    // if(type == "post") {
-    //  res.type('json');
-    //  res.send(response);
-    // }else  {
-    //  done = true;
-    //  compileResult = response;
-    // }
+        // if(type == "post") {
+        //  res.type('json');
+        //  res.send(response);
+        // }else  {
+        //  done = true;
+        //  compileResult = response;
+        // }
+    });
 }
 
 //Stores datafiles created from the admin page

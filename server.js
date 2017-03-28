@@ -48,10 +48,10 @@ app.get('/', function (req, res) {
  /* Routing (Controllers) */
 /*************************/
 
-//Auth
-app.post('/authorize/', function (req, res) {
- 	functions.checkAuth(req, res);
-});
+// //Auth
+// app.post('/authorize/', function (req, res) {
+//  	functions.checkAuth(req, res);
+// });
 
 //handle initial post request defining course/quiz info
 app.post('/getModuleSelector', function (req, res) {
@@ -65,7 +65,10 @@ app.post('/getModule', function (req, res) {
 
 //handle api compile requests
 app.post('/compile', function (req, res) {
-	functions.compile(req.body, res, "post");
+	functions.compile(req.body, res, "post").then(function(data) {
+		res.type('json');
+		res.send(data);
+	});
 });
  
 //handle answer submits answers for grading
