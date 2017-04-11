@@ -42,10 +42,6 @@ TODO:
 		
 		- cron jobs to clear compilation files
 
-		- auth /admin
-
-		- import sys \n print(sys.path) -> produces uncensored output. clean.
-
 		- Provision (for VMs)
 
 		- lockdown browser (restricted urls - visit exam/docu, not google/SO/etc.)

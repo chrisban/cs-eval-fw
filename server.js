@@ -13,7 +13,6 @@ var functions = require('./includes/js/serverFunctions');
 // for parsing application/json and files
 app.use(bodyParser.json());
 app.use(busboy());
-app.use(auth.connect(basic));
 
 //connect static links
 app.use('/includes', express.static(__dirname + '/includes'));
