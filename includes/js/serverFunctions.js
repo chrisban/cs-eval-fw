@@ -10,6 +10,8 @@ var dirTree = require('directory-tree');
 
 var moduleVars = require('./moduleVars');
 
+//environment root
+var ROOTPATH = "~/cs-eval-fw";
 var ISDEBUG = 0;    
 
 
@@ -360,8 +362,8 @@ exports.compile = function compile(data, res, type){
 
     return new Promise(function (resolve, reject) {
         //NOTE: UPDATE THIS IF IN NEW ENVIRONMENT
-        var regHomePathPattern = new RegExp("(RESTful-framework-for-programming-evaluation-in-academia)","g");
-        var regFullPathPattern = new RegExp("(\/home\/cban\/RESTful-framework-for-programming-evaluation-in-academia)","g");
+        var regHomePathPattern = new RegExp("(cs-eval-fw)","g");
+        var regFullPathPattern = new RegExp("(\/home\/cban\/cs-eval-fw)","g");
         var response = {
             Errors: '',
             Result: ''
@@ -371,7 +373,7 @@ exports.compile = function compile(data, res, type){
         var tmpDir = '' + Date.now() + Math.floor(Math.random() * (9999 - 0) + 0);
 
         //TODO: For debug: "'~/Documents/Thesis/cs-eval-fw/compilation/' + tmpDir + '/';"
-        var fileBasePath = '~/RESTful-framework-for-programming-evaluation-in-academia/compilation' + tmpDir + '/';
+        var fileBasePath = ROOTPATH + '/compilation' + tmpDir + '/';
 
         try {
             fs.mkdirSync('./compilation/' + tmpDir);
