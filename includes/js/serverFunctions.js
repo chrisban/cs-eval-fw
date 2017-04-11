@@ -373,7 +373,7 @@ exports.compile = function compile(data, res, type){
         var tmpDir = '' + Date.now() + Math.floor(Math.random() * (9999 - 0) + 0);
 
         //TODO: For debug: "'~/Documents/Thesis/cs-eval-fw/compilation/' + tmpDir + '/';"
-        var fileBasePath = ROOTPATH + '/compilation' + tmpDir + '/';
+        var fileBasePath = ROOTPATH + '/compilation/' + tmpDir + '/';
 
         try {
             fs.mkdirSync('./compilation/' + tmpDir);
