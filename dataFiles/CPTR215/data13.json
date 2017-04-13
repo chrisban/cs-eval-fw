@@ -1,0 +1,26 @@
+{    
+    "0": {
+        "questionType": "mchoice",
+        "language": "c++",
+        "problem": "Writing and maintaining redundant functions that only differ by data type can be time-consuming and error-prone. The language supports a better approach. <b />A function template is a function definition having a special type parameter that may be used in place of types in the function.\n",
+        "skeleton": "#include <iostream>\n#include <string>\nusing namespace std;\n\ntemplate<typename _BLANK_>\nT TripleMin(T item1, T item2, T item3) { ... }",
+        "input": [["From the code, fill in the '_BLANK_'.", ["int", "Type", "T", "Not possible; T is not a valid type."]], ["What happens if a call is TripleMin(i, j, k) but those arguments are of type long long?", ["The compiler creates function with long long types and calls that function.", "During runtime, the long long values are forced to be int values.", "The compiler generates an error message because only int and char are supported."]], ["What happens if a call is TripleMin(i, j, z), where i and j are ints, but z is a string?", ["The function will compare the ints and the string.", "The compiler will generate an error, because TheType must be the same for all three arguments."]]],
+        "output": ["2", "0", "1"],
+        "points": ["2", "2", "2"],
+        "difficulty": ".5"
+    },
+    "1": {
+        "questionType": "mchoice",
+        "language": "c++",
+        "problem": "Multiple classes may be nearly identical, differing only in their data types. A class template is a class definition having a special type parameter that may be used in place of types in the class.",
+        "skeleton": "//Regarding class templates",
+        "input": [["A class has been defined using the type GenType throughout, where GenType is intended to be chosen by the programmer when defining a variable of this class. The code that should immediately precede the class definition is template<GenType>", ["True", "False"]], ["A key advantage of a class template is relieving the programmer from having to write redundant code that differs only by type.", ["True", "False"]], ["For a class template defined as  template<typename T> class Vehicle { ... } an appropriate variable definition of that class would be   Vehicle<T> v1;", ["True", "False"]]] , 
+        "output": ["1", "0", "1"],
+        "points": ["2", "2", "2"],
+        "difficulty": ".5"
+    },
+    "prop": {
+        "time": "10",
+        "warn": ["5"]
+    }
+}

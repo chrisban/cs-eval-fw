@@ -339,9 +339,11 @@ exports.processExam = function processExam(req, res, data)
       }
 
     console.log("write result file");
+    var d = new Date();
+    var writeDateTime = d.getMonth() + '-' + d.getDate() + ' ' + d.toLocaleTimeString();
     //Write results to file
     //TODO: if file exists, do not write (or maybe not overrwrite, specify duplicate, append datetime to name)
-    fs.writeFile(testPath + req.body.idNum + '.txt', resultFile, function(err) {
+    fs.writeFile(testPath + req.body.idNum + ' [' +  writeDateTime + '].txt', resultFile, function(err) {
         if(err) {
             return console.log(err);
         }

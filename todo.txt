@@ -34,6 +34,8 @@ TO RESEARCH:
 
 *************
 TODO: 
+		- Include more feedback to student after grading
+
 		- For compiling during processing, timeout instead of sleep
 
 		- implement catches for promise .thens
