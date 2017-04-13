@@ -407,16 +407,6 @@ exports.compile = function compile(data, res, type){
                 });
             }
 
-            // var to = setTimeout(function(){
-            //   console.log('Max compile time reached: sending sigkill');
-            //   compileChild.kill();
-            // }, 5000);
-
-            // compileChild.on('exit', function(){
-            //   clearTimeout(to);
-            //   console.log('Child exited!');
-            // });
-
             //console.log('[COMPILE]\nout: ', String(compileChild.stdout), '\nerr: ', String(compileChild.stderr));
 
             //If there are errors - report, else run code if there were no compilation errors
