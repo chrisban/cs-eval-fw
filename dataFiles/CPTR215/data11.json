@@ -20,6 +20,16 @@
         "difficulty": ".5"
     },
     "2": {
+        "questionType": "mchoice",
+        "language": "c++",
+        "problem": "Consider a shopping spree in which a person can select any 3-item subset from a larger set of items. The following program prints all possible 3-item subsets of a given larger set. The program also prints the total price of each subset.",
+        "skeleton": "\n#include <iostream>\n#include <vector>\nusing namespace std;\n\nclass Item {\npublic:\n   string itemName;  // Name of item\n   int priceDollars; // Price of item\n};\n\nconst unsigned int MAX_ITEMS_IN_SHOPPING_BAG = 3; // Max num items\n\n/* Output every combination of items that fit\n   in a shopping bag. Each recursive call moves\n   one item into the shopping bag.\n*/\nvoid ShoppingBagCombinations(vector<Item> currBag,          // Bag contents\n                             vector<Item> remainingItems) { // Available items\n   int bagValue = 0;    // Cost of items in shopping bag\n   Item tmpGroceryItem; // Grocery item to add to bag\n   int i = 0;           // Loop index\n   \n   if( currBag.size() == MAX_ITEMS_IN_SHOPPING_BAG ) { // Base case: Shopping bag full\n      bagValue = 0;\n      for(i = 0; i < currBag.size(); ++i) {\n         bagValue += currBag.at(i).priceDollars;\n         cout << currBag.at(i).itemName << \"  \";\n      }\n      cout << \"= $\" << bagValue << endl;\n   }\n   else {                                              // Recursive case: move one\n      for(i = 0; i < remainingItems.size(); ++i) {     // item to bag\n         // Move item into bag\n         tmpGroceryItem = remainingItems.at(i);\n         remainingItems.erase(remainingItems.begin() + i);\n         currBag.push_back(tmpGroceryItem);\n         \n         ShoppingBagCombinations(currBag, remainingItems);\n         \n         // Take item out of bag\n         remainingItems.insert(remainingItems.begin() + i,tmpGroceryItem);\n         currBag.pop_back();\n      }\n   }\n   return;\n}\n\nint main() {\n   vector<Item> possibleItems(0); // Possible shopping items\n   vector<Item> shoppingBag(0);   // Current shopping bag\n   Item tmpGroceryItem;           // Temp item\n   \n   // Populate grocery with different items\n   tmpGroceryItem.itemName = \"Milk\";\n   tmpGroceryItem.priceDollars = 2;\n   possibleItems.push_back(tmpGroceryItem);\n   \n   tmpGroceryItem.itemName = \"Belt\";\n   tmpGroceryItem.priceDollars = 24;\n   possibleItems.push_back(tmpGroceryItem);\n   \n   tmpGroceryItem.itemName = \"Toys\";\n   tmpGroceryItem.priceDollars = 19;\n   possibleItems.push_back(tmpGroceryItem);\n   \n   tmpGroceryItem.itemName = \"Cups\";\n   tmpGroceryItem.priceDollars = 12;\n   possibleItems.push_back(tmpGroceryItem);\n   \n   // Try different combinations of three items\n   ShoppingBagCombinations(shoppingBag, possibleItems);\n   \n   return 0;\n}\n",
+        "input": [["When main() calls ShoppingBagCombinations(), how many items are in the remainingItems list?", ["None", "3", "4"]], ["When main() calls ShoppingBagCombinations(), how many items are in currBag list?", ["None", "1", "4"]], ["After main() calls ShoppingBagCombinations(), what happens first?", ["The base case prints Milk, Belt, Toys.", "The function bags one item, makes recursive call.", "The function bags 3 items, makes recursive call."]], ["After ShoppingBagCombinations() returns back to main(), how many items are in the remainingItems list?", ["None", "4"]], ["How many recursive calls occur before the first combination is printed?", ["None", "1", "3"]], ["What happens if main() only put 2, rather than 4, items in the possibleItems list?", ["Base case never executes; nothing printed.", "Infinite recursion occurs."]]],
+        "output": ["2", "0", "1", "1", "2", "0"],
+        "points": ["2", "2", "2", "2", "2", "2"],
+        "difficulty": "1"
+    },
+    "3": {
         "questionType": "code",
         "language": "c++",
         "problem": "Writing a recursive math function:<br /> Write code to complete RaiseToPower() to compute the result of 4^4. Output should only be the answer.",
@@ -30,7 +40,7 @@
         "difficulty": "1"
     },
     "prop": {
-        "time": "10",
-        "warn": ["5"]
+        "time": "30",
+        "warn": ["15", "5"]
     }
 }
