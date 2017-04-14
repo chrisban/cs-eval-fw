@@ -1,0 +1,26 @@
+{    
+    "0": {
+        "questionType": "mchoice",
+        "language": "c++",
+        "problem": "Regarding exceptions in C++:\n",
+        "skeleton": "int main() {\n    try {\n        //\n    }\n    catch (exc) {\n      //\n    }\n}\n",
+        "input": [["After an exception is thrown and a catch block executes, execution resumes after the throw statement.", ["True", "False"]], ["A compiler generates an error message if a try block is not immediately followed by a catch block.", ["True", "False"]], ["If no throw is executed in a try block, then the subsequent catch block is not executed.", ["True", "False"]], ["For a function that may contain a throw, the function's statements must be surrounded by a try block.", ["True", "False"]], ["A throw executed in a function automatically causes a jump to the last return statement in the function.", ["True", "False"]], ["A goal of exception handling is to avoid polluting normal code with distracting error-handling code.", ["True", "False"]]],
+        "output": ["1", "0", "1", "0", "0", "1"],
+        "points": ["2", "2", "2", "2", "2", "2"],
+        "difficulty": ".5"
+    },
+    "1": {
+        "questionType": "mchoice",
+        "language": "c++",
+        "problem": "Exceptions with multiple handlers:\n",
+        "skeleton": "...\ntry {\n   ...\n   throw objOfExcptType1;\n   ...\n   throw objOfExcptType2;\n   ...\n   throw objOfExcptType3;\n   ...\n}\ncatch (excptType1& excptObj) {\n   // Handle type1\n}\ncatch (excptType2& excptObj) {\n   // Handle type2\n}\ncatch (...) {\n   // Handle others (e.g., type3)\n}\n... ",
+        "input": [["If an object of type objOfExcptType1 is thrown, three catch blocks will execute.", ["True", "False"]], ["If an object of type objOfExcptType3 is thrown, no catch blocks will execute.", ["True", "False"]], ["A second catch block can never execute immediately after a first one executes.", ["True", "False"]], ["If excptType2 inherits from excptType1, then the second catch block (i.e., catch (excptType2& excptObj)) will never be executed.", ["True", "False"]]], 
+        "output": ["0", "0", "1", "1"],
+        "points": ["2", "2", "2", "2"],
+        "difficulty": ".5"
+    },
+    "prop": {
+        "time": "10",
+        "warn": ["5"]
+    }
+}
