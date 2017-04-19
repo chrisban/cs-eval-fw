@@ -6,7 +6,6 @@ node.npm
 
 Modularize
 	-> authenticate module
-	-> try sau? circ auth page @ ldap
 	-> plug and play
 
 List requirements: codemirror etc.
@@ -15,13 +14,13 @@ output field is an array of test cases [ testcase 1, [testcase 2.0, testcase 2.1
 
 Python 3.5.0 -> 3 Specify elsewhere. 
 
+auth: admin:secret
+
 future work:
 	cm dynamic bugs
 	explain boxes for all questions
-	make mc true/false synonymous with yes/no
 
 
-auth: admin:secret
 ------------
 
 

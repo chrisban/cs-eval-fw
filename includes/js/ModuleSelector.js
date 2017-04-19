@@ -4,6 +4,8 @@
 /*jQueryUI Modal used to warn student about submitting exam and finishing attempt*/
 $( "#requestInfo" ).dialog({
 	autoOpen: true,
+	closeOnEscape: false,
+	dialogClass: 'no-close',
 	buttons: [{
 		id: "dialogBtnSubmitRequest",
 		text: "Submit",

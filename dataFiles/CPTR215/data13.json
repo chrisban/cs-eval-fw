@@ -2,7 +2,7 @@
     "0": {
         "questionType": "mchoice",
         "language": "c++",
-        "problem": "Writing and maintaining redundant functions that only differ by data type can be time-consuming and error-prone. The language supports a better approach. <b />A function template is a function definition having a special type parameter that may be used in place of types in the function.\n",
+        "problem": "Templating: Writing and maintaining redundant functions that only differ by data type can be time-consuming and error-prone. C++ supports a better approach. <b />A function template is a function definition having a special type parameter that may be used in place of types in the function.\n",
         "skeleton": "#include <iostream>\n#include <string>\nusing namespace std;\n\ntemplate<typename _BLANK_>\nT TripleMin(T item1, T item2, T item3) { ... }",
         "input": [["From the code, fill in the '_BLANK_'.", ["int", "Type", "T", "Not possible; T is not a valid type."]], ["What happens if a call is TripleMin(i, j, k) but those arguments are of type long long?", ["The compiler creates function with long long types and calls that function.", "During runtime, the long long values are forced to be int values.", "The compiler generates an error message because only int and char are supported."]], ["What happens if a call is TripleMin(i, j, z), where i and j are ints, but z is a string?", ["The function will compare the ints and the string.", "The compiler will generate an error, because TheType must be the same for all three arguments."]]],
         "output": ["2", "0", "1"],

@@ -1,0 +1,46 @@
+{    
+    "0": {
+        "questionType": "mchoice",
+        "language": "c++",
+        "problem": "Inheritance and derived classes - Refer to the code example for the following questions:",
+        "skeleton": "//Basic structural example:\nclass someClass\n{\n  public:\n  someClass();\n  void someMethod();\n\n  private:\n  int someVar;\n};\n\n\nclass anotherClass : public someClass\n{\n  public:\n  void anotherMethod();\n\n  private:\n  int anotherVar;\n};",
+        "input": [["A derived class refers to a class that is derived from another class that is known as the ______ class.", ["base", "abstract", "master"]], ["Class 'Dwelling' has data members 'door1', 'door2', 'door3'. A class 'House' is derived from 'Dwelling' and has data members 'wVal', 'xVal', 'yVal', 'zVal'. The definition <span class='quote'>House h;</span> creates how many data members?", ["5", "6", "7", "Not here"]], ["BaseClass' private data members can be accessed by a member function of DerivedClass.", ["Yes", "No"]], ["BaseClass' public member function can be called by a member function of DerivedClass.", ["Yes", "No"]], ["BaseClass' protected member function can be called by a member function of DerivedClass.", ["Yes", "No"]]],
+        "output": ["0", "1", "1", "1", "0"],
+        "points": ["2", "2", "2", "2", "2"],
+        "difficulty": ".5"
+    },
+    "1": {
+        "questionType": "mchoice",
+        "language": "c++",
+        "problem": "Overriding member functions - assume 'myItem' is defined as 'GenericItem', and 'myProduce' as 'ProduceItem', with classes 'GenericItem' and 'ProduceItem' defined below:",
+        "skeleton": "class ProduceItem : public GenericItem { // Derived from GenericItem\n\n   ...\n\n   void PrintItem() {\n      GenericItem::PrintItem();\n      cout << \" (Expires: \" << expirationDate << \")\" << endl;\n   };\n\n   ...\n};\n",
+        "input": [["myItem.PrintItem() calls the PrintItem() function for which class?", ["GenericItem", "ProduceItem"]], ["myProduce.PrintItem() calls the PrintItem() function for which class?", ["GenericItem", "ProduceItem"]], ["Provide a statement within PrintItem() function of the ProduceItem class to call the PrintItem() function of ProduceItem's base class.", ["PrintItem();", "base.PrintItem();", "GenericItem::PrintItem();"]], ["If ProduceItem did NOT have its own PrintItem() function defined, the PrintItem() function of which class would be called?", ["GenericItem", "ProduceItem", "A call to PrintItem() yields an error."]]],
+        "output": ["0", "1", "2", "0"],
+        "points": ["2", "2", "2", "2"],
+        "difficulty": "1"
+    },
+    "2": {
+        "questionType": "mchoice",
+        "language": "c++",
+        "problem": "Polymorphism and virtual methods: assume 'myItem' is defined as 'GenericItem', and 'myProduce' as 'ProduceItem', with classes 'GenericItem' and 'ProduceItem' defined below:",
+        "skeleton": "#include <iostream>\n#include <string>\n#include <vector>\nusing namespace std;\n\nclass GenericItem {\npublic:\n   void SetName(string newName) {\n      itemName = newName;\n   };\n   \n   void SetQuantity(int newQty) {\n      itemQuantity = newQty;\n   };\n   \n   virtual void PrintItem() {\n      cout << itemName << \" \" << itemQuantity << endl;\n   };\n   \nprotected:\n   string itemName;\n   int itemQuantity;\n};\n\nclass ProduceItem : public GenericItem { // Derived from GenericItem\npublic:\n   void SetExpiration(string newDate) {\n      expirationDate = newDate;\n   };\n   \n   string GetExpiration() {\n      return expirationDate;\n   };\n   \n   void PrintItem() {\n      cout << itemName << \" \" << itemQuantity\n           << \" (Expires: \" << expirationDate << \")\" << endl;\n   };\n   \nprivate:\n   string expirationDate;\n};\n\nint main() {\n   GenericItem* genericItemPtr = 0;\n   ProduceItem* produceItemPtr = 0;\n   vector<GenericItem*> inventoryList;\n   int i = 0;\n   \n   genericItemPtr = new GenericItem;\n   genericItemPtr->SetName(\"Smith Cereal\");\n   genericItemPtr->SetQuantity(9);\n   \n   produceItemPtr = new ProduceItem;\n   produceItemPtr->SetName(\"Apple\");\n   produceItemPtr->SetQuantity(40);\n   produceItemPtr->SetExpiration(\"May 5, 2017\");\n   \n   genericItemPtr->PrintItem();\n   produceItemPtr->PrintItem();\n   \n   // More common: Collection (e.g., vector) of objs\n   // Polymorphism -- Correct Print() called\n   inventoryList.push_back(genericItemPtr);\n   inventoryList.push_back(produceItemPtr);\n   \n   cout << endl << \"Inventory:\" << endl;\n   for (i = 0; i < inventoryList.size(); ++i) {\n      inventoryList.at(i)->PrintItem();\n   }\n   \n   return 0;\n}\n",
+        "input": [["An item of type ProduceItem* may be added to a vector of type vector<GenericItem*>.", ["True", "False"]], ["Prepending the word 'virtual' to GenericItem's PrintItem() function allows a derived class like ProduceItem to override with its own PrintItem() function.", ["True", "False"]], ["A class having a pure virtual function implies that objects of that class type cannot be defined.", ["True", "False"]]],
+        "output": ["0", "1", "0"],
+        "points": ["2", "2", "2"],
+        "difficulty": "1"
+    },
+    "3": {
+        "questionType": "code",
+        "language": "c++",
+        "problem": "Define a member function 'PrintAll()' for class 'PetData' that prints output as follows. Hint: Make use of the base class' PrintAll() function.<br /><span class='quote'>Name: Fluffy, Age: 5, ID: 4444</span>",
+        "skeleton": "#include <iostream>\n#include <string>\nusing namespace std;\n\nclass AnimalData {\npublic:\n   void SetName(string givenName) {\n      fullName = givenName;\n   };\n   void SetAge(int numYears) {\n      ageYears = numYears;\n   };\n   // Other parts omitted\n\n   void PrintAll() {\n      cout << \"Name: \"  << fullName;\n      cout << \", Age: \" << ageYears;\n   };\n\nprivate:\n   int    ageYears;\n   string fullName;\n};\n\nclass PetData: public AnimalData {\npublic:\n   void SetID(int petID) {\n      idNum = petID;\n   };\n\n   // FIXME: Add PrintAll() member function\n\n   /*  Your solution goes here!  */\n\nprivate:\n   int idNum;\n};\n\nint main() {\n   PetData userPet;\n\n   userPet.SetName(\"Fluffy\");\n   userPet.SetAge (5);\n   userPet.SetID  (4444);\n   userPet.PrintAll();\n}\n",
+        "input": [], 
+        "output": ["Name: Fluffy, Age: 5, ID: 4444"],
+        "points": ["4"],
+        "difficulty": "1"
+    },
+    "prop": {
+        "time": "35",
+        "warn": ["15", "5"]
+    }
+}

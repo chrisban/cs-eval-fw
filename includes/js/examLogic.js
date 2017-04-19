@@ -49,11 +49,7 @@ function refreshCmInstances() {
 	for(var i = 0; i < structure.count; i++)
 	{
 		console.log('cm instance: ', $('.CodeMirror')[i].CodeMirror); 
-		var cm = $('.CodeMirror')[i].CodeMirror; 
-		// cm.setOption('matchBrackets', false);
-		// cm.setOption('autoRefresh', false);
-		// cm.setOption('mode', 'N/A');
-		// cm.refresh();
+		var cm = $('.CodeMirror')[i].CodeMirror;
 		cm.setOption('matchBrackets', true);
 		cm.setOption('autoRefresh', true);
 		cm.setOption('mode', modes[i]);

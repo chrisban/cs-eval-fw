@@ -2,3 +2,8 @@ body {
 	background-color:#666;
 	font-family:Verdana, Geneva, sans-serif;
 }
+
+
+.no-close .ui-dialog-titlebar-close {
+  display: none;
+}
