@@ -48,7 +48,7 @@ body {
 	height: auto;
 }
 
-#workDiv, #manageFilesDiv {
+#workDiv, #trees {
 	float: right;
 	width: 80%;
 	height: auto;

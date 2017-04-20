@@ -1,7 +1,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
 		<title>
-			Server-side code compilation/execution
+			CS online testing
 		</title>
 		<script type="text/javascript" src="/includes/js/jquery-2.1.4.min.js"></script>
 		<script type="text/javascript" src="/includes/js/jquery-ui-1.11.4/jquery-ui.min.js"></script>
@@ -33,24 +33,34 @@
 		        width : 850,
 				buttons: [{
 					id: "dialogSaveBtn",
-			    	text: "Save",
+			    	text: "Close",
 			    	click: function(){
 						$(this).dialog("close");
-			    	}
-			    }, {
-			    	id:"dialogCloseBtn",
-			    	text: "Cancel",
-			    	click: function(){
-						$(this).dialog("close");
+			    		/*$.ajax({
+						    url: "/uploadFile",
+						    type: "POST",
+						    dataType: "json",
+						    data: JSON.stringify({ course_id: , act_id: , code: }),
+						    contentType: "application/json",
+						    cache: false,
+						    success: function(res){
+								$(this).dialog("close");
+						    	$( "#infoModal" ).html('Upload validation successful: <b>' + res['success'] + '</b>');
+								$( "#infoModal" ).dialog('open');
+						    },
+						    error: function(res){
+						    	console.log("Error response: ", res);
+						    }
+						});*/
 			    	}
 			    }]
 			});
 
-			//create tree instance
+			//create test tree instance
 			$("#manageFilesDiv").jstree({
 				'core' : {
 					'data': {
-						"url" : "/getTree",
+						"url" : "/getTestsTree",
         				"dataType" : "json"
 					},
 					'check_callback' : function (operation, node, parent, position, more) {
@@ -66,10 +76,47 @@
 					"contextmenu": {
 						"items": function ($node) {
 							return {
-								"Edit": {
-									"label": "Edit datafile",
+								"Preview": {
+									"label": "Preview datafile",
 									"action": function (obj) {
 										loadDatafile($node.original.path, editNode);
+									}
+								},
+								"Delete": {
+									"label": "Delete datafile",
+									"action": function (obj) {
+										this.remove(obj);
+									}
+								}
+							};
+						}
+					}
+				});
+
+			//create results tree instance
+			$("#manageResultsDiv").jstree({
+				'core' : {
+					'data': {
+						"url" : "/getResultsTree",
+        				"dataType" : "json"
+					},
+					'check_callback' : function (operation, node, parent, position, more) {
+						if(operation === "copy_node" || operation === "move_node") {
+							if(parent.id === "#") {
+								return false; // prevent moving a child above or below the root
+							}
+						}
+							return true; // allow everything else
+					}
+				},
+				"plugins" : ["dnd","contextmenu", "sort", "unique", "changed"],
+					"contextmenu": {
+						"items": function ($node) {
+							return {
+								"Preview": {
+									"label": "Preview datafile",
+									"action": function (obj) {
+										loadResultFile($node.original.path, viewResult);
 									}
 								},
 								"Delete": {
@@ -99,7 +146,7 @@
 						$("#tabPointer").html(" < ");
 
 						$("#codeDiv").toggle( "slide", { direction: "right" }, "slow", function () {
-							$("#manageFilesDiv").toggle( "slide", { direction: "right" }, "slow" );
+							$("#trees").toggle( "slide", { direction: "right" }, "slow" );
 						});
 
 						$("#manage").toggle( "slide", { direction: "left" }, "slow" );
@@ -117,30 +164,13 @@
 
 						$("#tabPointer").html(" > ");
 
-						$("#manageFilesDiv").toggle( "slide", { direction: "left" }, "slow", function () {
+						$("#trees").toggle( "slide", { direction: "left" }, "slow", function () {
 							$("#codeDiv").toggle( "slide", { direction: "left" }, "slow" );
 						});
 
 						$("#upload").toggle( "slide", { direction: "right" }, "slow" );
 					});
 				}
-			});
-
-			//Upload button
-			$.ajax({
-				url: '/uploadFile',
-				type: 'POST',
-				data: file,
-				cache: false,
-				contentType: false,
-				processData: false,
-				success: function(res){
-					$( "#infoModal" ).html('Upload validation successful: ' + res['success']);
-					$( "#infoModal" ).dialog('open');
-				},
-			    error: function(res){
-			    	console.log("Error response: ", res);
-			    }
 			});
 			
 			$("#uploadBtn").on("click", function(){
@@ -236,9 +266,15 @@
 			});
 		});
 
+	//Currently edit acts only as a preview
 	function editNode(jsonData) {
-		console.log(jsonData);
-		$('#editFile').val(JSON.stringify(jsonData), null, "\t");
+		//console.log(jsonData);
+		$('#editFile').val(JSON.stringify(jsonData, undefined, 4));
+		$('#editModal').dialog('open');
+	}
+
+	function viewResult(resultFile) {
+		$('#editFile').val(resultFile.replace(/\r|\n/g,"\r\n"));
 		$('#editModal').dialog('open');
 	}
 
@@ -260,8 +296,25 @@
 		});
 	}
 
-	function saveDatafile () {
-		
+function saveDatafile () {
+	//TODO: save edits to datafiles. Possibly for future work.
+}
+
+function loadResultFile(path, callback) {
+		$.ajax({
+		    url: "/getResult",
+		    type: "POST",
+		    dataType: "json",
+		    data: JSON.stringify({ dataOnly: 'true', path: path}),
+		    contentType: "application/json",
+		    cache: false,
+		    success: function(res){
+				callback(res.datafile);
+		    },
+		    error: function(res){
+		    	console.log("Error response: ", res);
+		    }
+		});
 	}
 
 
@@ -275,7 +328,7 @@
 				</div>
 
 				<div id='manage'>
-					This interface is currently read-only. Editing will be available shortly...
+					This interface is currently read-only. In-line editing will be added in future work...
 				</div>
 
 
@@ -298,7 +351,10 @@
 			</div>
 
 			<div id='workDiv'>
-				<div id='manageFilesDiv'></div>
+				<div id='trees'>
+					<div id='manageFilesDiv'></div>
+					<div id='manageResultsDiv'></div>
+				</div>
 				<div id='codeDiv' class='hidden'>
 					<h2>JSON with unformatted content (hard line breaks): </h2>
 

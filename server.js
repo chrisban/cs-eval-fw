@@ -32,9 +32,14 @@ app.get('/admin', auth.connect(basic), (req, res) => {
     res.sendFile(  __dirname + "/admin/admin.html" );
 });
 
-//GET file manager tree data (json)
-app.get('/getTree', function (req, res) {
+//GET testing file manager tree data (json)
+app.get('/getTestsTree', function (req, res) {
 	functions.getTree('./dataFiles', res)
+});
+
+//GET results file manager tree data (json)
+app.get('/getResultsTree', function (req, res) {
+	functions.getTree('./testResults', res)
 });
 		
 //Exam/Quiz module
@@ -60,6 +65,11 @@ app.post('/getModuleSelector', function (req, res) {
 //handle post request to retrieve datafiles
 app.post('/getModule', function (req, res) {
 	functions.getDataFile(req, res, (req.body.dataOnly == 'true') ? functions.serveFile : functions.serveModule);
+});
+
+//handle post request to retrieve datafiles
+app.post('/getResult', function (req, res) {
+	functions.getResultFile(req, res, functions.serveFile);
 });
 
 //handle api compile requests

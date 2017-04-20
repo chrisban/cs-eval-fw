@@ -1,0 +1,46 @@
+{    
+    "0": {
+        "questionType": "mchoice",
+        "language": "c++",
+        "problem": "The ostream and istream:",
+        "skeleton": "//Regarding iostreams\n",
+        "input": [["Characters written to cout are immediately written to a system's standard output.", ["True", "False"]], ["To use cout, a program must include the statement  #include <iostream>.", ["True", "False"]], ["A read from cin will directly read characters from the system's...", ["keyboard", "data buffer", "Not here"]], ["<b>cin</b> is a predefined istream associated with the system's standard input.", ["True", "False"]], ["To use cin, a program must include the statement <span class='code'>#include <istream></span>.", ["True", "False"]]],
+        "output": ["1", "0", "1", "0", "1"],
+        "points": ["2", "2", "2", "2", "2"],
+        "difficulty": ".5"
+    },
+    "1": {
+        "questionType": "mchoice",
+        "language": "c++",
+        "problem": "Output formatting - For each question, assume no manipulators have previously been applied.",
+        "skeleton": "...\ndouble temp = 98.63;\n// a floating-point manipulator\ncout << temp;\n",
+        "input": [["Which would cause the output to appear as \"98.6\"?", ["cout << fixed;", "cout << setprecision(3);", "cout << setprecision(2);", "cout << scientific << setprecision(2);"]], ["Which would cause the output to appear as \"9.86e+01\"?", ["cout << fixed;", "cout << setprecision(3);", "cout << setprecision(2);", "cout << scientific << setprecision(2);"]], ["Which would cause the output to appear as \"99\"?", ["cout << fixed;", "cout << setprecision(3);", "cout << setprecision(2);", "cout << scientific << setprecision(2);"]]],
+        "output": ["0", "3", "2"],
+        "points": ["2", "2", "2"],
+        "difficulty": ".5"
+    },
+    "2": {
+        "questionType": "mchoice",
+        "language": "c++",
+        "problem": "Polymorphism and virtual methods: assume 'myItem' is defined as 'GenericItem', and 'myProduce' as 'ProduceItem', with classes 'GenericItem' and 'ProduceItem' defined below:",
+        "skeleton": "//A:\n...\nifstream inFS;\nint numBooks;\nint numStudents = 40;\ninFS >> numBooks;\ncout << \"Books per student: \";\ncout << numBooks / numStudents;\n\n\n//B:\n...\nofstream outFS;\n\n\n//C:\n...\nofstream outFS; \noutFS.open(\"outfile.txt\");\n",
+        "input": [["What is the error in the code under part A?", ["The file stream is not large enough.", "The file stream has not been properly opened.", "The >> operator cannot be used here.", "No error."]], ["Which statement opens a file outfile.txt given the code in part B?", ["ofstream.open.(\"outfile.txt\");", "outFS.(outfile.txt);", "outFS.open(\"outfile.txt\");", "outFS.(\"outfile.txt\");"]], ["Given the code in part C, which correctly writes \"apples\" to file outfile.txt?", ["outfile.txt << \"apples\";", "outFS << \"apples\";", "outfile.txt >> \"apples\";", "ofstream << \"apples\";"]]],
+        "output": ["1", "2", "1"],
+        "points": ["2", "2", "2"],
+        "difficulty": ".5"
+    },
+    "3": {
+        "questionType": "code",
+        "language": "c++",
+        "problem": "Write a single statement that prints outsideTemperature with 2 digits in the fraction (after the decimal point). Sample output: <span class='quote'>103.46</span>",
+        "skeleton": "#include <iostream>\n#include <ios>\n#include <iomanip>\nusing namespace std;\n\nint main() {\n   double outsideTemperature = 103.45632;\n\n   /*  Your solution goes here  */\n\n   return 0;\n}\n",
+        "input": [], 
+        "output": ["103.46"],
+        "points": ["4"],
+        "difficulty": "1"
+    },
+    "prop": {
+        "time": "25",
+        "warn": ["10", "5"]
+    }
+}

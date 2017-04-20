@@ -17,7 +17,7 @@ var ISDEBUG = 0;
 
 //current dir: /includes/js
 
-exports.getTree = function getTree (dir, res) {
+exports.getTree = function getTestsTree (dir, res) {
     var tree = dirTree(dir);
     // console.log(JSON.stringify(tree));
 
@@ -54,8 +54,26 @@ exports.getDataFile = function getDataFile(req, res, callback)
             return;
         }
 
-        //after file is read, pass on request/response vars along with parsed json data
+        //after file is read, pass on request/response
         callback(req, res, JSON.parse(datafile));
+    });
+}
+
+//Get specified result file
+exports.getResultFile = function getResultFile(req, res, callback)
+{
+    var file = './' + req.body.path;
+
+    fs.readFile(file, 'utf8', function (err, datafile) {
+        if (err) {
+            console.log('E: ' + err);
+            res.type('json');
+            res.send( {error: 'The course or activity ID number could not be resolved. Please check your input and contact your professor if problems persist. ' + ((ISDEBUG) ? file : '')} );
+            return;
+        }
+
+        //after file is read, pass on request/response vars along with parsed json data
+        callback(req, res, datafile);
     });
 }
 
