@@ -47,6 +47,11 @@ app.get('/saucs', function (req, res) {
  	res.sendFile( __dirname + "/frontEnd/" );
 });
 
+app.get('/', function (req, res) {
+  //pass through for now
+  res.redirect('/saucs');
+});  
+
 
   /*************************/
  /* Routing (Controllers) */
