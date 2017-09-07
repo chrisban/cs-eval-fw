@@ -312,7 +312,7 @@ exports.processExam = function processExam(req, res, data)
                 //Record input
                 //Options are randomized, so to find correct index -> match on question first via indexOf
                 var correctIndex = parseInt(data[i]["output"][j]);
-                var submittedIndex = parseInt(data[i]["input"][j][1].indexOf(req.body.solution[i][j]));
+                var submittedIndex = parseInt(data[i]["input"][j][1].indexOf(convertSpecialChars(req.body.solution[i][j])));
                 //console.log("[j:" + j + "] \ncorrectIndex: ", correctIndex, "\nsubmittedIndex", submittedIndex);
                 resultFile += "Correct answer: " + data[i]["input"][j][1][correctIndex] + "\nReceived answer: " + data[i]["input"][j][1][submittedIndex] + "\n state: ";
 
@@ -372,6 +372,11 @@ exports.processExam = function processExam(req, res, data)
 
     res.type('json');  
     res.send({status : "ok", score: studentScore + "/" + totalPoints});
+}
+
+// Note: Currently replaces < and > characters as using something such as <iostream> differs when parsed as html vs json.
+function convertSpecialChars(string) {
+    return string.replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
 
