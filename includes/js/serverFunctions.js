@@ -307,6 +307,8 @@ exports.processExam = function processExam(req, res, data)
             console.log("mchoice j-Loop start");
             for(var j = 0; j < data[i]["input"].length; j++)
             {
+                console.log('indexof: ', req.body.solution[i][j]);
+                console.log('submitted idx: ', data[i]["input"][j][1]);
                 //Record input
                 //Options are randomized, so to find correct index -> match on question first via indexOf
                 var correctIndex = parseInt(data[i]["output"][j]);
