@@ -4,7 +4,7 @@
         "language": "c++",
         "problem": "C++ Programs\n",
         "skeleton": "",
-        "input": [["What preprocessor directive is necessary to use statements with the std::cout printing stream object?", ["#include <iostream>", "#include <std>", "Using namespace"]], ["What statement allows the short name cout to be used instead of std::cout?", ["using namespace std;", "using std;", "using namespace io"]], ["All C++ programs must have a function named what?", ["main", "start", "init"]]],
+        "input": [["What preprocessor directive is necessary to use statements with the std::cout printing stream object?", ["#include \<iostream\>", "#include \<std\>", "Using namespace"]], ["What statement allows the short name cout to be used instead of std::cout?", ["using namespace std;", "using std;", "using namespace io"]], ["All C++ programs must have a function named what?", ["main", "start", "init"]]],
         "output": ["0", "0", "0"],
         "points": ["2", "2", "2"],
         "difficulty": ".5"
