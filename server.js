@@ -24,11 +24,11 @@ app.use('/admin', express.static(__dirname + '/admin'));
 /*********************/
 app.get('/logout', function (req, res) {
   //delete req.session.user;
-  res.redirect('/admin');
+  res.redirect('/saucs/admin');
 });  
 
 //Admin page
-app.get('/admin', auth.connect(basic), (req, res) => {
+app.get('/saucs/admin', auth.connect(basic), (req, res) => {
     res.sendFile(  __dirname + "/admin/admin.html" );
 });
 
@@ -43,7 +43,7 @@ app.get('/getResultsTree', function (req, res) {
 });
 		
 //Exam/Quiz module
-app.get('/', function (req, res) {
+app.get('/saucs', function (req, res) {
  	res.sendFile( __dirname + "/frontEnd/" );
 });
 
@@ -97,7 +97,7 @@ app.post('/uploadFile', function (req, res) {
 
 
 //start server
-var server = app.listen(8888, function () {
+var server = app.listen(80, function () {
 	var host = server.address().address;
 	var port = server.address().port;
 	console.log('[%s] Server listening at http://%s:%s',  __dirname, host, port);
