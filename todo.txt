@@ -35,6 +35,8 @@ TO RESEARCH:
 
 *************
 TODO: 
+		- ModuleVars:80 specify python array instructions, figure out c++ directions
+
 		- Include more feedback to student after grading
 
 		- implement catches for promise .thens

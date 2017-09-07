@@ -2,45 +2,15 @@
     "0": {
         "questionType": "mchoice",
         "language": "c++",
-        "problem": "Given the following python code, what outputs will be produced?\n",
-        "skeleton": "#1a:\nx = 6\nprint(6)\nprint(\"6\")\n\n#1b:\nx = 7\nprint(x)\nprint(\"x\")",
-        "input": [["Will the code print the same thing?", ["Yes", "No"]], ["What output would be produced? ", ["<span class=quote>7<br />x</span>", "<span class=quote>x<br />7</span>", "<span class=quote>SyntaxError: invalid syntax</span>", "<span class=quote>7<br />7</span>"]]],
-        "output": ["0", "0"],
-        "points": ["2", "2"],
+        "problem": "In the context of Software Development\n",
+        "skeleton": "// C++ Software Development",
+        "input": [["What is a compiler", ["A program that translates source code to machine code.", "A program that combines the machine code with precompiled code from other sources to make a complete executable program.", "A program that collects statistics about a program's execution allowing developers to improve its overall performance."]], ["How is compiled code different from source code?", ["Compiled code is source code translated into the target machine-code.", "Compiled code and source code are the same.", "Compiled code is source code but includes the preprocessor additions/modifications."]], ["What does the linker do?", ["It combines the compiler-generated machine code with precompiled library code or compiled code from other sources to make a complete executable program.", "It indicates how many times a portion of a program is executed during a particular run and how long that portion takes to execute.", "It combines the compiler-generated machine code with commonly used library code to make a complete executable program."]], ["Which of the following is FALSE regarding the development of software in a higher-level language or machine language?", ["Machine-language is more intuitive to read and write", "The same high-level source code can be compiled to different target platforms.", "High-level languages often provide many useful libraries and shorthand methods that help when writing code."]]],
+        "output": ["0", "0", "0", "0"],
+        "points": ["2", "2", "2", "2"],
         "difficulty": ".5"
     },
-    "1": {
-        "questionType": "mchoice",
-        "language": "python",
-        "problem": "Examine the following Python identifiers and determine if each identifier is either <i>legal</i> or <i>illegal</i>:",
-        "skeleton": "#Regarding Python identifiers",
-        "input": [["fred", ["legal", "illegal"]], ["if", ["legal", "illegal"]], ["2x", ["legal", "illegal"]], ["-4", ["legal", "illegal"]], ["sum_total", ["legal", "illegal"]], ["sumTotal", ["legal", "illegal"]], ["sum-total", ["legal", "illegal"]], ["sum total", ["legal", "illegal"]], ["While", ["legal", "illegal"]], ["x2", ["legal", "illegal"]], ["Private", ["legal", "illegal"]],["public", ["legal", "illegal"]], ["$16", ["legal", "illegal"]], ["xTwo", ["legal", "illegal"]], ["_static", ["legal", "illegal"]], ["___", ["legal", "illegal"]], ["10%", ["legal", "illegal"]], ["a27834", ["legal", "illegal"]]], 
-        "output": ["0", "1", "1", "1", "0", "0", "1", "1", "0", "0", "0", "0", "1", "0", "0", "0", "1", "0"],
-        "points": ["2", "2", "2", "2", "2", "2", "2", "2", "2", "2", "2", "2", "2", "2", "2", "2", "2", "2"],
-        "difficulty": "0"
-    }, 
-    "2": {
-        "questionType": "mchoice",
-        "language": "python",
-        "problem": "Answer the following questions regarding Python literals:\n",
-        "skeleton": "#Regarding Python Literals",
-        "input": [["How is the value 2.45×10<sup>5</sup> expressed as a Python literal?", ["245000", "245000.0", "2.45e5", "2.45e10"]], ["Which answer expresses the literal value correctly as a Python literal ", ["<span class=quote>4.49*10<sup>-26</sup></span>", "<span class=quote>4.49e-26</span>", "<span class=quote>4.49-26e</span>"]], ["Is \"i\" a string literal or variable?", ["String literal", "variable"]]],
-        "output": ["2", "1", "0"],
-        "points": ["2", "2", "2"],
-        "difficulty": ".8"
-    },
-    "3": {
-        "questionType": "code",
-        "language": "python",
-        "problem": "Write a Python program containing exactly one print statement that produces the following output:<br /><span class=\"quote\">A<br />B<br />C<br />D<br />E<br />F</span>",
-        "skeleton": "",
-        "input": [],
-        "output": ["A\\nB\\nC\\nD\\nE\\nF"],
-        "points": ["10"],
-        "difficulty": "1.5"
-    },
     "prop": {
-        "time": "25",
+        "time": "15",
         "warn": ["10", "5"]
     }
 }
