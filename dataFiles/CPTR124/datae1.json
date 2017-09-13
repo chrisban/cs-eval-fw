@@ -1,0 +1,76 @@
+{    
+    "0": {
+        "questionType": "mchoice",
+        "language": "c++",
+        "problem": "Multiple Choice. For questions 1-10 select the best answer. NH means 'answer Not Here.' Select NH only when none of the other answers will work.\n",
+        "skeleton": "// C++ Software Development",
+        "input": [["What developer’s tool translates C++ source code into machine language?", ["linker", "editor", "preprocessor", "compiler", "debugger", "profiler", "NH"]], ["What C++ data type most precisely represents the values true and false?", ["int", "double", "bool", "string", "NH"]], ["Which operator is used to insert data into the output stream object?", ["<<", ">>", "=", "<=", ">=", "->", "<-", "NH"]], ["What preprocessor directive inserts additional source code into the file the programmer creates?", ["#define", "#using", "std::cout", "#include", "NH"]], ["What object is associated with the input stream allowing users to enter data from the keyboard?", ["std::cin", "std::cout", "bool", "'\\n'", "std::endl", "NH"]], ["Which I/O stream manipulator allows integers to be printed right justified within a certain field size?", ["std::setw", "std::justify", "std::intfield", "std::align", "std::ios::fixed", "NH"]], ["What process occurs when a floating-point value is assigned to an integer variable?", ["verification", "rounding", "clarification", "truncation", "NH"]], ["Which C++ operator computes the remainder of the division of integers?", ["/", "#", "\\", "|", "%", "-", "NH"]], ["Which operator is used to extract data from the input stream object?", ["<<", ">>", "=", "<=", ">=", "NH"]], ["What developer’s tool combines multiple machine language files into an executable program?", ["linker", "editor", "preprocessor", "compiler", "debugger", "profiler", "NH"]]],
+        "output": ["3", "2", "0", "3", "0", "0", "3", "4", "1", "0"],
+        "points": ["1", "1", "1", "1", "1", "1", "1", "1", "1", "1"],
+        "difficulty": "1"
+    },
+    "1": {
+        "questionType": "mchoice",
+        "language": "c++",
+        "problem": "For questions 11-18 select 'reserved' if the item is a C++ reserved word; select 'identifer' if the item represents a valid C++ identifier; select NH if the item is neither a C++ reserved word nor a valid C++ identifier.\n",
+        "skeleton": "// C++ Software Development",
+        "input": [["while", ["reserved", "identifier", "NH"]], ["x2", ["reserved", "identifier", "NH"]], ["2x", ["reserved", "identifier", "NH"]], ["total-distance", ["reserved", "identifier", "NH"]], ["STOP_IT", ["reserved", "identifier", "NH"]], ["else", ["reserved", "identifier", "NH"]], ["____", ["reserved", "identifier", "NH"]], ["int", ["reserved", "identifier", "NH"]]],
+        "output": ["0", "1", "1", "1", "1", "0", "2", "0"],
+        "points": ["1", "1", "1", "1", "1", "1", "1", "1"],
+        "difficulty": ".8"
+    },
+    "2": {
+        "questionType": "mchoice",
+        "language": "c++",
+        "problem": "For questions 19-28 select 'true' if the given C++ expression evaluates to true; otherwise, select 'false.'\n",
+        "skeleton": "// Assume the variables have been declared and initialized as follows:\nint i = 4, j = 7;",
+        "input": [["i > 3", ["true", "false", "NH"]], ["!(i == 20) ", ["true", "false", "NH"]], ["i == 4 && j == 6", ["true", "false", "NH"]], ["i == 4 || j == 6 ", ["true", "false", "NH"]], ["i <= j", ["true", "false", "NH"]], ["i != j – 3", ["true", "false", "NH"]], ["0", ["true", "false", "NH"]], ["i == 4 && j >= 7", ["true", "false", "NH"]], ["std::cin >> i   (where the user enters 3)", ["true", "false", "NH"]]],
+        "output": ["0", "0", "1", "0", "0", "1", "1", "0", "0", "1"],
+        "points": ["1", "1", "1", "1", "1", "1", "1", "1", "1", "1"],
+        "difficulty": "1"
+    },
+    "3": {
+        "questionType": "mchoice",
+        "language": "c++",
+        "problem": "For questions #29–35 consider the following C++ program, and answer questions about the lines with the given labels.\n",
+        "skeleton": "#include <iostream>\n\nint main() {\n    int x = 10, y = 3;\\n    double a = 10, b = 3;\\n    std::cout << \"x\" << '\\n';     //  A\n    std::cout << x << '\\n';       //  B\n    std::cout << x / y << '\\n';   //  C\n    std::cout << y / x << '\\n';   //  D\n    std::cout << a / b << '\\n';   //  E\n    std::cout << b / a << '\\n';   //  F\n    std::cout << x % y << '\\n';   //  G\n    std::cout << \"a % y\" << '\\n'; //  H\n\n}",
+        "input": [["What is printed at the line labeled A?", ["5", "x", "NH"]], ["What is printed at the line labeled B?", ["5", "x", "NH"]], ["What is printed at the line labeled C?", ["0", "0.3", "1", "3", "3.333333", "NH"]], ["What is printed at the line labeled D?", ["0", "0.3", "1", "3", "3.333333", "NH"]], ["What is printed at the line labeled E?", ["0", "0.3", "1", "3", "3.333333", "NH"]], ["What is printed at the line labeled F?", ["0", "0.3", "1", "3", "3.333333", "NH"]], ["What is printed at the line labeled H?", ["0", "0.3", "1", "3", "3.333333", "NH"]], ["What C++ operator represents Boolean AND?", ["&", "&&", "+", "++", "|", "||", "/", "//", ":-)", "NH"]]],
+        "output": ["1", "2", "3", "0", "4", "1", "5", "1"],
+        "points": ["1", "1", "1", "1", "1", "1", "1", "1"],
+        "difficulty": ".8"
+    },
+    "4": {
+        "questionType": "mchoice",
+        "language": "c++",
+        "problem": "For Questions #37–42 consider the following C++ program. Indicate what the program will print when the user enters the values in the given order.\n",
+        "skeleton": "#include <iostream>\n\nint main() {\n    int i, j, k;\n    std::cin >> i >> j >> k;\n    if (i < j) {\n         if (j < k) \n            i = j;\n         else\n            j = k;\n     } \n     else {\n         if (j > k)\n             j = i;\n         else\n             i = k;\n     }\n     std::cout << i << ' ' << j << ' ' << k << '\n';\n}\n",
+        "input": [["The user enters 1 2 3.", ["1 1 1", "1 2 3", "2 1 1", "2 1 2", "2 2 3", "3 1 2", "3 2 1", "3 2 2", "3 2 3", "3 3 1", "3 3 2", "NH"]], ["The user enters 3 2 1.", ["1 1 1", "1 2 3", "2 1 1", "2 1 2", "2 2 3", "3 1 2", "3 2 1", "3 2 2", "3 2 3", "3 3 1", "3 3 2", "NH"]], ["The user enters 3 1 2.", ["1 1 1", "1 2 3", "2 1 1", "2 1 2", "2 2 3", "3 1 2", "3 2 1", "3 2 2", "3 2 3", "3 3 1", "3 3 2", "NH"]], ["The user enters 2 2 3.", ["1 1 1", "1 2 3", "2 1 1", "2 1 2", "2 2 3", "3 1 2", "3 2 1", "3 2 2", "3 2 3", "3 3 1", "3 3 2", "NH"]], ["The user enters 1 1 1.", ["1 1 1", "1 2 3", "2 1 1", "2 1 2", "2 2 3", "3 1 2", "3 2 1", "3 2 2", "3 2 3", "3 3 1", "3 3 2", "NH"]], ["The user enters 2 3 1.", ["1 1 1", "1 2 3", "2 1 1", "2 1 2", "2 2 3", "3 1 2", "3 2 1", "3 2 2", "3 2 3", "3 3 1", "3 3 2", "NH"]]],
+        "output": ["4", "9", "3", "8", "0", "2"],
+        "points": ["1", "1", "1", "1", "1", "1"],
+        "difficulty": ".6"
+    },
+    "5": {
+        "questionType": "mchoice",
+        "language": "c++",
+        "problem": "Consider the following program when answering questions 43–46.\n",
+        "skeleton": "#include <iostream>\n\nint main() {\n    int count = 0, num;\n    std::cin >> num;\n    while (num < 10) {\n        if (num == 5)\n            num++;\n        num++;\n        count++;\n    }\n    std::cout << count << '\n';\n}\n",
+        "input": [["What does the program print when the user enters 0?", ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "NH"]], ["What does the program print when the user enters 10?", ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "NH"]], ["What does the program print when the user enters 5?", ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "NH"]], ["What does the program print when the user enters 9?", ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "NH"]]],
+        "output": ["9", "0", "4", "1"],
+        "points": ["1", "1", "1", "1"],
+        "difficulty": ".4"
+    },
+    "6": {
+        "questionType": "code",
+        "language": "c++",
+        "problem": "Complete the following C++ program that allows the user to enter an arbitrary number of nonnegative integer values.  The user enters any negative value to terminate the list.  After the user finishes entering the numbers, the program prints the following information:<br />    * the total number of values entered (the terminating negative number does not count)<br />    * the number of even values entered (note: zero is an even number)<br />    * the sum of all the values entered<br />The program should print nothing if the user enters a negative number first.<br /><br />Output should be separated by commas. Example: 2 1 2 2 1 outputs 5,3,8",
+        "skeleton": "#include <iostream>\n\nint main() {\n    int input,    //  Variable for receiving user input\n        number,   //  Number of values entered\n        evens,    //  Number of even values entered\n        sum;      //  Sum of the values entered\n\n    // Add your code here . . .\n\n\n\n}\n",
+        "input": ["-1", "2 1 2 2 1 -1"],
+        "output": ["", "5,3,8"],
+        "points": ["10"],
+        "difficulty": "1"
+    },
+    "prop": {
+        "time": "60",
+        "warn": ["15", "5"]
+    }
+}
