@@ -260,7 +260,7 @@ exports.processExam = function processExam(req, res, data)
             //Track points
             subTotalPoints += parseInt(data[i]["points"][0]);
             totalPoints += parseInt(data[i]["points"][0]);
-            var testsPassed = false;
+            var testsfailed = false;
             //Loop through each 'output' aka test cases
             for(var j = 0; j < data[i]["output"].length; j++)
             {
@@ -294,16 +294,14 @@ exports.processExam = function processExam(req, res, data)
 
                 //Check to see if compilation result is equal to the expected output defined in the datafile
                 //trim and add newline as parsing the json adds a leading space, and compiling adds a trailing newline. TODO: trim both?
-                if(data[i]["output"][j].trim() == compileResult.Result.trim())
+                if(data[i]["output"][j].trim() != compileResult.Result.trim())
                 {
-                    testsPassed = true;
-                } else{
-                    testsPassed = false;
+                    testsfailed = true;
                 }
             }
 
             //evaluate points
-            if (testsPassed)
+            if (!testsfailed)
             {
                 subStudentScore += parseInt(data[i]["points"][0]);
                 studentScore += parseInt(data[i]["points"][0]);
