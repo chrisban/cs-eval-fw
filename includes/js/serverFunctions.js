@@ -256,12 +256,14 @@ exports.processExam = function processExam(req, res, data)
             resultFile += "Submitted code:\n------------------------------------------\n\n" + req.body.solution[i] + "\n\n";
 
             console.log("j-Loop start");
+
+            //Track points
+            subTotalPoints += parseInt(data[i]["points"][0]);
             totalPoints += parseInt(data[i]["points"][0]);
+            var testsPassed = false;
             //Loop through each 'output' aka test cases
             for(var j = 0; j < data[i]["output"].length; j++)
             {
-                //Track points
-                subTotalPoints += parseInt(data[i]["points"][j]);
                 
                 //User's data
                 var userData = {
@@ -294,12 +296,20 @@ exports.processExam = function processExam(req, res, data)
                 //trim and add newline as parsing the json adds a leading space, and compiling adds a trailing newline. TODO: trim both?
                 if(data[i]["output"][j].trim() == compileResult.Result.trim())
                 {
-                    subStudentScore += parseInt(data[i]["points"][j]);
-                    studentScore += parseInt(data[i]["points"][j]);
-                    resultFile += "status: correct\n\n";
+                    testsPassed = true;
                 } else{
-                    resultFile += "status: incorrect\n\n";
+                    testsPassed = false;
                 }
+            }
+
+            //evaluate points
+            if (testsPassed)
+            {
+                subStudentScore += parseInt(data[i]["points"][0]);
+                studentScore += parseInt(data[i]["points"][0]);
+                resultFile += "status: correct\n\n";
+            } else{
+                resultFile += "status: incorrect\n\n";
             }
 
         } else if(req.body.problemType[i] == "mchoice")
@@ -360,7 +370,8 @@ exports.processExam = function processExam(req, res, data)
 
     console.log("write result file");
     var d = new Date();
-    var writeDateTime = d.getMonth() + '-' + d.getDate() + ' ' + d.toLocaleTimeString();
+    var monthVal = d.getMonth() + 1;
+    var writeDateTime = monthVal + '-' + d.getDate() + ' ' + d.toLocaleTimeString();
     //Write results to file
     //TODO: if file exists, do not write (or maybe not overrwrite, specify duplicate, append datetime to name)
     fs.writeFile(testPath + req.body.idNum + ' [' +  writeDateTime + '].txt', resultFile, function(err) {
