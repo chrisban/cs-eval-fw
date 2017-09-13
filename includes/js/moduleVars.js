@@ -54,7 +54,7 @@ var requires = '<link type="text/css" href="/includes/css/include.css" rel="styl
 //header code
 //Note: Container div closes at the end of navTemplate 
  var header = '<div id="container">\
-<div id="banner"><h1>Practice Exam</h1></div>\
+<div id="banner"><h1>SAU CS</h1></div>\
 <div>Enter or modify the code below and press \'Compile\' to execute and view results.</div>\
 <div id="bannerRight">\
 	<span class="submit button">Submit Exam</span>\

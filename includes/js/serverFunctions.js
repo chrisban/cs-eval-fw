@@ -256,12 +256,12 @@ exports.processExam = function processExam(req, res, data)
             resultFile += "Submitted code:\n------------------------------------------\n\n" + req.body.solution[i] + "\n\n";
 
             console.log("j-Loop start");
+            totalPoints += parseInt(data[i]["points"][0]);
             //Loop through each 'output' aka test cases
             for(var j = 0; j < data[i]["output"].length; j++)
             {
                 //Track points
                 subTotalPoints += parseInt(data[i]["points"][j]);
-                totalPoints += parseInt(data[i]["points"][j]);
                 
                 //User's data
                 var userData = {

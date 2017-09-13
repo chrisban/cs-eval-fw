@@ -82,13 +82,19 @@
 									"action": function (obj) {
 										loadDatafile($node.original.path, editNode);
 									}
-								},
-								"Delete": {
-									"label": "Delete datafile",
-									"action": function (obj) {
-										this.remove(obj);
-									}
 								}
+								// "Delete": {
+								// 	"label": "Delete datafile",
+								// 	"action": function (obj) {
+								// 		this.remove(obj);
+								// 	}
+								// },
+								// "Download": {
+								// 	"label": "Download",
+								// 	"action": function (obj) {
+								// 		downloadArchive($node.original.path);
+								// 	}
+								// }
 							};
 						}
 					}
@@ -297,11 +303,30 @@
 		});
 	}
 
-function saveDatafile () {
-	//TODO: save edits to datafiles. Possibly for future work.
-}
+	// function downloadArchive(path) {
+	// 	var pathArr = path.split("/"); // 'Order will be root/courseid/quiz.json'
+	// 	console.log(path);
+	// 	$.ajax({
+	// 	    url: "/downloadArchive",
+	// 	    type: "POST",
+	// 	    dataType: "json",
+	// 	    data: JSON.stringify({ path: path }),
+	// 	    contentType: "application/json",
+	// 	    cache: false,
+	// 	    success: function(res){
+				
+	// 	    },
+	// 	    error: function(res){
+	// 	    	console.log("Error response: ", res);
+	// 	    }
+	// 	});
+	// }
 
-function loadResultFile(path, callback) {
+	function saveDatafile () {
+		//TODO: save edits to datafiles. Possibly for future work.
+	}
+
+	function loadResultFile(path, callback) {
 		$.ajax({
 		    url: "/getResult",
 		    type: "POST",
