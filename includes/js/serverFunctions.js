@@ -240,7 +240,7 @@ exports.processExam = function processExam(req, res, data)
     //Remove properties field so it doesn't interfere with processing the answers (it would appear as though it were another question but with no data. Easier just to delete the property instead of coding around it)
     delete data.prop;
 
-    console.log("i-Loop start");
+    //console.log("i-Loop start");
     for(var i = 0; i < Object.keys(data).length; i++)
     {
         //reset subtotal points, print next question label
@@ -255,7 +255,7 @@ exports.processExam = function processExam(req, res, data)
         {
             resultFile += "Submitted code:\n------------------------------------------\n\n" + req.body.solution[i] + "\n\n";
 
-            console.log("j-Loop start");
+            //console.log("code j-Loop start");
 
             //Track points
             subTotalPoints += parseInt(data[i]["points"][0]);
@@ -271,7 +271,7 @@ exports.processExam = function processExam(req, res, data)
                     "input": data[i]["input"][j], //datafile defined testcase
                     "language": data[i]["language"].toLowerCase()
                 };
-                console.log("compile start");
+                //console.log("compile start");
                 //Global variables due to node requring async, and we need sync because we need to wait for the compilation result before returning our object. 
                 var compileResult;
                 exports.compile(userData).then(function(data) {
@@ -280,13 +280,13 @@ exports.processExam = function processExam(req, res, data)
 
                 while(compileResult === undefined) {
                     require('deasync').sleep(500);
-                    console.log("waiting...");
+                    //console.log("waiting...");
                 }
 
-                console.log("got result:", compileResult)
+                //console.log("got compiled result:", compileResult)
 
 
-                console.log("compile finish");
+                //console.log("compile finish");
                 resultFile += "\n------------------------------------------\n\nTest Input: " + data[i]["input"][j] + "\n\nCorrect output: " + data[i]["output"][j] + "\n\nReceived output: " + compileResult.Result + "\n\n";
 
 
@@ -312,15 +312,18 @@ exports.processExam = function processExam(req, res, data)
 
         } else if(req.body.problemType[i] == "mchoice")
         {
-            console.log("mchoice j-Loop start");
+            //console.log("mchoice j-Loop start");
             for(var j = 0; j < data[i]["input"].length; j++)
             {
-                console.log('indexof: ', req.body.solution[i][j]);
-                console.log('submitted idx: ', data[i]["input"][j][1]);
+                //console.log('indexof: ', req.body.solution[i][j]);
+                //console.log('submitted idx: ', data[i]["input"][j][1]);
+                //console.log('sub solution: ', req.body.solution[i][j], ' | ', req.body.solution[i][j]);
+                
                 //Record input
                 //Options are randomized, so to find correct index -> match on question first via indexOf
                 var correctIndex = parseInt(data[i]["output"][j]);
-                var submittedIndex = parseInt(data[i]["input"][j][1].indexOf(convertSpecialChars(req.body.solution[i][j])));
+                //var submittedIndex = parseInt(data[i]["input"][j][1].indexOf(convertSpecialChars(req.body.solution[i][j])));
+                var submittedIndex = parseInt(data[i]["input"][j][1].indexOf(req.body.solution[i][j]));
                 //console.log("[j:" + j + "] \ncorrectIndex: ", correctIndex, "\nsubmittedIndex", submittedIndex);
                 resultFile += "Correct answer: " + data[i]["input"][j][1][correctIndex] + "\nReceived answer: " + data[i]["input"][j][1][submittedIndex] + "\n state: ";
 
@@ -350,7 +353,7 @@ exports.processExam = function processExam(req, res, data)
     var coursePath = './testResults/' + req.body.course_id.toUpperCase() + '/';
     var testPath = './testResults/' + req.body.course_id.toUpperCase() + '/test' + req.body.test_id + '/';
     
-    console.log("create class dir");
+    //console.log("create class dir");
     try {
         fs.mkdirSync(coursePath);
       } catch(e) {
@@ -358,7 +361,7 @@ exports.processExam = function processExam(req, res, data)
             throw e;
       }
       
-      console.log("create test dir");
+      //console.log("create test dir");
       try {
         fs.mkdirSync(testPath);
       } catch(e) {
@@ -366,7 +369,7 @@ exports.processExam = function processExam(req, res, data)
             throw e;
       }
 
-    console.log("write result file");
+    //console.log("write result file");
     var d = new Date();
     var monthVal = d.getMonth() + 1;
     var writeDateTime = monthVal + '-' + d.getDate() + ' ' + d.toLocaleTimeString();
@@ -383,7 +386,7 @@ exports.processExam = function processExam(req, res, data)
     res.send({status : "ok", score: studentScore + "/" + totalPoints});
 }
 
-// Note: Currently replaces < and > characters as using something such as <iostream> differs when parsed as html vs json.
+// Note: Replaces < and > characters as using something such as <iostream> differs when parsed as html vs json.
 function convertSpecialChars(string) {
     return string.replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
