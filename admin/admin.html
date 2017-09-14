@@ -14,6 +14,9 @@
 		<link type="text/css" href="/admin/styling.css" rel="stylesheet" media="screen"/>
 	</head>
 	<script>
+		//Current working path regarding result files
+		workingPath = "";
+
 		$( document ).ready(function() {
 			//modal that reports upload/parse success
 			$( "#infoModal" ).dialog({
@@ -33,26 +36,37 @@
 		        width : 850,
 				buttons: [{
 					id: "dialogSaveBtn",
-			    	text: "Close",
+			    	text: "Update",
 			    	click: function(){
-						$(this).dialog("close");
-						//TODO: edit file and save. May end up under future work.
-			    		/*$.ajax({
+			    		//console.log($('#editFile').val());
+						// workingPath order will be root/courseid/quiz.json, eg: dataFiles/CPTR124/data1.json
+						var pathArr = workingPath.split("/");
+						console.log(workingPath, "\n", pathArr[2].substring(4, (pathArr[2].length - 5)));
+			    		$.ajax({
 						    url: "/uploadFile",
 						    type: "POST",
 						    dataType: "json",
-						    data: JSON.stringify({ course_id: , act_id: , code: }),
+						    data: JSON.stringify({ course_id: pathArr[1], act_id: pathArr[2].substring(4, (pathArr[2].length - 5)) , code: JSON.stringify($('#editFile').val())}),
 						    contentType: "application/json",
 						    cache: false,
 						    success: function(res){
-								$(this).dialog("close");
+								workingPath = "";
+								$("#editModal").dialog("close");
 						    	$( "#infoModal" ).html('Upload validation successful: <b>' + res['success'] + '</b>');
 								$( "#infoModal" ).dialog('open');
 						    },
 						    error: function(res){
 						    	console.log("Error response: ", res);
 						    }
-						});*/
+						});
+			    	}
+			    },
+			    {
+					id: "dialogCancelBtn",
+			    	text: "Cancel",
+			    	click: function(){
+			    		workingPath = "";
+						$(this).dialog("close");
 			    	}
 			    }]
 			});
@@ -125,13 +139,13 @@
 									"action": function (obj) {
 										loadResultFile($node.original.path, viewResult);
 									}
-								},
-								"Delete": {
-									"label": "Delete datafile",
-									"action": function (obj) {
-										this.remove(obj);
-									}
 								}
+								// "Delete": {
+								// 	"label": "Delete datafile",
+								// 	"action": function (obj) {
+								// 		this.remove(obj);
+								// 	}
+								// }
 							};
 						}
 					}
@@ -205,6 +219,7 @@
 						    }
 						});
 						
+						//TODO: is this necessary 2x??
 						$.ajax({
 							url: '/uploadFile',
 							type: 'POST',
@@ -273,8 +288,7 @@
 			});
 		});
 
-	//Currently edit acts only as a preview
-	function editNode(jsonData) {
+	function editNode(jsonData, path) {
 		//console.log(jsonData);
 		$('#editFile').val(JSON.stringify(jsonData, undefined, 4));
 		$('#editModal').dialog('open');
@@ -295,6 +309,7 @@
 		    contentType: "application/json",
 		    cache: false,
 		    success: function(res){
+				workingPath = path;
 				callback(res.datafile);
 		    },
 		    error: function(res){

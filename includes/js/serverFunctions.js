@@ -318,7 +318,7 @@ exports.processExam = function processExam(req, res, data)
                 //console.log('indexof: ', req.body.solution[i][j]);
                 //console.log('submitted idx: ', data[i]["input"][j][1]);
                 //console.log('sub solution: ', req.body.solution[i][j], ' | ', req.body.solution[i][j]);
-                
+
                 //Record input
                 //Options are randomized, so to find correct index -> match on question first via indexOf
                 var correctIndex = parseInt(data[i]["output"][j]);
@@ -624,7 +624,7 @@ exports.compile = function compile(data, res, type){
 
 //Stores datafiles created from the admin page
 exports.storeDatafile = function storeDatafile(type, req, res) {
-    res.type('json');  
+    res.type('json');
 
     //if uploaded well-formed json file
     if(type == 'file') {
@@ -660,7 +660,8 @@ exports.storeDatafile = function storeDatafile(type, req, res) {
     //else uploaded json data via text
     } else {
         var json = JSON.parse(req.body.code);
-        filePath = './dataFiles/' + req.body.course_id.toUpperCase();
+        var filePath = './dataFiles/' + req.body.course_id.toUpperCase();
+        var fullFilePath = filePath + '/data' + req.body.act_id + '.json';
 
         //create directory if needed
         try {
@@ -670,8 +671,15 @@ exports.storeDatafile = function storeDatafile(type, req, res) {
                 throw e;
         }
 
-        //write file
-        fs.writeFileSync(filePath + '/data' + req.body.act_id + '.json', json , 'utf-8'); 
+        try {
+            //write file
+            fs.writeFileSync(fullFilePath, json , 'utf-8'); 
+        } catch(e) {
+            if ( e.code != 'EEXIST' ) {
+                fs.unlinkSync(fullFilePath);
+                fs.writeFileSync(fullFilePath, json , 'utf-8'); 
+            }
+        }
         
         res.send({success : true});
     }
