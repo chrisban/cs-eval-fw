@@ -380,11 +380,13 @@ $(".compile").on("click", function(){
 
 //Button which resets code to original skeleton state
 $(".reset").on("click", function(){
-	//just going to use javascript here instead of jquery because cm is being difficult.
-	var parentId = $(this).parent().attr('id');
-	var id = parentId.charAt(parentId.length - 1);
+	if(confirm('Are you sure you want to reset the code? This action cannot be undone.')) {
+		//just going to use javascript here instead of jquery because cm is being difficult.
+		var parentId = $(this).parent().attr('id');
+		var id = parentId.charAt(parentId.length - 1);
 
-	$('.CodeMirror')[id].CodeMirror.doc.setValue(skeletonCode[id]);
+		$('.CodeMirror')[id].CodeMirror.doc.setValue(skeletonCode[id]);
+	}
 });
 
 
