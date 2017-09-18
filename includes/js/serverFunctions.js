@@ -271,7 +271,7 @@ exports.processExam = function processExam(req, res, data)
                     "input": data[i]["input"][j], //datafile defined testcase
                     "language": data[i]["language"].toLowerCase()
                 };
-                //console.log("compile start");
+                console.log("compile start using: ", userData);
                 //Global variables due to node requring async, and we need sync because we need to wait for the compilation result before returning our object. 
                 var compileResult;
                 exports.compile(userData).then(function(data) {
@@ -280,13 +280,13 @@ exports.processExam = function processExam(req, res, data)
 
                 while(compileResult === undefined) {
                     require('deasync').sleep(500);
-                    //console.log("waiting...");
+                    console.log("waiting...");
                 }
 
-                //console.log("got compiled result:", compileResult)
+                console.log("got compiled result:", compileResult)
 
 
-                //console.log("compile finish");
+                console.log("compile finish");
                 resultFile += "\n------------------------------------------\n\nTest Input: " + data[i]["input"][j] + "\n\nCorrect output: " + data[i]["output"][j] + "\n\nReceived output: " + compileResult.Result + "\n\n";
 
 
