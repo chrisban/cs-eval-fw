@@ -292,6 +292,8 @@ exports.processExam = function processExam(req, res, data)
     var difficultyValue = 0;
     
     //Remove properties field so it doesn't interfere with processing the answers (it would appear as though it were another question but with no data. Easier just to delete the property instead of coding around it)
+    var allowMultiple = (data["prop"]["allowMultiple"]) ? JSON.parse(data["prop"]["allowMultiple"]) : false;
+    console.log(allowMultiple);
     delete data.prop;
 
     //console.log("i-Loop start");
@@ -408,31 +410,55 @@ exports.processExam = function processExam(req, res, data)
     //console.log("create class dir");
     try {
         fs.mkdirSync(coursePath);
-      } catch(e) {
+    } catch(e) {
         if ( e.code != 'EEXIST' ) 
-            throw e;
-      }
-      
-      //console.log("create test dir");
-      try {
+        throw e;
+    }
+
+    //console.log("create test dir");
+    try {
         fs.mkdirSync(testPath);
-      } catch(e) {
+    } catch(e) {
         if ( e.code != 'EEXIST' ) 
-            throw e;
-      }
+        throw e;
+    }
+
 
     //console.log("write result file");
-    var d = new Date();
-    var monthVal = d.getMonth() + 1;
-    var writeDateTime = monthVal + '-' + d.getDate() + ' ' + d.toLocaleTimeString();
+    if(allowMultiple) {
+        var d = new Date();
+        var monthVal = d.getMonth() + 1;
+        var writeDateTime = monthVal + '-' + d.getDate() + ' ' + d.toLocaleTimeString();
+
+        fs.writeFile(testPath + req.body.idNum + ' [' +  writeDateTime + '].txt', resultFile, function(err) {
+            if(err) {
+                console.log(err);
+                res.type('json');  
+                res.send({status : "Error", score: studentScore + "/" + totalPoints + ", file could not be saved, please see instructor."});
+                return;
+            }
+        });
+    } else {
+        if (!fs.existsSync(testPath + req.body.idNum + '.txt')) { //if not exists, write
+            fs.writeFile(testPath + req.body.idNum + '.txt', resultFile, function(err) {
+                if(err) {
+                    console.log(err);
+                    res.type('json');  
+                    res.send({status : "Error", score: studentScore + "/" + totalPoints + ", NOTE: file could not be saved, please do not leave this page and see instructor."});
+                    return;
+                }
+            });
+        } else { //if exists, dont write
+            res.type('json');  
+            res.send({status : "ok", score: studentScore + "/" + totalPoints + ", NOTE: For this exam, only one attempt can be recorded per user. These results will not be saved."});
+            return;
+        }
+    }
+
+    
     //Write results to file
     //TODO: if file exists, do not write (or maybe not overrwrite, specify duplicate, append datetime to name)
-    fs.writeFile(testPath + req.body.idNum + ' [' +  writeDateTime + '].txt', resultFile, function(err) {
-        if(err) {
-            return console.log(err);
-        }
-        console.log("The file was saved!");
-    });
+    
 
     res.type('json');  
     res.send({status : "ok", score: studentScore + "/" + totalPoints});
