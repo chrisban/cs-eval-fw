@@ -293,7 +293,7 @@ exports.processExam = function processExam(req, res, data)
     
     //Remove properties field so it doesn't interfere with processing the answers (it would appear as though it were another question but with no data. Easier just to delete the property instead of coding around it)
     var allowMultiple = (data["prop"]["allowMultiple"]) ? JSON.parse(data["prop"]["allowMultiple"]) : false;
-    console.log(allowMultiple);
+    //console.log(allowMultiple);
     delete data.prop;
 
     //console.log("i-Loop start");
