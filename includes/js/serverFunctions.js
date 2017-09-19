@@ -86,6 +86,50 @@ exports.serveFile = function serveFile(req, res, json) {
 //This function pieces together the module js+html code sent back to the client using the data file + examlogic templates
 exports.serveModule = function serveModule(req, res, data)
 {
+    //If closeDate/Time exists, enforce
+    if(data["prop"]["closeDate"] && data["prop"]["closeDate"] != "" && data["prop"]["closeTime"] && data["prop"]["closeTime"] != "") {
+        //Only serve if before specified end time
+        var currDate = new Date();
+        var currMonth = currDate.getMonth() + 1;
+        var currDay = currDate.getDate();
+        var currTime = currDate.toLocaleTimeString().split(":");
+        var specDate = data["prop"]["closeDate"].split("-");
+        var specTime = data["prop"]["closeTime"].split(":");
+        // console.log(currTime[0] + " vs " + specTime[0]);
+        // console.log(currTime[1] + " vs " + specTime[1].split(" ")[0]);
+        // console.log(currTime[2].split(" ")[1] + " vs " + specTime[1].split(" ")[1].toUpperCase());
+        // console.log(currMonth + " vs " + specDate[0]);
+        // console.log(currDay + " vs " + specDate[1]);
+
+        //currTime: [ '6', '30', '00 PM' ]
+        //specTime: [ '6', '30 PM' ]
+        var isClosed = false;
+        if(currMonth == specDate[0]) { //if same mnoth
+            if(currDay == specDate[1]) { //if day is on day of clse
+                if(parseInt(currTime[0]) <= parseInt(specTime[0]) && currTime[2].split(" ")[1] != specTime[1].split(" ")[1].toUpperCase()) { //if hour is on/before time of close, but different am/pm
+                    isClosed = true;
+                    console.log("1");
+                } else if(parseInt(currTime[0]) == parseInt(specTime[0])) { //if hour is on time of close
+                    if(parseInt(currTime[1]) >= parseInt(specTime[1].split(" ")[0])) { //if minute is on or after time of close
+                        isClosed = true;
+                    }
+                } else if(parseInt(currTime[0]) > parseInt(specTime[0])) { //if hour is past time of close
+                    isClosed = true;
+                }
+            } else if(currDay > specDate[1]) { //if day is past day of close
+                isClosed = true;
+            }
+        } else if (currMonth > specDate[0]) { //if month is past month of close
+            isClosed = true;
+        }
+
+        if (isClosed) {
+            res.type('json');
+            res.send( {error: 'The course or activity has been closed. Please contact your professor for more information'} );
+            return;
+        }
+    }
+
     //get exported template data from moduleVars.js
     var header = moduleVars.header; //Overall page header information/instructions
     var requires = moduleVars.requires; //all css/js/etc. includes
