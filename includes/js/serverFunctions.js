@@ -54,8 +54,18 @@ exports.getDataFile = function getDataFile(req, res, callback)
             return;
         }
 
+        var parsedJSON;
+        try {
+            parsedJSON = JSON.parse(datafile);
+        }
+        catch(err) {
+            console.log('E: ' + err);
+            res.type('json');
+            res.send( {error: 'The course or activity ID data is corrupted or malformed. Please notify your professor for more details.' + ((ISDEBUG) ? file : '')} );
+            return;
+        }
         //after file is read, pass on request/response
-        callback(req, res, JSON.parse(datafile));
+        callback(req, res, parsedJSON);
     });
 }
 

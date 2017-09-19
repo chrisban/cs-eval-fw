@@ -310,7 +310,8 @@
 		    cache: false,
 		    success: function(res){
 				workingPath = path;
-				callback(res.datafile);
+				var data = (res.error) ? res.error : res.datafile;
+				callback(data);
 		    },
 		    error: function(res){
 		    	console.log("Error response: ", res);
