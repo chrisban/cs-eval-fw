@@ -536,7 +536,7 @@ exports.compile = function compile(data, res, type){
                 //if no input. There will always be at least a newline, so empty string with \n is empty input
                 if(data.input == '\n') {
                     try{
-                        execChild = exec(fileBasePath + 'output', {timeout: 30000},
+                        execChild = exec(fileBasePath + 'output', {timeout: 10000},
                             (error, stdout, stderr) => {
                                 if(error !== null){
                                     //response.Errors += error + "\n";
@@ -569,7 +569,7 @@ exports.compile = function compile(data, res, type){
 
                     //cat inputs and pipe into output.o executable  
                     try{
-                        execChild = exec('cat ' + fileBasePath + 'input.txt | ' + fileBasePath + 'output', { timeout: 30000, killSignal: 'SIGKILL'}, 
+                        execChild = exec('cat ' + fileBasePath + 'input.txt | ' + fileBasePath + 'output', { timeout: 10000, killSignal: 'SIGKILL'}, 
                             (error, stdout, stderr) => {
                                 if(error !== null){
                                     //response.Errors += error + "\n";
@@ -610,7 +610,7 @@ exports.compile = function compile(data, res, type){
             var execChild;
             if(data.input == '\n') {
                 try{
-                    execChild = exec("python3 " + fileBasePath + 'code.py', { timeout: 30000, killSignal: 'SIGKILL'}, 
+                    execChild = exec("python3 " + fileBasePath + 'code.py', { timeout: 10000, killSignal: 'SIGKILL'}, 
                         (error, stdout, stderr) => {
                             if(error !== null){
                                 //response.Errors += error + "\n";
@@ -646,7 +646,7 @@ exports.compile = function compile(data, res, type){
 
                 //cat inputs and then pipe into py script
                 try{
-                    execChild = exec('cat ' + fileBasePath + 'input.txt | python3 ' + fileBasePath + 'code.py', { timeout: 30000, killSignal: 'SIGKILL'}, 
+                    execChild = exec('cat ' + fileBasePath + 'input.txt | python3 ' + fileBasePath + 'code.py', { timeout: 10000, killSignal: 'SIGKILL'}, 
                         (error, stdout, stderr) => {
                             if(error !== null){
                                 //response.Errors += error + "\n";
