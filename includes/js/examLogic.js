@@ -124,7 +124,7 @@ function animateUpdate(bar, start, key, timeoutVal) {
 //Accepts jq obj, percentage int, and remaining time int
 function updateProgress(bar, percentage, remainingTime) {
     bar.css("width", percentage + "%");
-    var formattedHour = Math.floor((90*60*1000) / (60*60*1000));
+    var formattedHour = Math.floor(remainingTime / (60*60*1000));
     var formattedMin = Math.floor((remainingTime % (1000*60*60)) / (1000*60));
     var formattedSec = Math.floor(((remainingTime % (1000*60*60)) % (1000*60)) / 1000);
 
@@ -137,7 +137,7 @@ function updateProgress(bar, percentage, remainingTime) {
 		formattedMin = 0;
     if(formattedSec.valueOf() < 1)
     	formattedSec = "00";
-    formattedHour = (formattedHour.valueOf() < 0) ?  "" : formattedHour + ":"
+    formattedHour = (formattedHour.valueOf() < 1) ?  "" : formattedHour + ":"
     bar.next().text(formattedHour + formattedMin + ":" + formattedSec);
 }
 
