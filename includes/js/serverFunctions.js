@@ -342,7 +342,7 @@ exports.processExam = function processExam(req, res, data)
                 }
 
                 //console.log("compile finish");
-                resultFile += "\n------------------------------------------\n\nTest Input: " + data[i]["input"][j] + "\n\nCorrect output: " + data[i]["output"][j] + "\n\nReceived output: " + compileResult.Result + "\n\n";
+                resultFile += "\n------------------------------------------\n\nTest Input: " + data[i]["input"][j] + "\n\nCorrect output: " + data[i]["output"][j] + "\n\nCompiled output: " + compileResult.Result + "\n\n";
 
 
                 //console.log("comparing: [" + compileResult.Result.trim() + "]\n\nans: \n[", data[i]["output"][j].trim() + "]\n");
