@@ -179,8 +179,9 @@ exports.serveModule = function serveModule(req, res, data)
         for(var i = 0; i < Object.keys(data).length; i++)
         {
             //only look at keys 0-n, ignoring 'prop' key along with any possible malformed data
-            if(!isNaN(Object.keys(data)[i]))
+            if(!isNaN(Object.keys(data)[i]) && Object.keys(data)[i] == i)
             {
+                //console.log(data)
                 //record question difficulty
                 difficulty.push(parseFloat(data[i]["difficulty"]));
 
@@ -737,7 +738,17 @@ exports.storeDatafile = function storeDatafile(type, req, res) {
 
     //else uploaded json data via text
     } else {
-        var json = JSON.parse(req.body.code);
+        var parsedJSON;
+        try {
+            parsedJSON = JSON.parse(req.body.code);
+        }
+        catch(err) {
+            console.log('E: ' + err);
+            res.type('json');
+            res.send( {error: 'The data submitted was malformed. Please validate JSON before reattempting.'} );
+            return;
+        }
+
         var filePath = './dataFiles/' + req.body.course_id.toUpperCase();
         var fullFilePath = filePath + '/data' + req.body.act_id + '.json';
 
@@ -751,11 +762,11 @@ exports.storeDatafile = function storeDatafile(type, req, res) {
 
         try {
             //write file
-            fs.writeFileSync(fullFilePath, json , 'utf-8'); 
+            fs.writeFileSync(fullFilePath, parsedJSON , 'utf-8'); 
         } catch(e) {
             if ( e.code != 'EEXIST' ) {
                 fs.unlinkSync(fullFilePath);
-                fs.writeFileSync(fullFilePath, json , 'utf-8'); 
+                fs.writeFileSync(fullFilePath, parsedJSON , 'utf-8'); 
             }
         }
         
