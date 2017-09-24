@@ -795,7 +795,7 @@ function findKillLongRunningProcs(continueMonitoring){
                 //console.log('entries: ', stdout.split('\n')); // -> entries:  [ ' 25200 00:00:27', ' 25208 00:00:25', '' ]
                 var entries = stdout.split('\n');
                 for(var i = 0; i < entries.length; i++){
-                    if(entries[i].split(' ')[2].split(':')[2] > ((COMPILE_LIMIT / 1000) % 60)) { // if greater than compile limit (converted from ms to s)
+                    if(entries[i] && entries[i].split(' ')[3].split(':')[2] > ((COMPILE_LIMIT / 1000) % 60)) { // if greater than compile limit (converted from ms to s)
                         console.log('found long running proc');
                     }
                 }
