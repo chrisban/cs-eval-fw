@@ -794,7 +794,7 @@ function findKillLongRunningProcs(continueMonitoring){
                 }
                 console.log("stdout:");
                 console.log(stdout);
-                console.log('pid: ', stdout.split(' '), stdout.split('\\n'));
+                console.log('entries: ', stdout.split('\n'));
             }
         );
     } catch(e){
