@@ -13,6 +13,7 @@ var moduleVars = require('./moduleVars');
 //environment root
 var ROOTPATH = "~/cs-eval-fw";
 var ISDEBUG = 0;    
+var monitoring = false;
 
 
 //current dir: /includes/js
@@ -456,9 +457,8 @@ exports.processExam = function processExam(req, res, data)
         }
     }
 
-    
-    //Write results to file
-    //TODO: if file exists, do not write (or maybe not overrwrite, specify duplicate, append datetime to name)
+    //End monitoring. If another compile is kicked off, monitoring will resume.
+    findKillLongRunningProcs(false);
     
 
     res.type('json');  
@@ -477,6 +477,10 @@ function convertSpecialChars(string) {
 //res: response object, exists only if called from /compile endpoint
 //type: exists only if called from /compile endpoint, if so specifies type as 'post'
 exports.compile = function compile(data, res, type){
+    //Begin monitoring
+    if(!monitoring) {
+        findKillLongRunningProcs(true);
+    }
 
     return new Promise(function (resolve, reject) {
         //NOTE: UPDATE THIS IF IN NEW ENVIRONMENT
@@ -514,11 +518,11 @@ exports.compile = function compile(data, res, type){
             var compileChild;
             var execChild;
             if(data.language.toLowerCase().indexOf('c++14') != -1) {
-                compileChild = spawn('g++-5 -std=c++14', [fileBasePath + "code.cpp", "-o", fileBasePath + "output"], {
+                compileChild = spawn('g++-5 -std=c++14', [fileBasePath + "code.cpp", "-o", fileBasePath + "compOutput"], {
                     shell: true
                 });
             } else{
-                compileChild = spawn('g++-5 -std=c++11', [fileBasePath + "code.cpp", "-o", fileBasePath + "output"], {
+                compileChild = spawn('g++-5 -std=c++11', [fileBasePath + "code.cpp", "-o", fileBasePath + "compOutput"], {
                     shell: true
                 });
             }
@@ -536,7 +540,7 @@ exports.compile = function compile(data, res, type){
                 //if no input. There will always be at least a newline, so empty string with \n is empty input
                 if(data.input == '\n') {
                     try{
-                        execChild = exec(fileBasePath + 'output', {timeout: 10000},
+                        execChild = exec(fileBasePath + 'compOutput', {timeout: 10000},
                             (error, stdout, stderr) => {
                                 if(error !== null){
                                     //response.Errors += error + "\n";
@@ -567,9 +571,9 @@ exports.compile = function compile(data, res, type){
                         }
                     });
 
-                    //cat inputs and pipe into output.o executable  
+                    //cat inputs and pipe into compOutput.o executable  
                     try{
-                        execChild = exec('cat ' + fileBasePath + 'input.txt | ' + fileBasePath + 'output', { timeout: 10000, killSignal: 'SIGKILL'}, 
+                        execChild = exec('cat ' + fileBasePath + 'input.txt | ' + fileBasePath + 'compOutput', { timeout: 10000, killSignal: 'SIGKILL'}, 
                             (error, stdout, stderr) => {
                                 if(error !== null){
                                     //response.Errors += error + "\n";
@@ -772,4 +776,36 @@ exports.storeDatafile = function storeDatafile(type, req, res) {
         
         res.send({success : true});
     }
+}
+
+
+function findKillLongRunningProcs(continueMonitoring){
+    /*ps -ef | grep /compOutput | grep -v grep | awk '{print " "$2" " $7}'
+    * Returns PID runtime:
+    * 24241 00:18:52
+    * 24257 00:06:26
+    */
+    try{
+        execChild = exec('ps -ef | grep /compOutput | grep -v grep | awk \'{print " "$2" " $7}\'',
+            (error, stdout, stderr) => {
+                if(error !== null){
+                    console.log(`Error attempting to monitor long running procs: ${error}`);
+                }
+
+                console.log(stdout);
+            }
+        );
+    } catch(e){
+        console.log(util.inspect(e, {showHidden: false, depth: null}));
+    }
+
+    if(continueMonitoring) {
+        //Sleep for 10, then reassess
+        monitoring = true;
+        require('deasync').sleep(30000);
+        findKillLongRunningProcs();
+    } else {
+        monitoring = false;
+    }
+
 }
