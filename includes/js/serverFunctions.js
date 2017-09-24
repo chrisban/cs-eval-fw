@@ -792,11 +792,12 @@ function findKillLongRunningProcs(continueMonitoring){
                 if(error !== null){
                     console.log(`Error attempting to monitor long running procs: ${error}`);
                 }
-                //console.log('entries: ', stdout.split('\n')); // -> entries:  [ ' 25200 00:00:27', ' 25208 00:00:25', '' ]
+                //console.log('entries: ', stdout.split('\n')); // -> entries:  mult: [ ' 25200 00:00:27', ' 25208 00:00:25', '' ], single: [' 25742 00:00:00'], none: ['']
                 var entries = stdout.split('\n');
                 if(entries[0] != '') {
                     for(var i = 0; i < entries.length; i++){
-                        if(entries[i].split(' ')[3].split(':')[2] > ((COMPILE_LIMIT / 1000) % 60)) { // if greater than compile limit (converted from ms to s)
+                        console.log('seconds: ', entries[i].trim().split(' ')[1].split(':')[2].valueOf());
+                        if(entries[i].trim().split(' ')[1].split(':')[2].valueOf() > ((COMPILE_LIMIT / 1000) % 60)) { // if greater than compile limit (converted from ms to s)
                             console.log('found long running proc');
                         }
                     }
