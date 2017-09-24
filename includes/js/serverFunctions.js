@@ -796,8 +796,11 @@ function findKillLongRunningProcs(continueMonitoring){
                 var entries = stdout.split('\n');
                 if(entries[0] != '') {
                     for(var i = 0; i < entries.length; i++){
-                        if((entries[i].trim() != '') && (entries[i].trim().split(' ')[1].split(':')[2].valueOf() > ((COMPILE_LIMIT / 1000) % 60))) { // if greater than compile limit (converted from ms to s)
-                            console.log('found long running proc: ', entries[i].trim().split(' ')[1].split(':')[2].valueOf());
+                        var pid = entries[i].trim().split(' ')[0];
+                        var seconds = entries[i].trim().split(' ')[1].split(':')[2]; //Only need to look at seconds as anything above compile limit (in seconds) will be killed
+                        if((entries[i].trim() != '') && (seconds.valueOf() > ((COMPILE_LIMIT / 1000) % 60))) { // if greater than compile limit (converted from ms to s)
+                            console.log('found long running proc, PID: ', pid, 'runtime: ', seconds);
+                            exec('kill -9 ' + pid);
                         }
                     }
                 }
