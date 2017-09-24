@@ -792,7 +792,7 @@ function findKillLongRunningProcs(continueMonitoring){
                     console.log(`Error attempting to monitor long running procs: ${error}`);
                 }
 
-                console.log(stdout);
+                console.log('std: ', stdout.split(" "));
             }
         );
     } catch(e){
@@ -802,7 +802,7 @@ function findKillLongRunningProcs(continueMonitoring){
     if(continueMonitoring) {
         //Sleep for 10, then reassess
         monitoring = true;
-        require('deasync').sleep(30000);
+        require('deasync').sleep(10000);
         findKillLongRunningProcs();
     } else {
         monitoring = false;
