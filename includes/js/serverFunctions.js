@@ -13,6 +13,7 @@ var moduleVars = require('./moduleVars');
 //environment root
 var ROOTPATH = "~/cs-eval-fw";
 var ISDEBUG = 0;    
+var COMPILE_LIMIT = 10000; //max runtime in ms
 var monitoring = false;
 
 
@@ -540,7 +541,7 @@ exports.compile = function compile(data, res, type){
                 //if no input. There will always be at least a newline, so empty string with \n is empty input
                 if(data.input == '\n') {
                     try{
-                        execChild = exec(fileBasePath + 'compOutput', {timeout: 10000},
+                        execChild = exec(fileBasePath + 'compOutput', {timeout: COMPILE_LIMIT},
                             (error, stdout, stderr) => {
                                 if(error !== null){
                                     //response.Errors += error + "\n";
@@ -573,7 +574,7 @@ exports.compile = function compile(data, res, type){
 
                     //cat inputs and pipe into compOutput.o executable  
                     try{
-                        execChild = exec('cat ' + fileBasePath + 'input.txt | ' + fileBasePath + 'compOutput', { timeout: 10000, killSignal: 'SIGKILL'}, 
+                        execChild = exec('cat ' + fileBasePath + 'input.txt | ' + fileBasePath + 'compOutput', { timeout: COMPILE_LIMIT, killSignal: 'SIGKILL'}, 
                             (error, stdout, stderr) => {
                                 if(error !== null){
                                     //response.Errors += error + "\n";
@@ -614,7 +615,7 @@ exports.compile = function compile(data, res, type){
             var execChild;
             if(data.input == '\n') {
                 try{
-                    execChild = exec("python3 " + fileBasePath + 'code.py', { timeout: 10000, killSignal: 'SIGKILL'}, 
+                    execChild = exec("python3 " + fileBasePath + 'code.py', { timeout: COMPILE_LIMIT, killSignal: 'SIGKILL'}, 
                         (error, stdout, stderr) => {
                             if(error !== null){
                                 //response.Errors += error + "\n";
@@ -650,7 +651,7 @@ exports.compile = function compile(data, res, type){
 
                 //cat inputs and then pipe into py script
                 try{
-                    execChild = exec('cat ' + fileBasePath + 'input.txt | python3 ' + fileBasePath + 'code.py', { timeout: 10000, killSignal: 'SIGKILL'}, 
+                    execChild = exec('cat ' + fileBasePath + 'input.txt | python3 ' + fileBasePath + 'code.py', { timeout: COMPILE_LIMIT, killSignal: 'SIGKILL'}, 
                         (error, stdout, stderr) => {
                             if(error !== null){
                                 //response.Errors += error + "\n";
@@ -792,7 +793,8 @@ function findKillLongRunningProcs(continueMonitoring){
                     console.log(`Error attempting to monitor long running procs: ${error}`);
                 }
 
-                console.log('std: ', stdout.split(" "));
+                console.log('std: ', stdout);
+                console.log('pid: ', stdout.split(' ')[0], stdout.split(' '))
             }
         );
     } catch(e){
