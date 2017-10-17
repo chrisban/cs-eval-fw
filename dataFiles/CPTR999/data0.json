@@ -23,7 +23,7 @@
     	"questionType": "code",
     	"language": "c++",
         "problem": "Write a C++ program that accepts a single integer value entered by the user. If the value entered is less than one, the program prints nothing. If the user enters a positive integer, n, the program prints an n×n box drawn with * characters. If the users enters 1, for example, the program prints<br /><br /> *<br /><br />If the user enters a 2, it prints<br /><br /> **<br /> **<br /><br />An entry of three yields<br /><br /> ***<br /> ***<br /> ***<br /><br />and so forth. If the user enters 7, it prints<br /><br /> *******<br /> *******<br /> *******<br /> *******<br /> *******<br /> *******<br /> *******<br /><br />that is, a 7×7 box of * symbols.",
-        "skeleton": "#include <iostream>\nusing namespace std;\n\nint main() {\n     int n;\n     cin >> n;\n}",
+        "skeleton": ["#include <iostream>\nusing namespace std;\n\nint main() {\n     int n;\n     %READ_IN%\n}", "%INPUT_N%"],
         "input": ["23"],
         "output": ["23"],
         "points": ["15"],
@@ -50,7 +50,7 @@
         "difficulty": "0"
     },
     "prop": {
-        "time": "45",
+        "time": "59",
         "warn": ["10", "5"]
     }
 }

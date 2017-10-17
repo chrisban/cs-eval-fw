@@ -293,10 +293,10 @@ exports.processExam = function processExam(req, res, data)
     var prop = data.prop;
     var difficultyMultiplier = 10;
     var difficultyValue = 0;
-    
-    //Remove properties field so it doesn't interfere with processing the answers (it would appear as though it were another question but with no data. Easier just to delete the property instead of coding around it)
     var allowMultiple = (data["prop"]["allowMultiple"]) ? JSON.parse(data["prop"]["allowMultiple"]) : false;
     //console.log(allowMultiple);
+
+    //Remove properties field so it doesn't interfere with processing the answers (it would appear as though it were another question but with no data. Easier just to delete the property instead of coding around it)
     delete data.prop;
 
     //console.log("i-Loop start");
@@ -323,10 +323,18 @@ exports.processExam = function processExam(req, res, data)
             //Loop through each 'output' aka test cases
             for(var j = 0; j < data[i]["output"].length; j++)
             {
-                
+                var fullCode;
+                //If len of 2, then use skeleton code approach
+                //Layout: 1: hiddenSkeleton (code in which code will be injected), 2: token (to replace with code)
+                if(data[i].skeleton.length == 2) {
+                    fullCode = data[i]["skeleton"][0].split(data[i]["skeleton"][1]).join(req.body.solution[i]);
+                } else {
+                    fullCode = req.body.solution[i];
+                }
+
                 //User's data
                 var userData = {
-                    "code": req.body.solution[i], //user defined code
+                    "code": fullCode, //user defined code
                     "input": data[i]["input"][j], //datafile defined testcase
                     "language": data[i]["language"].toLowerCase()
                 };
@@ -458,7 +466,7 @@ exports.processExam = function processExam(req, res, data)
         }
     }
 
-    //End monitoring. If another compile is kicked off, monitoring will resume.
+    //Check once, then stop monitoring. If another compile is kicked off, monitoring will resume.
     findKillLongRunningProcs(false);
     
 
@@ -820,7 +828,11 @@ function findKillLongRunningProcs(continueMonitoring){
         monitoring = true;
         require('deasync').sleep(10000);
         findKillLongRunningProcs(continueMonitoring);
+        return;
     } else {
         monitoring = false;
     }
+    
+    // //set a max monitor runtime
+    // setTimeout(function(){ monitoring = false }, 3000);
 }
