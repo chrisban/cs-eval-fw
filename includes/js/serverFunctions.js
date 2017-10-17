@@ -197,8 +197,13 @@ exports.serveModule = function serveModule(req, res, data)
                 //if question type is a programming question (type: "code")
                 if(data[i]["questionType"] == "code")
                 {
+                    var skeletonCode = data[i]["skeleton"];
+                    if(data[i]["skeleton"].length == 3) {
+                        skeletonCode = data[i]["skeleton"][2];
+                    }
+
                     //see ModuleVars.js file for templating documentation
-                    html += pStatementTemplate.replace(/<<n>>/g, i).replace(/<<pstatement>>/, data[i]["problem"]) + ioTemplate.replace(/<<n>>/g, i).replace(/<<code>>/, data[i]["skeleton"]) + qToolsTemplate.replace(/<<n>>/, i);
+                    html += pStatementTemplate.replace(/<<n>>/g, i).replace(/<<pstatement>>/, data[i]["problem"]) + ioTemplate.replace(/<<n>>/g, i).replace(/<<code>>/, skeletonCode) + qToolsTemplate.replace(/<<n>>/, i);
                     
                     script += editorInit.replace(/<<n>>/g, i).replace(/<<lang>>/g, lang).replace(/<<rOnly>>/g, false);
                 }
@@ -325,8 +330,8 @@ exports.processExam = function processExam(req, res, data)
             {
                 var fullCode;
                 //If len of 2, then use skeleton code approach
-                //Layout: 1: hiddenSkeleton (code in which code will be injected), 2: token (to replace with code)
-                if(data[i].skeleton.length == 2) {
+                //Layout: 1: hiddenSkeleton (code in which code will be injected), 2: token (to replace with code), 3: visible skeleton code (to show to students)
+                if(data[i].skeleton.length == 3) {
                     fullCode = data[i]["skeleton"][0].split(data[i]["skeleton"][1]).join(req.body.solution[i]);
                 } else {
                     fullCode = req.body.solution[i];
