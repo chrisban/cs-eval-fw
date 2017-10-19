@@ -504,6 +504,7 @@ exports.compile = function compile(data, res, type){
             Errors: '',
             Result: ''
         }
+        var submittedCode = '';
 
         //TODO: cron-esque to wipe folder every once in awhile
         //Generate tmp string using timestamp and ints 0-9999 for directory name
@@ -518,7 +519,8 @@ exports.compile = function compile(data, res, type){
                 throw e;
         }
 
-        //If hidden skeleton, fetch and merge with user code for compilation
+        //If hidden skeleton, fetch and merge with user code for compilation. We are assuming a well-formed JSON as it
+        //was already validated earlier when loading the test
         var tmpDataFilePath = './dataFiles/' + data.course_id.toUpperCase() + '/data' + data.test_id + '.json';
         fs.readFile(tmpDataFilePath, 'utf8', function (err, datafile) {
             parsedJSON = JSON.parse(datafile);
