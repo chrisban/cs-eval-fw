@@ -525,8 +525,8 @@ exports.compile = function compile(data, res, type){
             if(parsedJSON[data.index]["skeleton"].length == 3) {
                 var hidSkel = parsedJSON[data.index]["skeleton"][0];
                 var hidToken = parsedJSON[data.index]["skeleton"][1];
-                submittedCode = hidSkel.split(hidToken).join(submittedCode);
-                console.log(submittedCode)
+                submittedCode = hidSkel.split(hidToken).join(data.code);
+                //console.log(submittedCode)
             }
         });
 
