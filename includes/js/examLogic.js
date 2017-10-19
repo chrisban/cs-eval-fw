@@ -344,6 +344,9 @@ $(".compile").on("click", function(){
 		mode = "c++";
 
 	var data = {
+		"test_id": testInfo.test_id,
+		"course_id": testInfo.course_id,
+		"index": index,
 		"language": mode,
 		"code": $(".CodeMirror")[index].CodeMirror.getValue(),
 		"input": $.map(lbox ,function(option) {return option.value;}).join('\n') + '\n'

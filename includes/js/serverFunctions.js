@@ -330,7 +330,7 @@ exports.processExam = function processExam(req, res, data)
             {
                 var fullCode;
                 //If len of 2, then use skeleton code approach
-                //Layout: 1: hiddenSkeleton (code in which code will be injected), 2: token (to replace with code), 3: visible skeleton code (to show to students)
+                //Format: 1: hiddenSkeleton (code in which code will be injected), 2: token (to replace with code), 3: visible skeleton code (to show to students)
                 if(data[i].skeleton.length == 3) {
                     fullCode = data[i]["skeleton"][0].split(data[i]["skeleton"][1]).join(req.body.solution[i]);
                 } else {
@@ -504,13 +504,13 @@ exports.compile = function compile(data, res, type){
             Errors: '',
             Result: ''
         }
+
         //TODO: cron-esque to wipe folder every once in awhile
         //Generate tmp string using timestamp and ints 0-9999 for directory name
         var tmpDir = '' + Date.now() + Math.floor(Math.random() * (9999 - 0) + 0);
 
         //TODO: For debug: "'~/Documents/Thesis/cs-eval-fw/compilation/' + tmpDir + '/';"
         var fileBasePath = ROOTPATH + '/compilation/' + tmpDir + '/';
-
         try {
             fs.mkdirSync('./compilation/' + tmpDir);
         } catch(e) {
@@ -518,10 +518,23 @@ exports.compile = function compile(data, res, type){
                 throw e;
         }
 
+        //If hidden skeleton, fetch and merge with user code for compilation
+        var tmpDataFilePath = './dataFiles/' + data.course_id.toUpperCase() + '/data' + data.test_id + '.json';
+        fs.readFile(tmpDataFilePath, 'utf8', function (err, datafile) {
+            parsedJSON = JSON.parse(datafile);
+            if(parsedJSON[data.index]["skeleton"].length == 3) {
+                var hidSkel = parsedJSON[data.index]["skeleton"][0];
+                var hidToken = parsedJSON[data.index]["skeleton"][1];
+                submittedCode = hidSkel.split(hidToken).join(submittedCode);
+                console.log(submittedCode)
+            }
+        });
+
+
         //if c++, use gcc
         if(data.language.toLowerCase().indexOf('c++') != -1) {
             //Write code to file
-            fs.writeFileSync('./compilation/' + tmpDir + "/code.cpp", data.code, 'utf-8', function(err) {
+            fs.writeFileSync('./compilation/' + tmpDir + "/code.cpp", submittedCode, 'utf-8', function(err) {
                 if(err) {
                     return console.log(err);
                 }
@@ -618,7 +631,7 @@ exports.compile = function compile(data, res, type){
         } else if(data.language.toLowerCase().indexOf("python") != -1) {
             console.log("python");
             //Write code to file
-            fs.writeFileSync('./compilation/' + tmpDir + "/code.py", data.code, 'utf-8', function(err) {
+            fs.writeFileSync('./compilation/' + tmpDir + "/code.py", submittedCode, 'utf-8', function(err) {
                 if(err) {
                     return console.log(err);
                 }
