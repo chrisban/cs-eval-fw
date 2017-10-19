@@ -19,7 +19,7 @@
         "points": ["15"],
         "difficulty": "0"
     },
-    "3": {
+    "2": {
     	"questionType": "code",
     	"language": "python",
         "problem": "In python, define and call a simple function that accepts and prints the word 'Student'.",
