@@ -522,17 +522,18 @@ exports.compile = function compile(data, res, type){
         //If hidden skeleton, fetch and merge with user code for compilation. We are assuming a well-formed JSON as it
         //was already validated earlier when loading the test
         var tmpDataFilePath = './dataFiles/' + data.course_id.toUpperCase() + '/data' + data.test_id + '.json';
-        fs.readFileSync(tmpDataFilePath, 'utf8', function (err, datafile) {
+        fs.readFile(tmpDataFilePath, 'utf8', function (err, datafile) {
+
             parsedJSON = JSON.parse(datafile);
-            if(parsedJSON[data.index]["skeleton"].length == 3) {
+            if (parsedJSON[data]i][index]["skeleton"].length == 3) {
                 var hidSkel = parsedJSON[data.index]["skeleton"][0];
                 var hidToken = parsedJSON[data.index]["skeleton"][1];
                 submittedCode = hidSkel.split(hidToken).join(data.code);
-                console.log(submittedCode)
             }
         });
 
 
+         console.log(submittedCode)
         //if c++, use gcc
         if(data.language.toLowerCase().indexOf('c++') != -1) {
             //Write code to file
@@ -594,7 +595,7 @@ exports.compile = function compile(data, res, type){
 
                 } else {
                     //Can't get it to feed in multiple inputs unless from a file with CRLFs
-                    fs.writeFileSync('./compilation/' + tmpDir + "/input.txt", data.input, 'utf-8', function(err) {
+                    fs.writeFileSync('./compilation/' + tmpDir + "/input.txt", data.inpjsut, 'utf-8', function(err) {
                         if(err) {
                             return console.log(err);
                         }
@@ -814,6 +815,7 @@ function findKillLongRunningProcs(continueMonitoring){
     * 24241 00:18:52
     * 24257 00:06:26
     */
+    console.log('start monitorw')
     try{
         execChild = exec('ps -ef | grep /compOutput | grep -v grep | awk \'{print " "$2" " $7}\'',
             (error, stdout, stderr) => {
