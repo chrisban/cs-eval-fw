@@ -522,13 +522,13 @@ exports.compile = function compile(data, res, type){
         //If hidden skeleton, fetch and merge with user code for compilation. We are assuming a well-formed JSON as it
         //was already validated earlier when loading the test
         var tmpDataFilePath = './dataFiles/' + data.course_id.toUpperCase() + '/data' + data.test_id + '.json';
-        fs.readFile(tmpDataFilePath, 'utf8', function (err, datafile) {
+        fs.readFileSync(tmpDataFilePath, 'utf8', function (err, datafile) {
             parsedJSON = JSON.parse(datafile);
             if(parsedJSON[data.index]["skeleton"].length == 3) {
                 var hidSkel = parsedJSON[data.index]["skeleton"][0];
                 var hidToken = parsedJSON[data.index]["skeleton"][1];
                 submittedCode = hidSkel.split(hidToken).join(data.code);
-                //console.log(submittedCode)
+                console.log(submittedCode)
             }
         });
 
