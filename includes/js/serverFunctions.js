@@ -471,10 +471,6 @@ exports.processExam = function processExam(req, res, data)
         }
     }
 
-    //Check once, then stop monitoring. If another compile is kicked off, monitoring will resume.
-    findKillLongRunningProcs(false);
-    
-
     res.type('json');  
     res.send({status : "ok", score: studentScore + "/" + totalPoints});
 }
@@ -491,10 +487,8 @@ function convertSpecialChars(string) {
 //res: response object, exists only if called from /compile endpoint
 //type: exists only if called from /compile endpoint, if so specifies type as 'post'
 exports.compile = function compile(data, res, type){
-    //Begin monitoring
-    if(!monitoring) {
-        findKillLongRunningProcs(true);
-    }
+    //Before beginning a new program, check for escaped processes
+    findKillLongRunningProcs();
 
     return new Promise(function (resolve, reject) {
         //NOTE: UPDATE THIS IF IN NEW ENVIRONMENT
@@ -525,15 +519,17 @@ exports.compile = function compile(data, res, type){
         fs.readFile(tmpDataFilePath, 'utf8', function (err, datafile) {
 
             parsedJSON = JSON.parse(datafile);
-            if (parsedJSON[data][i][index]["skeleton"].length == 3) {
+            if (parsedJSON[data.index]["skeleton"].length == 3) {
                 var hidSkel = parsedJSON[data.index]["skeleton"][0];
                 var hidToken = parsedJSON[data.index]["skeleton"][1];
                 submittedCode = hidSkel.split(hidToken).join(data.code);
+            } else {
+                submittedCode = data.code;
             }
         });
 
 
-         console.log(submittedCode)
+         //console.log(submittedCode)
         //if c++, use gcc
         if(data.language.toLowerCase().indexOf('c++') != -1) {
             //Write code to file
@@ -844,17 +840,4 @@ function findKillLongRunningProcs(continueMonitoring){
     } catch(e){
         console.log(util.inspect(e, {showHidden: false, depth: null}));
     }
-
-    if(continueMonitoring) {
-        //Sleep for 10, then reassess
-        monitoring = true;
-        require('deasync').sleep(10000);
-        findKillLongRunningProcs(continueMonitoring);
-        return;
-    } else {
-        monitoring = false;
-    }
-    
-    // //set a max monitor runtime
-    // setTimeout(function(){ monitoring = false }, 3000);
 }
