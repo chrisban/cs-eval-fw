@@ -79,7 +79,9 @@ app.post('/getResult', function (req, res) {
 
 //handle api compile requests
 app.post('/compile', function (req, res) {
-	functions.compile(req.body, res, "post").then(function(data) {
+	new Promise(function (resolve, reject) {
+		resolve(functions.compile(req.body, res, "post"));
+	}).then(function(data) {
 		res.type('json');
 		res.send(data);
 	});

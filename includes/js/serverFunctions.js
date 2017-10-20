@@ -505,7 +505,7 @@ exports.compile = function compile(data, res, type){
     //Generate tmp string using timestamp and ints 0-9999 for directory name
     var tmpDir = '' + Date.now() + Math.floor(Math.random() * (9999 - 0) + 0);
 
-    //TODO: For debug: "'~/Documents/Thesis/cs-eval-fw/compilation/' + tmpDir + '/';"
+    //TODO: For debug: '~/Documents/Thesis/cs-eval-fw/compilation/' + tmpDir + '/';
     var fileBasePath = ROOTPATH + '/compilation/' + tmpDir + '/';
     try {
         fs.mkdirSync('./compilation/' + tmpDir);
@@ -537,7 +537,6 @@ exports.compile = function compile(data, res, type){
                 }
             });
 
-
             //compile code
             var compileChild;
             var execChild;
@@ -559,11 +558,12 @@ exports.compile = function compile(data, res, type){
                 if(type == "post") {
                     response.Errors = response.Errors.replace(regFullPathPattern, "FULL_WORKING_PATH").replace(regHomePathPattern, "WORKING_PATH");
                 }
-                return response ;
+                return response;
             } else {
                 //if no input. There will always be at least a newline, so empty string with \n is empty input
                 if(data.input == '\n') {
                     try{
+                    return new Promise(function (resolve, reject) {
                         execChild = exec(fileBasePath + 'compOutput', {timeout: COMPILE_LIMIT},
                             (error, stdout, stderr) => {
                                 if(error !== null){
@@ -577,14 +577,17 @@ exports.compile = function compile(data, res, type){
                                     //console.log("sending response: ", stdout);
                                     response.Errors = response.Errors.replace(regFullPathPattern, "FULL_WORKING_PATH").replace(regHomePathPattern, "WORKING_PATH");
                                 }
-                                return response;
-                            }
-                        );
+                                resolve(response);
+                            });
+                    }).then(function(err) {
+                        return response;
+                    })
 
                     } catch(e){
                         //console.log(util.inspect(e, {showHidden: false, depth: null}));
                         var err = String(e);
                         response.Errors += err;
+                        return response;
                     }
 
                 } else {
@@ -597,6 +600,7 @@ exports.compile = function compile(data, res, type){
 
                     //cat inputs and pipe into compOutput.o executable  
                     try{
+                    return new Promise(function (resolve, reject) {
                         execChild = exec('cat ' + fileBasePath + 'input.txt | ' + fileBasePath + 'compOutput', { timeout: COMPILE_LIMIT, killSignal: 'SIGKILL'}, 
                             (error, stdout, stderr) => {
                                 if(error !== null){
@@ -610,14 +614,17 @@ exports.compile = function compile(data, res, type){
                                     //console.log("sending response: ", stdout);
                                     response.Errors = response.Errors.replace(regFullPathPattern, "FULL_WORKING_PATH").replace(regHomePathPattern, "WORKING_PATH");
                                 }
-                                return response;
-                            }
-                        );
+                                resolve(response);
+                        });
+                    }).then(function(err) {
+                        return response;
+                    });
 
                     } catch(e){
                         //console.log(util.inspect(e, {showHidden: false, depth: null}));
                         var err = String(e);
                         response.Errors += err;
+                        return response;
                     }
                 }
 
@@ -638,7 +645,8 @@ exports.compile = function compile(data, res, type){
             var execChild;
             if(data.input == '\n') {
                 try{
-                    execChild = exec("python3 " + fileBasePath + 'code.py', { timeout: COMPILE_LIMIT, killSignal: 'SIGKILL'}, 
+                    return new Promise(function (resolve, reject) {
+                        execChild = exec("python3 " + fileBasePath + 'code.py', { timeout: COMPILE_LIMIT, killSignal: 'SIGKILL'}, 
                         (error, stdout, stderr) => {
                             if(error !== null){
                                 //response.Errors += error + "\n";
@@ -651,9 +659,11 @@ exports.compile = function compile(data, res, type){
                                 //console.log("sending response: ", stdout);
                                 response.Errors = response.Errors.replace(regFullPathPattern, "FULL_WORKING_PATH").replace(regHomePathPattern, "WORKING_PATH");
                             }
-                            return response;
-                        }
-                    );
+                            resolve(response);
+                        });
+                    }).then(function(err) {
+                        return response;
+                    });
                 } catch(e){
                     //console.log(util.inspect(e, {showHidden: false, depth: null}));
                     var err = String(e);
@@ -661,6 +671,7 @@ exports.compile = function compile(data, res, type){
                     if(errIdx < 0 || errIdx > err.length)
                         errIdx = 0;
                     response.Errors += err.substring(errIdx + 10, err.length);
+                    return response;
                 }
 
             } else {
@@ -674,22 +685,25 @@ exports.compile = function compile(data, res, type){
 
                 //cat inputs and then pipe into py script
                 try{
-                    execChild = exec('cat ' + fileBasePath + 'input.txt | python3 ' + fileBasePath + 'code.py', { timeout: COMPILE_LIMIT, killSignal: 'SIGKILL'}, 
-                        (error, stdout, stderr) => {
-                            if(error !== null){
-                                //response.Errors += error + "\n";
-                                console.log(`Runtime error: ${error}`);
-                            }
-                            response.Errors += stderr;
-                            response.Result += stdout;
-                                
-                            if(type == "post") {
-                                //console.log("sending response: ", stdout);
-                                response.Errors = response.Errors.replace(regFullPathPattern, "FULL_WORKING_PATH").replace(regHomePathPattern, "WORKING_PATH");
-                            }
-                            return response;
-                        }
-                    );
+                    return new Promise(function (resolve, reject) {
+                        execChild = exec('cat ' + fileBasePath + 'input.txt | python3 ' + fileBasePath + 'code.py', { timeout: COMPILE_LIMIT, killSignal: 'SIGKILL'}, 
+                            (error, stdout, stderr) => {
+                                if(error !== null){
+                                    //response.Errors += error + "\n";
+                                    console.log(`Runtime error: ${error}`);
+                                }
+                                response.Errors += stderr;
+                                response.Result += stdout;
+                                    
+                                if(type == "post") {
+                                    //console.log("sending response: ", stdout);
+                                    response.Errors = response.Errors.replace(regFullPathPattern, "FULL_WORKING_PATH").replace(regHomePathPattern, "WORKING_PATH");
+                                }
+                                resolve(response);
+                            });
+                    }).then(function(err) {
+                        return response
+                    });
                 } catch(e){
                 console.log(util.inspect(e, {showHidden: false, depth: null}));
                     var err = String(e);
@@ -697,6 +711,7 @@ exports.compile = function compile(data, res, type){
                     if(errIdx < 0 || errIdx > err.length)
                         errIdx = 0;
                     response.Errors += err.substring(errIdx + 10, err.length);
+                    return response;
                 }
             }
 
