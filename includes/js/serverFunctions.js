@@ -592,7 +592,7 @@ exports.compile = function compile(data, res, type){
 
                 } else {
                     //Can't get it to feed in multiple inputs unless from a file with CRLFs
-                    fs.writeFileSync('./compilation/' + tmpDir + "/input.txt", data.inpjsut, 'utf-8', function(err) {
+                    fs.writeFileSync('./compilation/' + tmpDir + "/input.txt", data.input, 'utf-8', function(err) {
                         if(err) {
                             return console.log(err);
                         }
