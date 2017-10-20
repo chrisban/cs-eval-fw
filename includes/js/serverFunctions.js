@@ -333,7 +333,7 @@ exports.processExam = function processExam(req, res, data)
                     "test_id": req.body.test_id,
                     "course_id": req.body.course_id,
                     "index": i,
-                    "code": req.body.solution[i];, //user defined code
+                    "code": req.body.solution[i], //user defined code
                     "input": data[i]["input"][j], //datafile defined testcase
                     "language": data[i]["language"].toLowerCase()
                 };
