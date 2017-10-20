@@ -348,7 +348,9 @@ exports.processExam = function processExam(req, res, data)
                 var compileResult = undefined;
                 exports.compile(userData).then(function(data) {
                     compileResult = data;
-                    //console.log("got compiled result:", compileResult);
+                    console.log("got compiled result:", compileResult);
+                }).catch(function(err) {
+                    console.log("Error occurred during compilation: ", err);
                 });
 
                 while(compileResult === undefined) {
@@ -490,46 +492,42 @@ exports.compile = function compile(data, res, type){
     //Before beginning a new program, check for escaped processes
     findKillLongRunningProcs();
 
+    //NOTE: UPDATE THIS IF IN NEW ENVIRONMENT
+    var regHomePathPattern = new RegExp("(cs-eval-fw)","g");
+    var regFullPathPattern = new RegExp("(\/home\/cban\/cs-eval-fw)","g");
+    var response = {
+        Errors: '',
+        Result: ''
+    }
+    var submittedCode = '';
+
+    //TODO: cron-esque to wipe folder every once in awhile
+    //Generate tmp string using timestamp and ints 0-9999 for directory name
+    var tmpDir = '' + Date.now() + Math.floor(Math.random() * (9999 - 0) + 0);
+
+    //TODO: For debug: "'~/Documents/Thesis/cs-eval-fw/compilation/' + tmpDir + '/';"
+    var fileBasePath = ROOTPATH + '/compilation/' + tmpDir + '/';
+    try {
+        fs.mkdirSync('./compilation/' + tmpDir);
+    } catch(e) {
+        if ( e.code != 'EEXIST' ) 
+            throw e;
+    }
+
     return new Promise(function (resolve, reject) {
-        //NOTE: UPDATE THIS IF IN NEW ENVIRONMENT
-        var regHomePathPattern = new RegExp("(cs-eval-fw)","g");
-        var regFullPathPattern = new RegExp("(\/home\/cban\/cs-eval-fw)","g");
-        var response = {
-            Errors: '',
-            Result: ''
-        }
-        var submittedCode = '';
-
-        //TODO: cron-esque to wipe folder every once in awhile
-        //Generate tmp string using timestamp and ints 0-9999 for directory name
-        var tmpDir = '' + Date.now() + Math.floor(Math.random() * (9999 - 0) + 0);
-
-        //TODO: For debug: "'~/Documents/Thesis/cs-eval-fw/compilation/' + tmpDir + '/';"
-        var fileBasePath = ROOTPATH + '/compilation/' + tmpDir + '/';
-        try {
-            fs.mkdirSync('./compilation/' + tmpDir);
-        } catch(e) {
-            if ( e.code != 'EEXIST' ) 
-                throw e;
-        }
-
         //If hidden skeleton, fetch and merge with user code for compilation. We are assuming a well-formed JSON as it
         //was already validated earlier when loading the test
         var tmpDataFilePath = './dataFiles/' + data.course_id.toUpperCase() + '/data' + data.test_id + '.json';
-        fs.readFile(tmpDataFilePath, 'utf8', function (err, datafile) {
-
-            parsedJSON = JSON.parse(datafile);
-            if (parsedJSON[data.index]["skeleton"].length == 3) {
-                var hidSkel = parsedJSON[data.index]["skeleton"][0];
-                var hidToken = parsedJSON[data.index]["skeleton"][1];
-                submittedCode = hidSkel.split(hidToken).join(data.code);
-            } else {
-                submittedCode = data.code;
-            }
-        });
-
-
-         //console.log(submittedCode)
+        var dfile = fs.readFileSync(tmpDataFilePath, 'utf8');
+        parsedJSON = JSON.parse(dfile);
+        if (parsedJSON[data.index]["skeleton"].length == 3) {
+            var hidSkel = parsedJSON[data.index]["skeleton"][0];
+            var hidToken = parsedJSON[data.index]["skeleton"][1];
+            resolve(hidSkel.split(hidToken).join(data.code));
+        } else {
+            resolve(data.code);
+        }
+    }).then(function(submittedCode) {
         //if c++, use gcc
         if(data.language.toLowerCase().indexOf('c++') != -1) {
             //Write code to file
@@ -561,7 +559,7 @@ exports.compile = function compile(data, res, type){
                 if(type == "post") {
                     response.Errors = response.Errors.replace(regFullPathPattern, "FULL_WORKING_PATH").replace(regHomePathPattern, "WORKING_PATH");
                 }
-                resolve(response);
+                return response ;
             } else {
                 //if no input. There will always be at least a newline, so empty string with \n is empty input
                 if(data.input == '\n') {
@@ -579,7 +577,7 @@ exports.compile = function compile(data, res, type){
                                     //console.log("sending response: ", stdout);
                                     response.Errors = response.Errors.replace(regFullPathPattern, "FULL_WORKING_PATH").replace(regHomePathPattern, "WORKING_PATH");
                                 }
-                                resolve(response);
+                                return response;
                             }
                         );
 
@@ -612,7 +610,7 @@ exports.compile = function compile(data, res, type){
                                     //console.log("sending response: ", stdout);
                                     response.Errors = response.Errors.replace(regFullPathPattern, "FULL_WORKING_PATH").replace(regHomePathPattern, "WORKING_PATH");
                                 }
-                                resolve(response);
+                                return response;
                             }
                         );
 
@@ -653,7 +651,7 @@ exports.compile = function compile(data, res, type){
                                 //console.log("sending response: ", stdout);
                                 response.Errors = response.Errors.replace(regFullPathPattern, "FULL_WORKING_PATH").replace(regHomePathPattern, "WORKING_PATH");
                             }
-                            resolve(response);
+                            return response;
                         }
                     );
                 } catch(e){
@@ -689,7 +687,7 @@ exports.compile = function compile(data, res, type){
                                 //console.log("sending response: ", stdout);
                                 response.Errors = response.Errors.replace(regFullPathPattern, "FULL_WORKING_PATH").replace(regHomePathPattern, "WORKING_PATH");
                             }
-                            resolve(response);
+                            return response;
                         }
                     );
                 } catch(e){
@@ -718,7 +716,7 @@ exports.compile = function compile(data, res, type){
             if(type == "post") {
                 response.Errors = response.Errors.replace(regFullPathPattern, "FULL_WORKING_PATH").replace(regHomePathPattern, "WORKING_PATH");
             }
-            resolve(response);
+            return response;
         }
 
         // if(type == "post") {
