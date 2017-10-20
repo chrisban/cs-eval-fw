@@ -525,7 +525,7 @@ exports.compile = function compile(data, res, type){
         fs.readFile(tmpDataFilePath, 'utf8', function (err, datafile) {
 
             parsedJSON = JSON.parse(datafile);
-            if (parsedJSON[data]i][index]["skeleton"].length == 3) {
+            if (parsedJSON[data][i][index]["skeleton"].length == 3) {
                 var hidSkel = parsedJSON[data.index]["skeleton"][0];
                 var hidToken = parsedJSON[data.index]["skeleton"][1];
                 submittedCode = hidSkel.split(hidToken).join(data.code);
