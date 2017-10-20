@@ -328,33 +328,26 @@ exports.processExam = function processExam(req, res, data)
             //Loop through each 'output' aka test cases
             for(var j = 0; j < data[i]["output"].length; j++)
             {
-                var fullCode;
-                //If len of 2, then use skeleton code approach
-                //Format: 1: hiddenSkeleton (code in which code will be injected), 2: token (to replace with code), 3: visible skeleton code (to show to students)
-                if(data[i].skeleton.length == 3) {
-                    fullCode = data[i]["skeleton"][0].split(data[i]["skeleton"][1]).join(req.body.solution[i]);
-                } else {
-                    fullCode = req.body.solution[i];
-                }
-
                 //User's data
                 var userData = {
                     "test_id": req.body.test_id,
                     "course_id": req.body.course_id,
                     "index": i,
-                    "code": fullCode, //user defined code
+                    "code": req.body.solution[i];, //user defined code
                     "input": data[i]["input"][j], //datafile defined testcase
                     "language": data[i]["language"].toLowerCase()
                 };
                 //console.log("compile start using: ", userData);
                 //Global variables due to node requring async, and we need sync because we need to wait for the compilation result before returning our object. 
                 var compileResult = undefined;
-                exports.compile(userData).then(function(data) {
-                    compileResult = data;
-                    console.log("got compiled result:", compileResult);
-                }).catch(function(err) {
-                    console.log("Error occurred during compilation: ", err);
-                });
+                new Promise(function(resolve, reject) {
+                    resolve(exports.compile(userData));
+                }).then(function(data) {
+                        compileResult = data;
+                        console.log("got compiled result:", compileResult);
+                    }).catch(function(err) {
+                        console.log("Error occurred during compilation: ", err);
+                    });
 
                 while(compileResult === undefined) {
                     require('deasync').sleep(500);
