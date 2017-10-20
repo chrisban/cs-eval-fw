@@ -13,7 +13,7 @@
     	"questionType": "code",
     	"language": "c++",
         "problem": "Write a C++ function called test that accepts an integer and prints it out.",
-        "skeleton": ["#include <iostream>\nusing namespace std;\n\nint main() {\n   print();\n}\n%READ_IN%", "%READ_IN%", "//Write your code here\nvoid print(){}"],
+        "skeleton": ["#include <iostream>\nusing namespace std;\n\n%READ_IN%\nint main() {\n   print();\n}\n", "%READ_IN%", "//Write your code here\nvoid print(){}"],
         "input": ["23"],
         "output": ["23"],
         "points": ["15"],
