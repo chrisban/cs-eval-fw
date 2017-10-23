@@ -43,7 +43,7 @@ app.get('/getResultsTree', function (req, res) {
 });
 		
 //Exam/Quiz module
-app.get('/saucs', auth.connect(basic), function (req, res) {
+app.get('/saucs', function (req, res) {
  	res.sendFile( __dirname + "/frontEnd/" );
 });
 
