@@ -24,20 +24,20 @@ var section1 = {};
 
 //might need to change when editor init calls are made until after resources are loaded	
 function loadCmResources(){
-    var cmJsResources = [
-	    './includes/js/codemirror-5.12/addon/display/autorefresh.js',
-	    './includes/js/codemirror-5.12/addon/edit/matchbrackets.js',
-	    './includes/js/codemirror-5.12/mode/clike/clike.js',
-	    './includes/js/codemirror-5.12/mode/python/python.js'
-    ];
+	var cmJsResources = [
+		'./includes/js/codemirror-5.12/addon/display/autorefresh.js',
+		'./includes/js/codemirror-5.12/addon/edit/matchbrackets.js',
+		'./includes/js/codemirror-5.12/mode/clike/clike.js',
+		'./includes/js/codemirror-5.12/mode/python/python.js'
+	];
 
-    for(var i = 0; i < cmJsResources.length; i++)
-    {
-    	var fileref = document.createElement('script');
-        fileref.setAttribute("type","text/javascript");
-        fileref.setAttribute("src", cmJsResources[i]);
-    	$("head")[0].appendChild(fileref);
-    }
+	for(var i = 0; i < cmJsResources.length; i++)
+	{
+		var fileref = document.createElement('script');
+		fileref.setAttribute("type","text/javascript");
+		fileref.setAttribute("src", cmJsResources[i]);
+		$("head")[0].appendChild(fileref);
+	}
 }
 
 
@@ -76,20 +76,20 @@ function backupSkeletonCode() {
 function editor(id, rOnly, mode) {
 	modes.push(mode);
 
-    CodeMirror.fromTextArea(id, 
+	CodeMirror.fromTextArea(id, 
 	{
 		readOnly: rOnly,
 		theme: "default",
-    	lineNumbers: true,
-    	matchBrackets: true,
-    	autoRefresh: true,
-    	enableCodeFormatting: true,
-    	autoFormatOnStart: true,
-    	autoFormatOnUncomment: true,
-    	mode: mode,
-    	styleActiveLine: true,
-    	smartIndent: true
-    });
+		lineNumbers: true,
+		matchBrackets: true,
+		autoRefresh: true,
+		enableCodeFormatting: true,
+		autoFormatOnStart: true,
+		autoFormatOnUncomment: true,
+		mode: mode,
+		styleActiveLine: true,
+		smartIndent: true
+	});
 }
 
 
@@ -98,26 +98,26 @@ function initPbar(bar, maxTime, key) {
 	timingData[key] = [0, maxTime, 1, 0, '0:00'];
 	bar = $(bar);
 	var start = new Date();
-    var timeoutVal = 1000;
+	var timeoutVal = 1000;
 
-    //begin update loop, passing bar div, start time obj, relevant timingData key, and update timout value
-    animateUpdate(bar, start, key, timeoutVal);
+	//begin update loop, passing bar div, start time obj, relevant timingData key, and update timout value
+	animateUpdate(bar, start, key, timeoutVal);
 }
 
 
 //calls updateProgress until it reaches 100%. 
 //args: bar: the bar div, start: the starting time object, timeoutVal: update at this frequency (ms), key: relevant timingData key
 function animateUpdate(bar, start, key, timeoutVal) {
-    //Setting current date object, maxtime (the time limit (ms)), and timeDiff
-    var now = new Date();
-    var maxTime = timingData[key][1];
-    var timeDiff = now.getTime() - start.getTime();
+	//Setting current date object, maxtime (the time limit (ms)), and timeDiff
+	var now = new Date();
+	var maxTime = timingData[key][1];
+	var timeDiff = now.getTime() - start.getTime();
 
-    // Perc gives count down, relevant process exam display text (serverFunctions.js:192)
-    var perc = Math.round((timeDiff/maxTime)*100);
-    timingData[key][2] = timeDiff;
+	// Perc gives count down, relevant process exam display text (serverFunctions.js:192)
+	var perc = Math.round((timeDiff/maxTime)*100);
+	timingData[key][2] = timeDiff;
 
-    //update until we have reached 100%
+	//update until we have reached 100%
 	if (perc <= 100 && (maxTime - timeDiff) > 0) {
 		updateProgress(bar, perc, (maxTime - timeDiff));
 		setTimeout(animateUpdate, timeoutVal, bar, start, key);
@@ -128,22 +128,22 @@ function animateUpdate(bar, start, key, timeoutVal) {
 //Updates bar and formats time remaining into minutes:seconds
 //Accepts jq obj, percentage int, and remaining time int
 function updateProgress(bar, percentage, remainingTime) {
-    bar.css("width", percentage + "%");
-    var formattedHour = Math.floor(remainingTime / (60*60*1000));
-    var formattedMin = Math.floor((remainingTime % (1000*60*60)) / (1000*60));
-    var formattedSec = Math.floor(((remainingTime % (1000*60*60)) % (1000*60)) / 1000);
+	bar.css("width", percentage + "%");
+	var formattedHour = Math.floor(remainingTime / (60*60*1000));
+	var formattedMin = Math.floor((remainingTime % (1000*60*60)) / (1000*60));
+	var formattedSec = Math.floor(((remainingTime % (1000*60*60)) % (1000*60)) / 1000);
 
-    //force seconds to show leading 0 (e.g. 1:07 vs 1:7 )
-    if(formattedSec < 10) 
-    	formattedSec = "0" + formattedSec;
+	//force seconds to show leading 0 (e.g. 1:07 vs 1:7 )
+	if(formattedSec < 10) 
+		formattedSec = "0" + formattedSec;
 
-     //necessary due to weird overflow errors giving negative numbers
-    if(formattedMin.valueOf() < 1)
+	 //necessary due to weird overflow errors giving negative numbers
+	if(formattedMin.valueOf() < 1)
 		formattedMin = 0;
-    if(formattedSec.valueOf() < 1)
-    	formattedSec = "00";
-    formattedHour = (formattedHour.valueOf() < 1) ?  "" : formattedHour + ":"
-    bar.next().text(formattedHour + formattedMin + ":" + formattedSec);
+	if(formattedSec.valueOf() < 1)
+		formattedSec = "00";
+	formattedHour = (formattedHour.valueOf() < 1) ?  "" : formattedHour + ":"
+	bar.next().text(formattedHour + formattedMin + ":" + formattedSec);
 }
 
 
@@ -368,20 +368,20 @@ $(".compile").on("click", function(){
 		  url: "/compile",
 		  dataType: "json",
 		  data: JSON.stringify(data),
-    	  contentType: "application/json",
+		  contentType: "application/json",
 		  success: function(response){
-		  	console.log("resp:", response);
-		  	var result = "";
-		  	if(response.Errors && response.Errors != "null")
-		  		result += "Errors: " + response.Errors + "\n";
-		  	if(response.Warnings)
-		  		result += "Warnings: " + response.Warnings + "\n";
-		  	if(response.Result)
-		  		result += response.Result;
-		  	btnContext.parent().parent().find(".codeResults").val(result);
+			console.log("resp:", response);
+			var result = "";
+			if(response.Errors && response.Errors != "null")
+				result += "Errors: " + response.Errors + "\n";
+			if(response.Warnings)
+				result += "Warnings: " + response.Warnings + "\n";
+			if(response.Result)
+				result += response.Result;
+			btnContext.parent().parent().find(".codeResults").val(result);
 		  },
 		  error: function(xhr, status, err){
-		  	console.log("error: ", xhr, status, err);
+			console.log("error: ", xhr, status, err);
 		  }
 	});
 });
@@ -464,18 +464,18 @@ function submitExam(){
 		  url: "/submit",
 		  dataType: "json",
 		  data: JSON.stringify(data),
-    	  contentType: "application/json",
+		  contentType: "application/json",
 		  success: function(response){
-		  	if(response.status == "ok")
-	  		{
+			if(response.status == "ok")
+			{
 				//Display score to student, disable submit button
 				$("#dialogSubmit").html("Final score: " + response.score);
 				$('#bannerRight > span').html('View score');
 				submitted = true;
-		  	}
+			}
 		},
 		error: function(response){
-  			$("#dialogSubmitBtn").button("option", "disabled", false);
+			$("#dialogSubmitBtn").button("option", "disabled", false);
 			$("#dialogSubmit").html("Error: " + response.statusText);
 			console.log(response);
 		}
@@ -517,8 +517,8 @@ function initExam()
 
 	//Init progress bar
 	initPbar($("#totalProgress .pbar_inner"), testInfo.test_length, 'examTotal');
-  	$("#progressB0").addClass("activeBar");
-  	var difficultyValue = (parseFloat(difficulty[0]) == 0) ? (difficultyMultiplier * .5) : (parseFloat(difficulty[0]) * difficultyMultiplier);
+	$("#progressB0").addClass("activeBar");
+	var difficultyValue = (parseFloat(difficulty[0]) == 0) ? (difficultyMultiplier * .5) : (parseFloat(difficulty[0]) * difficultyMultiplier);
 	initPbar($("#progressB0").children().children()[0], 60000 * difficultyValue, 0);
 
 	//store initial code state for resetting.
@@ -539,34 +539,34 @@ $( "#dialogID" ).dialog({
 	width: "auto",
 	modal: true,
 	buttons: {
-	    "Save": function() {
-	      if($("#idNum").val().length >= 6)
-	      {
-	      	$(this).dialog("close");
-	      	initExam();
-	      }
-	      else
-	      {
-	      	$("#idStatus").html(errorString);
-	      	if($("#idNum").not(":visible"))
-	      		$("#idStatus").slideToggle();
-	      }
-	    }
+		"Save": function() {
+		  if($("#idNum").val().length >= 6)
+		  {
+			$(this).dialog("close");
+			initExam();
+		  }
+		  else
+		  {
+			$("#idStatus").html(errorString);
+			if($("#idNum").not(":visible"))
+				$("#idStatus").slideToggle();
+		  }
+		}
 	}
 }).keyup(function(e) {
 	if (e.keyCode == $.ui.keyCode.ENTER)
 	{
-   		if($("#idNum").val().length >= 6)
-   		{
-          	$(this).dialog( "close" );
-          	initExam();
-   		}
-        else
-        {
-          	$("#idStatus").html(errorString);
-          	if($("#idNum").not(":visible"))
-          		$("#idStatus").slideToggle();
-        }
+		if($("#idNum").val().length >= 6)
+		{
+			$(this).dialog( "close" );
+			initExam();
+		}
+		else
+		{
+			$("#idStatus").html(errorString);
+			if($("#idNum").not(":visible"))
+				$("#idStatus").slideToggle();
+		}
    }
 });
 
@@ -583,14 +583,14 @@ $( "#dialogWarn" ).dialog({
 			$(this).dialog("close");
 			recordSection();
 			$("#" + $("[id*=questionContainer]:visible").attr("id") + " .compile").click();
-      }
-    },
-    {
-    	text: "Cancel",
-    	click: function(){
+	  }
+	},
+	{
+		text: "Cancel",
+		click: function(){
 			$(this).dialog("close");
-    	}
-    }]
+		}
+	}]
 });
 
 
@@ -601,16 +601,16 @@ $( "#dialogSubmit" ).dialog({
 		id: "dialogSubmitBtn",
 		text: "Submit",
 		click: function() {
-  			$("#dialogSubmitBtn").button("option", "disabled", true);
+			$("#dialogSubmitBtn").button("option", "disabled", true);
 			submitExam();
-      }
-    },
-    {
-    	text: "Cancel",
-    	click: function(){
+	  }
+	},
+	{
+		text: "Cancel",
+		click: function(){
 			$(this).dialog("close");
-    	}
-    }]
+		}
+	}]
 });
 
 

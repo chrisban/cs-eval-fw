@@ -23,52 +23,52 @@
 				autoOpen: false,
 				buttons: [{
 					id: "dialogCloseBtn",
-			    	text: "Close",
-			    	click: function(){
+					text: "Close",
+					click: function(){
 						$(this).dialog("close");
-			    	}
-			    }]
+					}
+				}]
 			});
 
 			$( "#editModal" ).dialog({
 				autoOpen: false,
-		        height : 600,
-		        width : 850,
+				height : 600,
+				width : 850,
 				buttons: [{
 					id: "dialogSaveBtn",
-			    	text: "Update",
-			    	click: function(){
-			    		//TODO: Add json error handling
+					text: "Update",
+					click: function(){
+						//TODO: Add json error handling
 						// workingPath order will be root/courseid/quiz.json, eg: dataFiles/CPTR124/data1.json
 						var pathArr = workingPath.split("/");
 						console.log(workingPath, "\n", pathArr[2].substring(4, (pathArr[2].length - 5)));
-			    		$.ajax({
-						    url: "/uploadFile",
-						    type: "POST",
-						    dataType: "json",
-						    data: JSON.stringify({ course_id: pathArr[1], act_id: pathArr[2].substring(4, (pathArr[2].length - 5)) , code: JSON.stringify($('#editFile').val())}),
-						    contentType: "application/json",
-						    cache: false,
-						    success: function(res){
+						$.ajax({
+							url: "/uploadFile",
+							type: "POST",
+							dataType: "json",
+							data: JSON.stringify({ course_id: pathArr[1], act_id: pathArr[2].substring(4, (pathArr[2].length - 5)) , code: JSON.stringify($('#editFile').val())}),
+							contentType: "application/json",
+							cache: false,
+							success: function(res){
 								workingPath = "";
 								$("#editModal").dialog("close");
-						    	$( "#infoModal" ).html('Update successful: <b>' + res['success'] + '</b>');
+								$( "#infoModal" ).html('Update successful: <b>' + res['success'] + '</b>');
 								$( "#infoModal" ).dialog('open');
-						    },
-						    error: function(res){
-						    	console.log("Error response: ", res);
-						    }
+							},
+							error: function(res){
+								console.log("Error response: ", res);
+							}
 						});
-			    	}
-			    },
-			    {
+					}
+				},
+				{
 					id: "dialogCancelBtn",
-			    	text: "Cancel",
-			    	click: function(){
-			    		workingPath = "";
+					text: "Cancel",
+					click: function(){
+						workingPath = "";
 						$(this).dialog("close");
-			    	}
-			    }]
+					}
+				}]
 			});
 
 			//create test tree instance
@@ -76,7 +76,7 @@
 				'core' : {
 					'data': {
 						"url" : "/getTestsTree",
-        				"dataType" : "json"
+						"dataType" : "json"
 					},
 					'check_callback' : function (operation, node, parent, position, more) {
 						if(operation === "copy_node" || operation === "move_node") {
@@ -119,7 +119,7 @@
 				'core' : {
 					'data': {
 						"url" : "/getResultsTree",
-        				"dataType" : "json"
+						"dataType" : "json"
 					},
 					'check_callback' : function (operation, node, parent, position, more) {
 						if(operation === "copy_node" || operation === "move_node") {
@@ -214,9 +214,9 @@
 								$( "#infoModal" ).html('Upload successful: ' + res['success']);
 								$( "#infoModal" ).dialog('open');
 							},
-						    error: function(res){
-						    	console.log("Error response: ", res);
-						    }
+							error: function(res){
+								console.log("Error response: ", res);
+							}
 						});
 						
 						//TODO: is this necessary 2x??
@@ -231,9 +231,9 @@
 								$( "#infoModal" ).html('Upload successful: ' + res['success']);
 								$( "#infoModal" ).dialog('open');
 							},
-						    error: function(res){
-						    	console.log("Error response: ", res);
-						    }
+							error: function(res){
+								console.log("Error response: ", res);
+							}
 						});
 					} else {//else use textarea
 						var tmpCode = JSON.stringify($('#code').val());
@@ -265,19 +265,19 @@
 						
 						//send formatted json data to /uploadFile endpoint
 						$.ajax({
-						    url: "/uploadFile",
-						    type: "POST",
-						    dataType: "json",
-						    data: JSON.stringify({ course_id: $('#courseID').val(), act_id: $('#activityID').val(), code: tmpCode }),
-						    contentType: "application/json",
-						    cache: false,
-						    success: function(res){
-						    	$( "#infoModal" ).html('Upload validation successful: <b>' + res['success'] + '</b>');
+							url: "/uploadFile",
+							type: "POST",
+							dataType: "json",
+							data: JSON.stringify({ course_id: $('#courseID').val(), act_id: $('#activityID').val(), code: tmpCode }),
+							contentType: "application/json",
+							cache: false,
+							success: function(res){
+								$( "#infoModal" ).html('Upload validation successful: <b>' + res['success'] + '</b>');
 								$( "#infoModal" ).dialog('open');
-						    },
-						    error: function(res){
-						    	console.log("Error response: ", res);
-						    }
+							},
+							error: function(res){
+								console.log("Error response: ", res);
+							}
 						});
 					}
 				} else {
@@ -302,20 +302,20 @@
 	function loadDatafile(path, callback) {
 		var pathArr = path.split("/"); // 'Order will be root/courseid/quiz.json'
 		$.ajax({
-		    url: "/getModule",
-		    type: "POST",
-		    dataType: "json",
-		    data: JSON.stringify({ dataOnly: 'true', course_id: pathArr[1], test_id: pathArr[2].substring(4, (pathArr[2].length - 5))}),
-		    contentType: "application/json",
-		    cache: false,
-		    success: function(res){
+			url: "/getModule",
+			type: "POST",
+			dataType: "json",
+			data: JSON.stringify({ dataOnly: 'true', course_id: pathArr[1], test_id: pathArr[2].substring(4, (pathArr[2].length - 5))}),
+			contentType: "application/json",
+			cache: false,
+			success: function(res){
 				workingPath = path;
 				var data = (res.error) ? res.error : res.datafile;
 				callback(data);
-		    },
-		    error: function(res){
-		    	console.log("Error response: ", res);
-		    }
+			},
+			error: function(res){
+				console.log("Error response: ", res);
+			}
 		});
 	}
 
@@ -344,18 +344,18 @@
 
 	function loadResultFile(path, callback) {
 		$.ajax({
-		    url: "/getResult",
-		    type: "POST",
-		    dataType: "json",
-		    data: JSON.stringify({ dataOnly: 'true', path: path}),
-		    contentType: "application/json",
-		    cache: false,
-		    success: function(res){
+			url: "/getResult",
+			type: "POST",
+			dataType: "json",
+			data: JSON.stringify({ dataOnly: 'true', path: path}),
+			contentType: "application/json",
+			cache: false,
+			success: function(res){
 				callback(res.datafile);
-		    },
-		    error: function(res){
-		    	console.log("Error response: ", res);
-		    }
+			},
+			error: function(res){
+				console.log("Error response: ", res);
+			}
 		});
 	}
 

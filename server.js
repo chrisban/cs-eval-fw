@@ -4,8 +4,8 @@ var bodyParser = require('body-parser');
 var busboy = require('connect-busboy');
 var auth = require('http-auth');
 var basic = auth.basic({
-    realm: "Admin",
-    file: __dirname + "/admin/users.htpasswd"
+	realm: "Admin",
+	file: __dirname + "/admin/users.htpasswd"
 });
 
 var functions = require('./includes/js/serverFunctions');
@@ -29,7 +29,7 @@ app.get('/logout', function (req, res) {
 
 //Admin page
 app.get('/saucs/admin', auth.connect(basic), (req, res) => {
-    res.sendFile(  __dirname + "/admin/admin.html" );
+	res.sendFile(  __dirname + "/admin/admin.html" );
 });
 
 //GET testing file manager tree data (json)
@@ -44,7 +44,7 @@ app.get('/getResultsTree', function (req, res) {
 		
 //Exam/Quiz module
 app.get('/saucs', function (req, res) {
- 	res.sendFile( __dirname + "/frontEnd/" );
+	res.sendFile( __dirname + "/frontEnd/" );
 });
 
 app.get('/', function (req, res) {
