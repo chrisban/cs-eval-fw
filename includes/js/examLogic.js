@@ -1,5 +1,10 @@
 //console.log('testInfo: ', testInfo);
 
+//Leaving the page will result in the loss of data.
+//While there are a number of ways to try and disable the back/forward/refresh button, none are guaranteed.
+//See: http://www.irt.org/script/311.htm
+window.onbeforeunload = function() { return "If you leave this page, any work will be unrecoverable."; };
+
 //Variables that track test section (0 or 1 = part 1 or 2), specify divide (defined by number of ".mcOptions" class occurences), and backup skeleton code
 var section = {number: 0, warn: false};
 var structure = Object.freeze({count: $("[id*=questionContainer]").length, divide: $(".mcOptions").length});
