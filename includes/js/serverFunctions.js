@@ -15,6 +15,10 @@ var ROOTPATH = "~/cs-eval-fw";
 var ISDEBUG = 0;    
 var COMPILE_LIMIT = 10000; //max runtime in ms
 var monitoring = false;
+var WARNING_FAILURE_TO_RESOLVE_DATAFILE = 'The course or activity ID number could not be resolved. Please check your input and contact your professor if problems persist. ';
+var WARNING_MALFORMED_DATAFILE = 'The course or activity ID data is corrupted or malformed. Please notify your professor for more details. ';
+var WARNING_ACTIVITY_CLOSED = 'The course or activity has been closed. Please contact your professor for more information. ';
+
 
 
 //current dir: /includes/js
@@ -52,7 +56,7 @@ exports.getDataFile = function getDataFile(req, res, callback)
 		if (err) {
 			console.log('E: ' + err);
 			res.type('json');
-			res.send( {error: 'The course or activity ID number could not be resolved. Please check your input and contact your professor if problems persist. ' + ((ISDEBUG) ? file : '')} );
+			res.send( {error: WARNING_FAILURE_TO_RESOLVE_DATAFILE + ((ISDEBUG) ? file : '')} );
 			return;
 		}
 
@@ -63,7 +67,7 @@ exports.getDataFile = function getDataFile(req, res, callback)
 		catch(err) {
 			console.log('E: ' + err);
 			res.type('json');
-			res.send( {error: 'The course or activity ID data is corrupted or malformed. Please notify your professor for more details.' + ((ISDEBUG) ? file : '')} );
+			res.send( {error: WARNING_MALFORMED_DATAFILE + ((ISDEBUG) ? file : '')} );
 			return;
 		}
 		//after file is read, pass on request/response
@@ -71,7 +75,24 @@ exports.getDataFile = function getDataFile(req, res, callback)
 	});
 }
 
+//Delete result file
+exports.deleteFile = function deleteFile(req, res)
+{
+	var delStatus = false;
+	var file = './' + req.body.path;
+	fs.unlink(file, function(error) {
+	    if (error) {
+	        console.log('E: ' + error)
+	    } else {
+	    	delStatus = true;
+	    }
+    	res.type('json');
+		res.send( {status: delStatus} );
+	});
+}
+
 //Get specified result file
+//TODO: PROMISIFY INSTEAD OF CB
 exports.getResultFile = function getResultFile(req, res, callback)
 {
 	var file = './' + req.body.path;
@@ -80,7 +101,7 @@ exports.getResultFile = function getResultFile(req, res, callback)
 		if (err) {
 			console.log('E: ' + err);
 			res.type('json');
-			res.send( {error: 'The course or activity ID number could not be resolved. Please check your input and contact your professor if problems persist. ' + ((ISDEBUG) ? file : '')} );
+			res.send( {error: WARNING_FAILURE_TO_RESOLVE_DATAFILE + ((ISDEBUG) ? file : '')} );
 			return;
 		}
 
@@ -89,6 +110,7 @@ exports.getResultFile = function getResultFile(req, res, callback)
 	});
 }
 
+//TODO: PROMISIFY INSTEAD OF CB
 exports.serveFile = function serveFile(req, res, json) {
 	res.type('json');
 	res.send( {datafile : json} );
@@ -137,7 +159,7 @@ exports.serveModule = function serveModule(req, res, data)
 
 		if (isClosed) {
 			res.type('json');
-			res.send( {error: 'The course or activity has been closed. Please contact your professor for more information'} );
+			res.send( {error: WARNING_ACTIVITY_CLOSED} );
 			return;
 		}
 	}

@@ -96,13 +96,15 @@
 									"action": function (obj) {
 										loadDatafile($node.original.path, editNode);
 									}
-								}
-								// "Delete": {
-								// 	"label": "Delete datafile",
-								// 	"action": function (obj) {
-								// 		this.remove(obj);
-								// 	}
-								// },
+								},
+								"Delete": {
+									"label": "Delete datafile",
+									"action": function (obj) {
+										if(confirm("Are you sure you want to delete this file?")) {
+											deleteFile($('#manageFilesDiv'), '/getTestsTree', $node.original.path)
+										}
+									}
+								}//,
 								// "Download": {
 								// 	"label": "Download",
 								// 	"action": function (obj) {
@@ -139,20 +141,22 @@
 									"action": function (obj) {
 										loadResultFile($node.original.path, viewResult);
 									}
+								},
+								"Delete": {
+									"label": "Delete datafile",
+									"action": function (obj) {
+										if(confirm("Are you sure you want to delete this file?")) {
+											deleteFile($('#manageResultsDiv'), '/getResultsTree', $node.original.path)
+										}
+									}
 								}
-								// "Delete": {
-								// 	"label": "Delete datafile",
-								// 	"action": function (obj) {
-								// 		this.remove(obj);
-								// 	}
-								// }
 							};
 						}
 					}
 				});
 
 			$('#manageFilesDiv').on("changed.jstree", function (e, data) {
-			  console.log(data.selected);
+			  console.log('Element selected: ', data.selected);
 			});
 
 			//Tab switching
@@ -342,6 +346,25 @@
 		//TODO: save edits to datafiles. Possibly for future work.
 	}
 
+	function deleteFile(treeObj, treeSrc, path) {
+		$.ajax({
+			url: "/deleteFile",
+			type: "POST",
+			dataType: "json",
+			data: JSON.stringify({path: path}),
+			contentType: "application/json",
+			cache: false,
+			success: function(res){
+				treeObj.jstree(true).settings.core.data.url = treeSrc;
+				treeObj.jstree(true).refresh();
+			},
+			error: function(res){
+				console.log("Error response: ", res);
+			}
+		});
+	}
+
+	//TODO: Should this really be ANOTHER ajax call? Call the d*** function.
 	function loadResultFile(path, callback) {
 		$.ajax({
 			url: "/getResult",

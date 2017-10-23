@@ -77,6 +77,12 @@ app.post('/getResult', function (req, res) {
 	functions.getResultFile(req, res, functions.serveFile);
 });
 
+//handle post to remove items/files from backend
+app.post('/deleteFile', function (req, res) {
+	functions.deleteFile(req, res);
+});
+
+
 //handle api compile requests
 app.post('/compile', function (req, res) {
 	new Promise(function (resolve, reject) {
