@@ -16,7 +16,7 @@ $( "#requestInfo" ).dialog({
 				    url: "/getModule",
 				    type: "POST",
 				    dataType: "json",
-				    data: JSON.stringify({course_id: $('#courseID').val(), test_id: $('#quizID').val(), type: "exam"}),
+				    data: JSON.stringify({user_id: $('#userID').val(), course_id: $('#courseID').val(), test_id: $('#quizID').val(), type: "exam"}),
 				    contentType: "application/json",
 				    cache: false,
 					async: false, //ensures completion before continuting on

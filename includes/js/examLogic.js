@@ -451,7 +451,7 @@ function submitExam(){
 	var data = {
 		"test_id": testInfo.test_id,
 		"course_id": testInfo.course_id,
-		"idNum": $("#idNum").val(),
+		"idNum": testInfo.user_id,
 		"problemType": type,
 		"problemNum": num,
 		"solution": solution,
@@ -528,8 +528,7 @@ function initExam()
 
 //jQueryUI Modal used to retrieve student ID
 //Must auto-open so it can get student ID first, and then call initExam()
-var errorString = "Error: ID number must be at least 6 digits";
-$( "#dialogID" ).dialog({
+$( "#dialogStart" ).dialog({
 	position: {my: "top+200",at: "top", of: window},
 	closeOnEscape: false,
 	dialogClass: "no-close",
@@ -539,35 +538,11 @@ $( "#dialogID" ).dialog({
 	width: "auto",
 	modal: true,
 	buttons: {
-		"Save": function() {
-		  if($("#idNum").val().length >= 6)
-		  {
+		"start": function() {  
 			$(this).dialog("close");
 			initExam();
 		  }
-		  else
-		  {
-			$("#idStatus").html(errorString);
-			if($("#idNum").not(":visible"))
-				$("#idStatus").slideToggle();
-		  }
 		}
-	}
-}).keyup(function(e) {
-	if (e.keyCode == $.ui.keyCode.ENTER)
-	{
-		if($("#idNum").val().length >= 6)
-		{
-			$(this).dialog( "close" );
-			initExam();
-		}
-		else
-		{
-			$("#idStatus").html(errorString);
-			if($("#idNum").not(":visible"))
-				$("#idStatus").slideToggle();
-		}
-   }
 });
 
 

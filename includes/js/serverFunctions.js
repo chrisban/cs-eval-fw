@@ -18,6 +18,7 @@ var monitoring = false;
 var WARNING_FAILURE_TO_RESOLVE_DATAFILE = 'The course or activity ID number could not be resolved. Please check your input and contact your professor if problems persist. ';
 var WARNING_MALFORMED_DATAFILE = 'The course or activity ID data is corrupted or malformed. Please notify your professor for more details. ';
 var WARNING_ACTIVITY_CLOSED = 'The course or activity has been closed. Please contact your professor for more information. ';
+var WARNING_NOT_WHITELISTED = 'This exam is not available for access. Please contact your professor for more information. ';
 
 
 
@@ -135,6 +136,8 @@ exports.serveModule = function serveModule(req, res, data)
 		// console.log(currMonth + " vs " + specDate[0]);
 		// console.log(currDay + " vs " + specDate[1]);
 
+
+		//Formats:
 		//currTime: [ '6', '30', '00 PM' ]
 		//specTime: [ '6', '30 PM' ]
 		var isClosed = false;
@@ -162,6 +165,20 @@ exports.serveModule = function serveModule(req, res, data)
 			res.send( {error: WARNING_ACTIVITY_CLOSED} );
 			return;
 		}
+	}
+
+	if(data["prop"]["access"] == "true") {
+		if(data["prop"]["whitelist"]) {
+			if(data["prop"]["whitelist"].indexOf(req.body.user_id) == -1) {
+				res.type('json');
+				res.send( {error: WARNING_NOT_WHITELISTED} );
+				return;
+			}
+		}
+	} else {
+		res.type('json');
+		res.send( {error: WARNING_ACTIVITY_CLOSED} );
+		return;
 	}
 
 	//get exported template data from moduleVars.js
@@ -277,7 +294,7 @@ exports.serveModule = function serveModule(req, res, data)
 
 		//create variables to be inserted into script executed client side. 
 		//vars defined: difficulty[per question], testInfo[test_id, course_id, test_length, warnTimes]
-		var testInfoVars = "var difficulty = [" + difficulty.join() + "]; var testInfo = Object.freeze({test_id: '" + req.body.test_id + "', course_id: '" + 
+		var testInfoVars = "var difficulty = [" + difficulty.join() + "]; var testInfo = Object.freeze({user_id: '" + req.body.user_id + "', test_id: '" + req.body.test_id + "', course_id: '" + 
 			req.body.course_id.toUpperCase() + "', test_length: '" + data["prop"]["time"]*60000 + "', warnTimes: '" + data["prop"]["warn"] +"'});";
 
 		//insert navbar and end comment

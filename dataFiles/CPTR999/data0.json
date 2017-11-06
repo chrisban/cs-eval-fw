@@ -34,6 +34,8 @@
         "closeTime": "11:30 pm",
         "allowMultiple": "false",
         "time": "15",
-        "warn": ["10", "5"]
+        "warn": ["10", "5"],
+        "whitelist": ["0421291", "0421292"],
+        "access": "true"
     }
 }
