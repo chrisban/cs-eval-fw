@@ -30,7 +30,10 @@
         "difficulty": "0"
     },
     "prop": {
-        "time": "59",
+        "closeDate": "9-18-17",
+        "closeTime": "11:30 pm",
+        "allowMultiple": "false",
+        "time": "15",
         "warn": ["10", "5"]
     }
 }
