@@ -203,7 +203,7 @@ exports.serveModule = function serveModule(req, res, data)
 	var editorInit = moduleVars.editorInit; //function call to be appended per editor instance to init
 
 	//minify js code to send to client to be evaluated
-	var baseScript = fs.readFileSync(__dirname + '/examLogic.js', 'utf8'); //all listeners and js code to be evald once client has received
+	var baseScript = fs.readFileSync(__dirname + '/examLogic.js', 'utf8'); //all listeners and js code to be eval'd once client has received
 	var script = ""; //vars to be inserted into baseScript at runtime
 
 	var html = ""; //html code to be inserted into dom client side
@@ -412,9 +412,9 @@ exports.processExam = function processExam(req, res, data)
 			{
 				subStudentScore += parseInt(data[i]["points"][0]);
 				studentScore += parseInt(data[i]["points"][0]);
-				resultFile += "status: correct\n\n";
+				resultFile += "Status: Correct\n\n";
 			} else{
-				resultFile += "status: incorrect\n\n";
+				resultFile += "Status: Incorrect\n\n";
 			}
 
 		} else if(req.body.problemType[i] == "mchoice")
@@ -432,7 +432,7 @@ exports.processExam = function processExam(req, res, data)
 				//var submittedIndex = parseInt(data[i]["input"][j][1].indexOf(convertSpecialChars(req.body.solution[i][j])));
 				var submittedIndex = parseInt(data[i]["input"][j][1].indexOf(req.body.solution[i][j]));
 				//console.log("[j:" + j + "] \ncorrectIndex: ", correctIndex, "\nsubmittedIndex", submittedIndex);
-				resultFile += "Correct answer: " + data[i]["input"][j][1][correctIndex] + "\nReceived answer: " + data[i]["input"][j][1][submittedIndex] + "\n state: ";
+				resultFile += "Correct answer: " + data[i]["input"][j][1][correctIndex] + "\nReceived answer: " + data[i]["input"][j][1][submittedIndex] + "\n Status: ";
 
 				//Track points
 				subTotalPoints += parseInt(data[i]["points"][j]);
@@ -710,7 +710,7 @@ exports.compile = function compile(data, res, type){
 				}
 
 			} else {
-				//Can't get it to feed in multiple inputs unless from a file with CRLFs
+				//Won't feed in multiple inputs unless from a file with CRLFs
 				//So write inputs to file first
 				fs.writeFileSync('./compilation/' + tmpDir + "/input.txt", data.input, 'utf-8', function(err) {
 					if(err) {
@@ -850,6 +850,35 @@ exports.storeDatafile = function storeDatafile(type, req, res) {
 		
 		res.send({success : true});
 	}
+}
+
+
+exports.downloadReport = function (req, res) {
+	var dirPath = req.body.path; //root/course/exam (ex: testResults/CPTR999/test0) './' + 
+	var filePath;
+	var htmlContent = "<div id='reportContainer'>";
+	fs.readdirSync(dirPath).forEach(file => {
+		console.log('file: ', file);
+		filePath = dirPath + '/' + file;
+		fileContent = fs.readFileSync(filePath, 'utf8');
+
+		//Insert html markup
+		htmlContent += "<div>";
+		fileContent = fileContent.replace(/\\n/g, "<br />");
+		fileContent = fileContent.replace(/Correct/g, "<span style='background-color:#68c977'>Correct</span>");
+		fileContent = fileContent.replace(/Incorrect/g, "<span style='background-color:#ff6666'>Incorrect</span>");
+
+		fileContent = fileContent.replace(/====================================================/, "<strong>====================================================</strong><br /><br /><br />");
+		fileContent = fileContent.replace(/Question sub-score:/g, "<span style='background-color:#efeea5'>Question sub-score:</span>");
+		fileContent = fileContent.replace(/FINAL SCORE:/g, "<span style='background-color:#edeb82; font-weight:bold;'>FINAL SCORE:</span>");
+		fileContent = fileContent.replace(/TIME REMAINING:/g, "<span style='background-color:#edeb82; font-weight:bold;'>TIME REMAINING:</span>");
+
+		htmlContent += fileContent + "</div><hr>";
+	});
+	htmlContent += "</div>";
+
+	res.type('json');  
+	res.send({report: htmlContent});
 }
 
 

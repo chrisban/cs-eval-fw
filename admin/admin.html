@@ -84,7 +84,7 @@
 								return false; // prevent moving a child above or below the root
 							}
 						}
-							return true; // allow everything else
+							return false; // Disallow moving nodes. return true; // allow everything else
 					}
 				},
 				"plugins" : ["dnd","contextmenu", "sort", "unique", "changed"],
@@ -104,13 +104,7 @@
 											deleteFile($('#manageFilesDiv'), '/getTestsTree', $node.original.path)
 										}
 									}
-								}//,
-								// "Download": {
-								// 	"label": "Download",
-								// 	"action": function (obj) {
-								// 		downloadArchive($node.original.path);
-								// 	}
-								// }
+								}
 							};
 						}
 					}
@@ -129,7 +123,7 @@
 								return false; // prevent moving a child above or below the root
 							}
 						}
-							return true; // allow everything else
+							return false; // Disallow moving nodes. return true; // allow everything else
 					}
 				},
 				"plugins" : ["dnd","contextmenu", "sort", "unique", "changed"],
@@ -140,6 +134,13 @@
 									"label": "Preview datafile",
 									"action": function (obj) {
 										loadResultFile($node.original.path, viewResult);
+									}
+								},
+								"Download": {
+									"label": "Download exam report",
+									"action": function (obj) {
+										//console.log("path: ", $node.original.path);
+										downloadArchive($node.original.path);
 									}
 								},
 								"Delete": {
@@ -304,7 +305,7 @@
 	}
 
 	function loadDatafile(path, callback) {
-		var pathArr = path.split("/"); // 'Order will be root/courseid/quiz.json'
+		var pathArr = path.split("/"); // 'Order will be root/courseid/quiz.json')
 		$.ajax({
 			url: "/getModule",
 			type: "POST",
@@ -323,27 +324,33 @@
 		});
 	}
 
-	// function downloadArchive(path) {
-	// 	var pathArr = path.split("/"); // 'Order will be root/courseid/quiz.json'
-	// 	console.log(path);
-	// 	$.ajax({
-	// 	    url: "/downloadArchive",
-	// 	    type: "POST",
-	// 	    dataType: "json",
-	// 	    data: JSON.stringify({ path: path }),
-	// 	    contentType: "application/json",
-	// 	    cache: false,
-	// 	    success: function(res){
-				
-	// 	    },
-	// 	    error: function(res){
-	// 	    	console.log("Error response: ", res);
-	// 	    }
-	// 	});
-	// }
+	function downloadArchive(path) {
+		//console.log(path);
+		var trimmedPath = path.split("/"); // 'Order will be root/courseid/quizid/quiz.json'
 
-	function saveDatafile () {
-		//TODO: save edits to datafiles. Possibly for future work.
+		//Only continue if we have root, courseid, quizid, ignore any other data (aka a specific exam to build a report for)
+		if(trimmedPath.length >= 3) {
+			trimmedPath = trimmedPath[0] + '/' + trimmedPath[1] + '/' + trimmedPath[2];
+		} else {
+			alert("An item within a course and exam must be selected: " + path);
+			return;
+		}
+
+		//Request a report to be built and display in modal
+		$.ajax({
+		    url: "/downloadReport",
+		    type: "POST",
+		    dataType: "json",
+		    data: JSON.stringify({ path: trimmedPath }),
+		    contentType: "application/json",
+		    cache: false,
+		    success: function(res){
+				$('<div />').html(res['report']).dialog({height:'auto', width:'auto'});
+		    },
+		    error: function(res){
+		    	console.log("Error response: ", res);
+		    }
+		});
 	}
 
 	function deleteFile(treeObj, treeSrc, path) {

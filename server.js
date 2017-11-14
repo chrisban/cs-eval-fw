@@ -82,7 +82,6 @@ app.post('/deleteFile', function (req, res) {
 	functions.deleteFile(req, res);
 });
 
-
 //handle api compile requests
 app.post('/compile', function (req, res) {
 	new Promise(function (resolve, reject) {
@@ -106,6 +105,11 @@ app.post('/uploadFile', function (req, res) {
 		req.pipe(req.busboy);
 	}
 	functions.storeDatafile(type, req, res);
+});
+
+//handle post to build/download exam report
+app.post('/downloadReport', function (req, res) {
+	functions.downloadReport(req, res);
 });
 
 

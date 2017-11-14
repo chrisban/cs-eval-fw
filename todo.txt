@@ -38,7 +38,12 @@ TODO:
 		
 		X -Disable- WARN before using back and refresh button
 		
-		X Document new prop vals: "closeDate": "9-17-17", "closeTime": "6:30 pm", "allowMultiple: "false",
+		X Document new prop vals: "closeDate": "9-17-17", "closeTime": "6:30 pm", "allowMultiple: "false"
+
+		- Test timezone change with closeDate/closeTime
+
+		- cat results into styled html report
+		
 
 		- ModuleVars:80 specify python array instructions, figure out c++ directions
 
