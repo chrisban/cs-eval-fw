@@ -40,24 +40,23 @@ TODO:
 		
 		X Document new prop vals: "closeDate": "9-17-17", "closeTime": "6:30 pm", "allowMultiple: "false"
 
-		- Test timezone change with closeDate/closeTime
+		X cat results into styled html report
 
-		- cat results into styled html report
-		
+		X implement catches for promise (.then)
+
+		- Test timezone change with closeDate/closeTime
 
 		- ModuleVars:80 specify python array instructions, figure out c++ directions
 
 		- Include more feedback to student after grading
 
-		X implement catches for promise .thens
-
 		- drop down help/info box regarding input and arrays
 		
 		- cron jobs to clear compilation files
 
-		- Provision (for VMs)
-
 		- lockdown browser (restricted urls - visit exam/docu, not google/SO/etc.)
+
+		- Exam status (de/activated) view and control
 
 
 	Other:
