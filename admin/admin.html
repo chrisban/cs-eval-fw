@@ -346,9 +346,15 @@
 			contentType: "application/json",
 			cache: false,
 			success: function(res){
-				$('<div />').html(res['report']).dialog({
+				$('#reportModal').html(res['report']).dialog({
 					width: 700,
-					maxHeight: 900
+					maxHeight: 900,
+					buttons: {
+						Save: function (e) {
+							$("#print-iframe").contents().find('html').html(res['report']);
+							$("#print-iframe").get(0).contentWindow.print();
+						}
+					}
 				});
 			},
 			error: function(res){
@@ -443,6 +449,8 @@
 
 			<div id="infoModal"><!--jq modal--></div>
 			<div id="editModal"><textarea id="editFile"></textarea><!--jq modal--></div>
+			<div id="reportModal"><!--jq modal--></div>
+			<iframe id='print-iframe' name='print-frame-name' class="hidden"></iframe>
 
 		</div>
 	</body>
