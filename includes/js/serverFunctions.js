@@ -858,22 +858,22 @@ exports.downloadReport = function (req, res) {
 	var filePath;
 	var htmlContent = "<div id='reportContainer'>";
 	fs.readdirSync(dirPath).forEach(file => {
-		console.log('file: ', file);
+		//console.log('file: ', file);
 		filePath = dirPath + '/' + file;
 		fileContent = fs.readFileSync(filePath, 'utf8');
 
 		//Insert html markup
 		htmlContent += "<div>";
-		fileContent = fileContent.replace(/\\n/g, "<br />");
-		fileContent = fileContent.replace(/Correct/g, "<span style='background-color:#68c977'>Correct</span>");
-		fileContent = fileContent.replace(/Incorrect/g, "<span style='background-color:#ff6666'>Incorrect</span>");
-
-		fileContent = fileContent.replace(/====================================================/, "<strong>====================================================</strong><br /><br /><br />");
+		htmlContent += "<h2>Student ID: " + file.replace(".txt", "") + "</h2>";
+		fileContent = fileContent.replace(/\r|\n/g, "<br />");
+		fileContent = fileContent.replace(/ Correct/g, " <span style='background-color:#68c977'>Correct</span>");
+		fileContent = fileContent.replace(/ Incorrect/g, " <span style='background-color:#ff6666'>Incorrect</span>");
+		fileContent = fileContent.replace(/====================================================/g, "<strong>====================================================</strong>");
 		fileContent = fileContent.replace(/Question sub-score:/g, "<span style='background-color:#efeea5'>Question sub-score:</span>");
 		fileContent = fileContent.replace(/FINAL SCORE:/g, "<span style='background-color:#edeb82; font-weight:bold;'>FINAL SCORE:</span>");
 		fileContent = fileContent.replace(/TIME REMAINING:/g, "<span style='background-color:#edeb82; font-weight:bold;'>TIME REMAINING:</span>");
 
-		htmlContent += fileContent + "</div><hr>";
+		htmlContent += fileContent + "</div><hr><br />";
 	});
 	htmlContent += "</div>";
 

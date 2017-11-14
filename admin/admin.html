@@ -136,11 +136,11 @@
 										loadResultFile($node.original.path, viewResult);
 									}
 								},
-								"Download": {
-									"label": "Download exam report",
+								"Report": {
+									"label": "Display exam report",
 									"action": function (obj) {
 										//console.log("path: ", $node.original.path);
-										downloadArchive($node.original.path);
+										downloadReport($node.original.path);
 									}
 								},
 								"Delete": {
@@ -299,6 +299,7 @@
 		$('#editModal').dialog('open');
 	}
 
+	//TODO: replace on server
 	function viewResult(resultFile) {
 		$('#editFile').val(resultFile.replace(/\r|\n/g,"\r\n"));
 		$('#editModal').dialog('open');
@@ -324,7 +325,7 @@
 		});
 	}
 
-	function downloadArchive(path) {
+	function downloadReport(path) {
 		//console.log(path);
 		var trimmedPath = path.split("/"); // 'Order will be root/courseid/quizid/quiz.json'
 
@@ -338,18 +339,21 @@
 
 		//Request a report to be built and display in modal
 		$.ajax({
-		    url: "/downloadReport",
-		    type: "POST",
-		    dataType: "json",
-		    data: JSON.stringify({ path: trimmedPath }),
-		    contentType: "application/json",
-		    cache: false,
-		    success: function(res){
-				$('<div />').html(res['report']).dialog({height:'auto', width:'auto'});
-		    },
-		    error: function(res){
-		    	console.log("Error response: ", res);
-		    }
+			url: "/downloadReport",
+			type: "POST",
+			dataType: "json",
+			data: JSON.stringify({ path: trimmedPath }),
+			contentType: "application/json",
+			cache: false,
+			success: function(res){
+				$('<div />').html(res['report']).dialog({
+					width: 700,
+					maxHeight: 900
+				});
+			},
+			error: function(res){
+				console.log("Error response: ", res);
+			}
 		});
 	}
 
