@@ -94,14 +94,22 @@
 								"Preview": {
 									"label": "Preview datafile",
 									"action": function (obj) {
-										loadDatafile($node.original.path, editNode);
+										if($node.original.path.split('/').length >= 3) {
+											loadDatafile($node.original.path, editNode);
+										} else {
+											alert("Please select a file within a course/exam");
+										}
 									}
 								},
 								"Delete": {
 									"label": "Delete datafile",
 									"action": function (obj) {
-										if(confirm("Are you sure you want to delete this file?")) {
-											deleteFile($('#manageFilesDiv'), '/getTestsTree', $node.original.path)
+										if($node.original.path.split('/').length >= 3) {
+											if(confirm("Are you sure you want to delete this file?")) {
+												deleteFile($('#manageFilesDiv'), '/getTestsTree', $node.original.path)
+											}
+										} else {
+											alert("Please select a file within a course/exam");
 										}
 									}
 								}
@@ -133,21 +141,33 @@
 								"Preview": {
 									"label": "Preview datafile",
 									"action": function (obj) {
-										loadResultFile($node.original.path, viewResult);
+										if($node.original.path.split('/').length >= 3) {
+											loadResultFile($node.original.path, viewResult);
+										} else {
+											alert("Please select a file within a course/exam");
+										}
 									}
 								},
 								"Report": {
 									"label": "Display exam report",
 									"action": function (obj) {
 										//console.log("path: ", $node.original.path);
-										downloadReport($node.original.path);
+										if($node.original.path.split('/').length >= 3) {
+											downloadReport($node.original.path);
+										} else {
+											alert("Please select a file within a course/exam");
+										}
 									}
 								},
 								"Delete": {
 									"label": "Delete datafile",
 									"action": function (obj) {
-										if(confirm("Are you sure you want to delete this file?")) {
-											deleteFile($('#manageResultsDiv'), '/getResultsTree', $node.original.path)
+										if($node.original.path.split('/').length >= 3) {
+											if(confirm("Are you sure you want to delete this file?")) {
+												deleteFile($('#manageResultsDiv'), '/getResultsTree', $node.original.path)
+											}
+										} else {
+											alert("Please select a file within a course/exam");
 										}
 									}
 								}
@@ -325,17 +345,11 @@
 		});
 	}
 
+	//If we have root, courseid, quizid (aka a specific exam to build a report for) and request report
 	function downloadReport(path) {
 		//console.log(path);
 		var trimmedPath = path.split("/"); // 'Order will be root/courseid/quizid/quiz.json'
-
-		//Only continue if we have root, courseid, quizid, ignore any other data (aka a specific exam to build a report for)
-		if(trimmedPath.length >= 3) {
-			trimmedPath = trimmedPath[0] + '/' + trimmedPath[1] + '/' + trimmedPath[2];
-		} else {
-			alert("An item within a course and exam must be selected: " + path);
-			return;
-		}
+		trimmedPath = trimmedPath[0] + '/' + trimmedPath[1] + '/' + trimmedPath[2];
 
 		//Request a report to be built and display in modal
 		$.ajax({
