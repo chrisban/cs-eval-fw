@@ -18,6 +18,9 @@ auth: admin:secret
 
 future work:
 	cm dynamic bugs
+
+		\item An endpoint which provides an interface to compile and execute code generated from a flat file which defines the problem description, skeleton code, and test-cases
+
 	explain boxes for all questions
 
 	cs dom: Ycautpstcy!w.
