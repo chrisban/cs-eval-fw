@@ -243,23 +243,6 @@
 								console.log("Error response: ", res);
 							}
 						});
-						
-						//TODO: is this necessary 2x??
-						$.ajax({
-							url: '/uploadFile',
-							type: 'POST',
-							data: file,
-							cache: false,
-							contentType: false,
-							processData: false,
-							success: function(res){
-								$( "#infoModal" ).html('Upload successful: ' + res['success']);
-								$( "#infoModal" ).dialog('open');
-							},
-							error: function(res){
-								console.log("Error response: ", res);
-							}
-						});
 					} else {//else use textarea
 						var tmpCode = JSON.stringify($('#code').val());
 
@@ -395,7 +378,7 @@
 		});
 	}
 
-	//TODO: Should this really be ANOTHER ajax call? Call the d*** function.
+
 	function loadResultFile(path, callback) {
 		$.ajax({
 			url: "/getResult",
@@ -453,10 +436,12 @@
 				</div>
 				<div id='codeDiv' class='hidden'>
 					<h2>JSON with unformatted content (hard line breaks): </h2>
+					<span id='format'> Format: JSON-esque (<a href='/admin/examples/json/jsonesqueExample.html' target="_blank">ex</a>)<br /></span><br />
 
 					<span id='note'>Please Note:<br />
-					-
-					</span>
+					- The 'problem' field can utilize html formatting/markup.<br />
+					- If any double quotes are repeated, they must be escaped (<i>ex: "skeleton": " cout << \"i\"; "</i>)<br />
+					- Generally, fields should not contain hard linebreaks with the 'skeleton' field being the exception. In the skeleton field's case, the server can parse unformatted text wrapped in the following manner: '_<<_ CONTENT _>>_' <br />&nbsp;&nbsp;(or explicity write /n, /t, etc. instead of linebreaks).</span>
 					<textarea id='code'></textarea>
 				</div>
 			</div>

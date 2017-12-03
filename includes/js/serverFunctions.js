@@ -93,7 +93,6 @@ exports.deleteFile = function deleteFile(req, res)
 }
 
 //Get specified result file
-//TODO: PROMISIFY INSTEAD OF CB
 exports.getResultFile = function getResultFile(req, res, callback)
 {
 	var file = './' + req.body.path;
@@ -111,7 +110,7 @@ exports.getResultFile = function getResultFile(req, res, callback)
 	});
 }
 
-//TODO: PROMISIFY INSTEAD OF CB
+//Serve pure json content for view/edit purposes
 exports.serveFile = function serveFile(req, res, json) {
 	res.type('json');
 	res.send( {datafile : json} );
@@ -326,7 +325,7 @@ exports.processExam = function processExam(req, res, data)
 		//reset subtotal points, print next question label
 		subTotalPoints = 0;
 		subStudentScore = 0;
-		//TODO: DOCUMENT MULTIPLIER PATTERN
+		//difficulty level * multiplier = n minutes (suggested question time), else default to 5min
 		difficultyValue = (parseFloat(data[i]["difficulty"]) == 0) ? (difficultyMultiplier * .5) : ((parseFloat(data[i]["difficulty"])) * difficultyMultiplier);
 		resultFile += "****** Question " + i + ", type: " + req.body.problemType[i] + " ******\n\n";
 
@@ -377,7 +376,7 @@ exports.processExam = function processExam(req, res, data)
 				//console.log("comparing: [" + compileResult.Result.trim() + "]\n\nans: \n[", data[i]["output"][j].trim() + "]\n");
 
 				//Check to see if compilation result is equal to the expected output defined in the datafile
-				//trim and add newline as parsing the json adds a leading space, and compiling adds a trailing newline. TODO: trim both?
+				//trim and add newline as parsing the json adds a leading space, and compiling adds a trailing newline.
 				if(data[i]["output"][j].trim() != compileResult.Result.trim())
 				{
 					testsfailed = true;
@@ -516,8 +515,6 @@ exports.compile = function compile(data, res, type){
 	//TODO: cron-esque to wipe folder every once in awhile
 	//Generate tmp string using timestamp and ints 0-9999 for directory name
 	var tmpDir = '' + Date.now() + Math.floor(Math.random() * (9999 - 0) + 0);
-
-	//TODO: For debug: '~/Documents/Thesis/cs-eval-fw/compilation/' + tmpDir + '/';
 	var fileBasePath = ROOTPATH + '/compilation/' + tmpDir + '/';
 	try {
 		fs.mkdirSync('./compilation/' + tmpDir);
@@ -769,7 +766,6 @@ exports.storeDatafile = function storeDatafile(type, req, res) {
 			fileDetails,
 			fname;
 
-		//TODO: standardize fname naming scheme
 		req.busboy.on('file', function (fieldname, file, filename) {
 			fileDetails = fieldname.split('===');
 			fname = 'data' + fileDetails[1];
