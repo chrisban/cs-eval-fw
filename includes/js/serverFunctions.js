@@ -124,7 +124,6 @@ exports.serveModule = function serveModule(req, res, data)
 	//If closeDate/Time exists, enforce
 	if(data["prop"]["closeDate"] && data["prop"]["closeDate"] != "" && data["prop"]["closeTime"] && data["prop"]["closeTime"] != "") {
 		//Only serve if before specified end time
-		var isClosed = false;
 		var currDate = new Date();
 		var specYear = parseInt(data["prop"]["closeDate"].split("-")[2]);
 		var specMonth = parseInt(data["prop"]["closeDate"].split("-")[0]) - 1; //+
@@ -135,17 +134,12 @@ exports.serveModule = function serveModule(req, res, data)
 		specDate.setHours(specHour, specMinute, 0);
 
 		if(currDate.getTime() > specDate.getTime()) {
-			isClosed = true;
-		}
-		// console.log('spec: ', specDate.toString())
-		// console.log('now: ', currDate.toString())
-
-
-		if (isClosed) {
 			res.type('json');
 			res.send( {error: WARNING_ACTIVITY_CLOSED} );
 			return;
 		}
+		// console.log('spec: ', specDate.toString())
+		// console.log('now: ', currDate.toString())
 	}
 
 	if(data["prop"]["access"]) {
@@ -366,7 +360,7 @@ exports.processExam = function processExam(req, res, data)
 					resolve(exports.compile(userData));
 				}).then(function(data) {
 						compileResult = data;
-						console.log("got compiled result:", compileResult);
+						//console.log("got compiled result:", compileResult);
 					}).catch(function(err) {
 						console.log("Error occurred during compilation: ", err);
 					});
@@ -651,7 +645,7 @@ exports.compile = function compile(data, res, type){
 
 			//if python (only supporting python 3.X)
 		} else if(data.language.toLowerCase().indexOf("python") != -1) {
-			console.log("python");
+			//console.log("python");
 			//Write code to file
 			fs.writeFileSync('./compilation/' + tmpDir + "/code.py", submittedCode, 'utf-8', function(err) {
 				if(err) {
@@ -871,7 +865,7 @@ function findKillLongRunningProcs(continueMonitoring){
 	* 24241 00:18:52
 	* 24257 00:06:26
 	*/
-	console.log('start monitorw')
+	//console.log('start monitor')
 	try{
 		execChild = exec('ps -ef | grep /compOutput | grep -v grep | awk \'{print " "$2" " $7}\'',
 			(error, stdout, stderr) => {
@@ -889,7 +883,7 @@ function findKillLongRunningProcs(continueMonitoring){
 							seconds = entries[i].trim().split(' ')[1].split(':')[2]; //Only need to look at seconds as anything above compile limit (in seconds) will be killed
 
 							if(seconds.valueOf() > ((COMPILE_LIMIT / 1000) % 60)) { // if greater than compile limit (converted from ms to s)
-								console.log('found long running proc, PID: ', pid, 'runtime: ', seconds);
+								console.log('found long running proc, PID: ', pid, 'runtime: ', seconds, '. Killing...');
 								exec('kill -9 ' + pid);
 							}
 						}

@@ -31,7 +31,7 @@
     },
     "prop": {
         "closeDate": "7-3-2018",
-        "closeTime": "13:58",
+        "closeTime": "13:30",
         "allowMultiple": "false",
         "time": "15",
         "warn": ["10", "5"],
