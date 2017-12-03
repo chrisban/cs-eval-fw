@@ -1,0 +1,56 @@
+-----------------------------------
+Environment installation and setup:
+-----------------------------------
+
+Requirements:
+	- Ubuntu 16.04.2 x64 Server
+	- Node (v8.9.1)
+	- Python (v3.5.2)
+	- g++-5 (v5.4.0)
+	- forever (optional)
+
+
+Update distros/packages:
+	Run the following commands:
+		$ apt-get update
+		$ sudo apt-get -y upgrade
+
+
+Installing node:
+	Run the following commands:
+		$ curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
+		$ sudo apt-get install -y nodejs
+
+
+Installing Python:
+	Python is included in Ubuntu 16.04.2
+
+
+Installing g++:
+	Run the following commands:
+		$ sudo apt-get install g++-5
+
+
+
+
+--------------------------------------------
+Setting up and starting Node server instance
+--------------------------------------------
+
+Downloading project files: (https://github.com/chrisban/cs-eval-fw)
+	Run the following command in the appropriate directory: (or unzip local archive of repo)
+		$ git clone https://github.com/chrisban/cs-eval-fw.git
+
+		
+	Installing package dependencies:
+		cd into repo directory
+		$ npm install
+
+
+	Optional package installs: 
+		forever: A simple CLI tool for ensuring that a given script runs continuously in the background. (https://www.npmjs.com/package/forever)
+
+			cd into repo directory
+			$ npm forever
+
+
