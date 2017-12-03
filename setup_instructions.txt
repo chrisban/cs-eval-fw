@@ -31,6 +31,13 @@ Installing g++:
 		$ sudo apt-get install g++-5
 
 
+Setting timezone (for optional date/time exam restrictions):
+	Run the following commands:
+		$ sudo timedatectl set-timezone <TIMEZONE>
+
+			Example: $ sudo timedatectl set-timezone EST
+
+
 
 
 --------------------------------------------
@@ -42,13 +49,14 @@ Downloading project files: (https://github.com/chrisban/cs-eval-fw)
 		$ git clone https://github.com/chrisban/cs-eval-fw.git
 
 		
-	Installing package dependencies:
+	Installing package dependencies (dependencies are specified in package.json):
 		cd into repo directory
 		$ npm install
 
 
 	Optional package installs: 
-		forever: A simple CLI tool for ensuring that a given script runs continuously in the background. (https://www.npmjs.com/package/forever)
+		forever: A simple CLI tool for ensuring that a given script runs continuously in the background. 
+			https://www.npmjs.com/package/forever
 
 			cd into repo directory
 			$ npm forever
