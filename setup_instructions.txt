@@ -10,7 +10,7 @@ Requirements:
 	- forever (optional)
 
 
-Update distros/packages:
+(If fresh OS) Update distros/packages:
 	Run the following commands:
 		$ apt-get update
 		$ sudo apt-get -y upgrade
@@ -23,7 +23,7 @@ Installing node:
 
 
 Installing Python:
-	Python is included in Ubuntu 16.04.2
+	As of Ubuntu 16.04 LTS, Python 3 comes installed and is the default.
 
 
 Installing g++:
@@ -32,7 +32,7 @@ Installing g++:
 
 
 Setting timezone (for optional date/time exam restrictions):
-	Run the following commands:
+	Run the following commands/:
 		$ sudo timedatectl set-timezone <TIMEZONE>
 
 			Example: $ sudo timedatectl set-timezone EST
