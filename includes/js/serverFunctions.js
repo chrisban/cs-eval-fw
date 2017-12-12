@@ -492,7 +492,7 @@ function convertSpecialChars(string) {
 }
 
 
-//TODO: document this as a location that needs to be modified when adding support for more languages
+//This function needs to be modified when adding support for more languages
 //Compiles and or executes code
 //data: [code, input, language]
 //res: response object, exists only if called from /compile endpoint
