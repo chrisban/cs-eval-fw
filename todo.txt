@@ -16,19 +16,9 @@ cs dom: Ycautpstcy!w.
 ------------
 
 
-
-*************
-TO RESEARCH:
-
-	- different url per module, not defined in request? check restful standards
-
-
 *************
 TODO: 
 		- add in error handling for port in use
-
-		- new lang support?
-			- .INCL file that holds language name, compile and run string const defs 
 		
 		- cron jobs to clear compilation files
 
