@@ -8,23 +8,10 @@ Modularize
 	-> authenticate module
 	-> plug and play
 
-List requirements: codemirror etc.
-prop field time + warn = req. fields now
-output field is an array of test cases [ testcase 1, [testcase 2.0, testcase 2.1] ]
-
-Python 3.5.0 -> 3 Specify elsewhere. 
-
-auth: admin:secret
-
-future work:
-	cm dynamic bugs
-
-		\item An endpoint which provides an interface to compile and execute code generated from a flat file which defines the problem description, skeleton code, and test-cases
-
-	explain boxes for all questions
-
-	cs dom: Ycautpstcy!w.
-
+------------
+auth: users.htpasswd:
+	- admin:secret
+cs dom: Ycautpstcy!w.
 
 ------------
 
@@ -38,28 +25,14 @@ TO RESEARCH:
 
 *************
 TODO: 
-		
-		X -Disable- WARN before using back and refresh button
-		
-		X Document new prop vals: "closeDate": "9-17-17", "closeTime": "6:30 pm", "allowMultiple: "false"
+		- add in error handling for port in use
 
-		X cat results into styled html report
-
-		X implement catches for promise (.then)
-
-		- Test timezone change with closeDate/closeTime
-
-		- ModuleVars:80 specify python array instructions, figure out c++ directions
-
-		- Include more feedback to student after grading
-
-		- drop down help/info box regarding input and arrays
+		- new lang support?
+			- .INCL file that holds language name, compile and run string const defs 
 		
 		- cron jobs to clear compilation files
 
 		- lockdown browser (restricted urls - visit exam/docu, not google/SO/etc.)
-
-		- Exam status (de/activated) view and control
 
 
 	Other:
@@ -75,18 +48,9 @@ TODO:
 
 
 -----------------------------------------------------------------------------------------------------------------------------------
-**********
-questions:
-	caching issues??
-
-	emph. practice exams for familiarity -> make security issues crucial as students have time to try and break it or cheat
-
-
-
-
-
 *************
 Completed:
+
 - Navigation
 	- Display one question at a time
 	- Nav buttons to switch through problems
@@ -138,7 +102,18 @@ Completed:
 - misc
 		- serve codemirror lang specific js files as needed instead of all regardless (in serveModule)
 			-> ABANDONED: https://discuss.codemirror.net/t/issues-with-dynamically-adding-add-ons-after-load/676
+
 		- Backend
+
+		X -Disable- WARN before using back and refresh button
+		
+		X Document new prop vals: "closeDate": "9-17-17", "closeTime": "18:30", "allowMultiple: "false"
+
+		X cat results into styled html report
+
+		X implement catches for promise (.then)
+
+		X Test timezone change with closeDate/closeTime
 
 - Deployment:
 

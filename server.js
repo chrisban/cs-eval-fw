@@ -18,6 +18,7 @@ app.use(busboy());
 app.use('/includes', express.static(__dirname + '/includes'));
 app.use('/admin', express.static(__dirname + '/admin'));
 
+process.env.rootPath = __dirname;
 
 /*********************/
 /* HTTP GET HANDLING */

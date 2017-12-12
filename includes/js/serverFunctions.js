@@ -10,8 +10,6 @@ var dirTree = require('directory-tree');
 
 var moduleVars = require('./moduleVars');
 
-//environment root
-var ROOTPATH = "~/cs-eval-fw";
 var ISDEBUG = 0;    
 var COMPILE_LIMIT = 10000; //max runtime in ms
 var monitoring = false;
@@ -505,7 +503,8 @@ exports.compile = function compile(data, res, type){
 
 	//NOTE: UPDATE THIS IF IN NEW ENVIRONMENT
 	var regHomePathPattern = new RegExp("(cs-eval-fw)","g");
-	var regFullPathPattern = new RegExp("(\/home\/cban\/cs-eval-fw)","g");
+	var fullP = process.env.rootPath.replace('/', '\\/');
+	var regFullPathPattern = new RegExp("("+fullP+")","g");
 	var response = {
 		Errors: '',
 		Result: ''
@@ -515,7 +514,7 @@ exports.compile = function compile(data, res, type){
 	//TODO: cron-esque to wipe folder every once in awhile
 	//Generate tmp string using timestamp and ints 0-9999 for directory name
 	var tmpDir = '' + Date.now() + Math.floor(Math.random() * (9999 - 0) + 0);
-	var fileBasePath = ROOTPATH + '/compilation/' + tmpDir + '/';
+	var fileBasePath = process.env.rootPath + '/compilation/' + tmpDir + '/';
 	try {
 		fs.mkdirSync('./compilation/' + tmpDir);
 	} catch(e) {
@@ -724,11 +723,6 @@ exports.compile = function compile(data, res, type){
 				}
 			}
 
-				// setTimeout(function(){
-				//   console.log('Max execution time reached: sending sigkill');
-				//   execChild.kill();
-				// }, 5000);
-
 			//console.log('\n[RUN]: ', response);
 		} else {
 
@@ -742,14 +736,6 @@ exports.compile = function compile(data, res, type){
 			}
 			return response;
 		}
-
-		// if(type == "post") {
-		//  res.type('json');
-		//  res.send(response);
-		// }else  {
-		//  done = true;
-		//  compileResult = response;
-		// }
 	});
 }
 
