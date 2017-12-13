@@ -2,7 +2,6 @@
 //placeholders denoted by lt/gt symbols e.g.: <<_PLACEHOLDER_>>
 
 
-//TODO: Update this info!
 /* TEMPLATE INFORMATION: 
 /NOTE: For template variable information, see var definition in this file below.
 /	   These templates should be appended to the html var (unless specefied for JS var) in a JSON object sent to the client.

@@ -288,7 +288,7 @@ exports.serveModule = function serveModule(req, res, data)
 	}
 	else if(req.body.type == 'book')
 	{
-		//TODO: proof of concept code for book module
+		//Future work
 	}
 
 	
