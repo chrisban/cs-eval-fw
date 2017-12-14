@@ -38,7 +38,6 @@
 					id: "dialogSaveBtn",
 					text: "Update",
 					click: function(){
-						//TODO: Add json error handling
 						// workingPath order will be root/courseid/quiz.json, eg: dataFiles/CPTR124/data1.json
 						var pathArr = workingPath.split("/");
 						console.log(workingPath, "\n", pathArr[2].substring(4, (pathArr[2].length - 5)));
@@ -302,7 +301,7 @@
 		$('#editModal').dialog('open');
 	}
 
-	//TODO: replace on server
+
 	function viewResult(resultFile) {
 		$('#editFile').val(resultFile.replace(/\r|\n/g,"\r\n"));
 		$('#editModal').dialog('open');
