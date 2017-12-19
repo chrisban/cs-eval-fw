@@ -85,10 +85,10 @@ var ioTemplate = '<div class="inputContainer">\
 		</div>\
 	</div>\
 	<div class="outputContainer">\
-		<span class="compile button"> Compile</span>\
+		<span id="compile<<n>>Btn" class="compile button">Compile</span>\
 		<div class="results">\
 			<b>Results:</b> <br />\
-			<textarea class="codeResults" rows="5" cols="100"></textarea>\
+			<textarea id="codeResults<<n>>" class="codeResults" rows="5" cols="100"></textarea>\
 		</div>\
 	</div>';
 

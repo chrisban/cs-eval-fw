@@ -537,12 +537,14 @@ $( "#dialogStart" ).dialog({
 	height: "auto",
 	width: "auto",
 	modal: true,
-	buttons: {
-		"start": function() {  
+	buttons: [{
+		id: "startExamBtn",
+		text: "Start",
+		click: function() {  
 			$(this).dialog("close");
 			initExam();
 		  }
-		}
+		}]
 });
 
 
@@ -553,6 +555,7 @@ $( "#dialogWarn" ).dialog({
 	dialogClass: "no-close",
 	autoOpen: false,
 	buttons: [{
+		id: "sectionWarnBtn",
 		text: "Continue",
 		click: function() {
 			$(this).dialog("close");
