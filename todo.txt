@@ -9,11 +9,15 @@ Modularize
 	-> plug and play
 
 ------------
-auth: users.htpasswd:
-	- admin:secret
-cs dom: Ycautpstcy!w.
+Testing auth:
+	auth: users.htpasswd:
+		- admin:secret
+	cs dom: Ycautpstcy!w.
 
 ------------
+
+Furby_King validation
+
 
 
 *************
